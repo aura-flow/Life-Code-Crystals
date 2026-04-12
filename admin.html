@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理後台 · Aura Flow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Playfair+Display:ital,wght@1,400;1,700&family=Noto+Serif+SC:wght@300;400&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f7f0e6;--bg2:#ede5d8;--bg3:#e5dbd0;
+      --gold:#b07a1a;--gold-dim:rgba(176,122,26,.4);
+      --cream:#2c1a08;--cream-dim:rgba(44,26,8,.58);
+      --border:rgba(176,122,26,.16);
+      --green:#4a8855;--red:#a83333;--blue:#3366aa;
+      --purple:#7b2fbf;--purple-dim:rgba(123,47,191,.3);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--cream);font-family:'Noto Serif SC',serif;min-height:100vh}
+
+    /* ═══════════════════════════════════════
+       LOGIN SCREEN
+    ═══════════════════════════════════════ */
+    #login-screen{
+      position:fixed;inset:0;z-index:9999;
+      background:linear-gradient(135deg,#07030f 0%,#160b2e 40%,#0c0515 100%);
+      display:flex;align-items:center;justify-content:center;
+    }
+    #login-screen.hidden{display:none}
+    .login-box{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(180,120,255,.2);
+      backdrop-filter:blur(20px);
+      border-radius:20px;
+      padding:3.5rem 3rem;
+      width:min(420px,90vw);
+      text-align:center;
+      box-shadow:0 20px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    .login-logo{
+      font-family:'Playfair Display',serif;font-style:italic;font-weight:700;
+      font-size:2.2rem;
+      background:linear-gradient(180deg,#fff 0%,#f5dfa8 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      filter:drop-shadow(0 0 20px rgba(255,210,100,.3));
+      margin-bottom:.4rem;
+    }
+    .login-sub{
+      font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:.5em;
+      color:rgba(200,160,255,.45);text-transform:uppercase;margin-bottom:2.5rem;
+    }
+    .login-label{
+      font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.3em;
+      color:rgba(200,160,255,.5);text-transform:uppercase;
+      display:block;text-align:left;margin-bottom:.5rem;margin-top:1.2rem;
+    }
+    .login-input{
+      width:100%;background:rgba(255,255,255,.05);
+      border:1px solid rgba(180,120,255,.2);border-radius:8px;
+      color:#f0e8ff;font-family:'Noto Serif SC',serif;font-size:.95rem;
+      padding:.75rem 1rem;outline:none;
+      transition:border-color .25s,box-shadow .25s;
+    }
+    .login-input:focus{border-color:rgba(180,120,255,.6);box-shadow:0 0 0 3px rgba(140,60,220,.12)}
+    .login-btn{
+      width:100%;margin-top:2rem;
+      background:rgba(120,40,200,.3);
+      border:1px solid rgba(180,100,255,.5);
+      border-radius:100px;
+      color:#e8d0ff;
+      font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;
+      padding:.85rem;cursor:pointer;
+      transition:all .3s;
+    }
+    .login-btn:hover{background:rgba(140,50,220,.45);box-shadow:0 0 24px rgba(140,0,240,.3)}
+    .login-err{
+      color:rgba(255,120,120,.8);font-family:'Cormorant Garamond',serif;
+      font-style:italic;font-size:.9rem;margin-top:.8rem;min-height:1.4em;
+    }
+    .login-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+
+    /* ═══════════════════════════════════════
+       MAIN ADMIN
+    ═══════════════════════════════════════ */
+    #admin-main{display:none}
+
+    nav{
+      display:flex;align-items:center;gap:0;
+      padding:0 2rem;height:60px;
+      background:rgba(247,240,230,.96);
+      border-bottom:1px solid var(--border);
+      backdrop-filter:blur(12px);
+    }
+    .nav-logo{
+      font-family:'Playfair Display',serif;font-style:italic;
+      font-size:.95rem;letter-spacing:.04em;color:var(--gold);
+      text-decoration:none;margin-right:2rem;white-space:nowrap;
+    }
+
+    /* Tab navigation */
+    .tab-nav{display:flex;gap:0;flex:1}
+    .tab-btn{
+      font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.28em;
+      text-transform:uppercase;color:var(--cream-dim);
+      background:transparent;border:none;border-bottom:2px solid transparent;
+      padding:0 1.4rem;height:60px;cursor:pointer;
+      transition:color .25s,border-color .25s;white-space:nowrap;
+    }
+    .tab-btn:hover{color:var(--gold)}
+    .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+    .nav-right{margin-left:auto;display:flex;align-items:center;gap:1rem}
+    .nav-back{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.28em;color:rgba(44,26,8,.38);text-decoration:none;text-transform:uppercase;transition:color .3s}
+    .nav-back:hover{color:var(--gold)}
+    .logout-btn{
+      font-family:'Cinzel',serif;font-size:.46rem;letter-spacing:.22em;
+      color:rgba(160,60,60,.6);background:transparent;border:1px solid rgba(160,60,60,.2);
+      padding:.3rem .8rem;cursor:pointer;text-transform:uppercase;
+      transition:all .25s;
+    }
+    .logout-btn:hover{color:#a83333;border-color:rgba(160,60,60,.5)}
+
+    /* Tab content */
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+
+    /* ─── layout ─── */
+    .wrap{max-width:1300px;margin:0 auto;padding:2.5rem 2rem}
+    .page-title{font-family:'Cinzel',serif;font-size:1.1rem;letter-spacing:.3em;color:var(--gold);margin-bottom:.4rem}
+    .page-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:var(--cream-dim);margin-bottom:2rem}
+    .main-grid{display:grid;grid-template-columns:1fr 360px;gap:2rem}
+    @media(max-width:900px){.main-grid{grid-template-columns:1fr}}
+
+    /* ─── panels ─── */
+    .panel{background:var(--bg2);border:1px solid var(--border);margin-bottom:1.5rem}
+    .panel-head{
+      padding:1rem 1.5rem;border-bottom:1px solid var(--border);
+      font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.35em;
+      color:var(--gold-dim);text-transform:uppercase;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .panel-body{padding:1.5rem}
+
+    /* ─── forms ─── */
+    .form-row{margin-bottom:1.2rem}
+    label{display:block;font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.35em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:.5rem}
+    input[type=text],input[type=date],input[type=number],input[type=password],textarea,select{
+      width:100%;background:var(--bg3);border:1px solid var(--border);
+      border-bottom-color:var(--gold-dim);
+      color:var(--cream);font-family:'Noto Serif SC',serif;font-size:.9rem;
+      padding:.7rem .9rem;outline:none;resize:vertical;
+      transition:border-color .3s;
+    }
+    input:focus,textarea:focus,select:focus{border-color:var(--gold-dim)}
+    textarea{min-height:200px}
+    .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+    @media(max-width:600px){.form-row-2,.form-row-3{grid-template-columns:1fr}}
+
+    /* ─── buttons ─── */
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.8rem;cursor:pointer;font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;border:1px solid;transition:all .3s}
+    .btn-gold{color:var(--gold);border-color:var(--gold-dim);background:transparent}
+    .btn-gold:hover{background:rgba(232,184,75,.08)}
+    .btn-green{color:var(--green);border-color:rgba(74,170,102,.4);background:transparent}
+    .btn-green:hover{background:rgba(74,170,102,.08)}
+    .btn-red{color:var(--red);border-color:rgba(204,68,68,.4);background:transparent}
+    .btn-red:hover{background:rgba(204,68,68,.08)}
+    .btn-blue{color:#88aadd;border-color:rgba(68,136,204,.4);background:transparent}
+    .btn-blue:hover{background:rgba(68,136,204,.08)}
+    .btn-purple{color:#aa77ee;border-color:rgba(140,80,220,.35);background:transparent}
+    .btn-purple:hover{background:rgba(140,80,220,.08)}
+    .btn-sm{padding:.45rem 1rem;font-size:.52rem}
+    .btn-block{width:100%;justify-content:center}
+
+    /* ─── post list ─── */
+    .post-list{display:flex;flex-direction:column;gap:.8rem}
+    .post-item{
+      background:var(--bg3);border:1px solid var(--border);
+      padding:1rem 1.2rem;
+      display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;
+      transition:border-color .3s;
+    }
+    .post-item:hover{border-color:var(--gold-dim)}
+    .post-item.scheduled{border-left:3px solid rgba(140,80,220,.5)}
+    .post-item-info{flex:1;min-width:0}
+    .post-item-title{font-family:'Noto Serif SC',serif;font-size:.9rem;color:var(--cream);margin-bottom:.3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .post-item-meta{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.2em;color:rgba(44,26,8,.35)}
+    .post-item-cat{display:inline-block;font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:.2em;padding:.2rem .5rem;border:1px solid var(--border);color:rgba(44,26,8,.4);margin-left:.5rem}
+    .badge-new{border-color:rgba(74,170,102,.3);color:#4aaa66}
+    .badge-sched{border-color:rgba(140,80,220,.3);color:#9955ee}
+    .post-item-actions{display:flex;gap:.5rem;flex-shrink:0}
+
+    /* ─── toast ─── */
+    #toast{
+      position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);
+      background:rgba(247,240,230,.97);border:1px solid var(--border);
+      font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.3em;
+      padding:.8rem 2rem;color:var(--gold);
+      opacity:0;pointer-events:none;transition:opacity .4s;z-index:9990;
+    }
+    #toast.show{opacity:1}
+
+    /* ─── misc ─── */
+    .info-box{background:rgba(68,136,204,.06);border:1px solid rgba(68,136,204,.2);padding:1rem 1.2rem;font-family:'Cormorant Garamond',serif;font-size:.9rem;line-height:1.8;color:var(--cream-dim)}
+    .info-box strong{color:var(--cream)}
+    .step-badge{display:inline-flex;width:22px;height:22px;align-items:center;justify-content:center;background:rgba(232,184,75,.15);border:1px solid var(--gold-dim);font-family:'Cinzel',serif;font-size:.65rem;color:var(--gold);margin-right:.6rem;flex-shrink:0}
+    .step{display:flex;align-items:flex-start;margin-bottom:.7rem}
+    .step-text{font-family:'Cormorant Garamond',serif;font-size:.92rem;color:var(--cream-dim);line-height:1.6}
+    .count-badge{background:rgba(232,184,75,.15);border:1px solid var(--gold-dim);border-radius:999px;font-family:'Cinzel',serif;font-size:.5rem;padding:.15rem .6rem;color:var(--gold)}
+    .ai-prompt-box{background:var(--bg3);border:1px solid rgba(68,136,204,.2);padding:1.2rem 1.5rem;position:relative;font-family:'Cormorant Garamond',serif;font-size:.88rem;line-height:1.8;color:var(--cream-dim);white-space:pre-wrap}
+    .copy-btn{position:absolute;top:.7rem;right:.7rem;background:rgba(68,136,204,.15);border:1px solid rgba(68,136,204,.3);color:rgba(100,160,220,.8);font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.2em;padding:.3rem .8rem;cursor:pointer;text-transform:uppercase;transition:all .3s}
+    .copy-btn:hover{background:rgba(68,136,204,.25)}
+    #ai-json{min-height:180px;font-family:monospace;font-size:.8rem}
+
+    /* ═══════════════════════════════════════
+       PRODUCT MANAGEMENT
+    ═══════════════════════════════════════ */
+    .product-grid{
+      display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+      gap:1.2rem;margin-top:1rem;
+    }
+    .product-card{
+      background:var(--bg3);border:1px solid var(--border);
+      overflow:hidden;transition:border-color .3s;
+    }
+    .product-card:hover{border-color:var(--gold-dim)}
+    .product-img-wrap{
+      width:100%;aspect-ratio:1;overflow:hidden;
+      background:#e0d8cd;
+      display:flex;align-items:center;justify-content:center;
+      position:relative;
+    }
+    .product-img-wrap img{width:100%;height:100%;object-fit:cover}
+    .product-img-placeholder{
+      font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:.2em;
+      color:rgba(44,26,8,.2);text-transform:uppercase;
+    }
+    .product-img-count{
+      position:absolute;bottom:.4rem;right:.4rem;
+      background:rgba(0,0,0,.45);color:#fff;
+      font-family:'Cinzel',serif;font-size:.44rem;letter-spacing:.1em;
+      padding:.2rem .5rem;border-radius:3px;
+    }
+    .product-card-body{padding:.9rem 1rem}
+    .product-card-name{font-family:'Noto Serif SC',serif;font-size:.88rem;color:var(--cream);margin-bottom:.3rem}
+    .product-card-price{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.15em;color:var(--gold)}
+    .product-card-actions{
+      display:flex;gap:.4rem;padding:.6rem 1rem;
+      border-top:1px solid var(--border);
+    }
+
+    /* Upload drop zone */
+    .img-drop-zone{
+      border:2px dashed var(--border);
+      border-radius:4px;
+      padding:2rem;text-align:center;
+      cursor:pointer;transition:all .3s;
+      background:var(--bg3);
+    }
+    .img-drop-zone:hover,.img-drop-zone.drag-over{
+      border-color:var(--gold-dim);background:rgba(176,122,26,.04);
+    }
+    .img-drop-zone-icon{font-size:2rem;opacity:.3;margin-bottom:.6rem}
+    .img-drop-zone-text{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.3em;color:var(--cream-dim);text-transform:uppercase}
+    #img-input{display:none}
+
+    /* Preview thumbnails */
+    .img-preview-grid{
+      display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));
+      gap:.5rem;margin-top:.8rem;
+    }
+    .img-thumb{
+      aspect-ratio:1;overflow:hidden;border:1px solid var(--border);
+      position:relative;cursor:pointer;
+    }
+    .img-thumb img{width:100%;height:100%;object-fit:cover}
+    .img-thumb-del{
+      position:absolute;top:2px;right:2px;
+      background:rgba(160,40,40,.75);color:#fff;
+      font-size:.7rem;width:18px;height:18px;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;border-radius:2px;opacity:0;
+      transition:opacity .2s;
+    }
+    .img-thumb:hover .img-thumb-del{opacity:1}
+
+    /* Scheduled badge */
+    .sched-badge{
+      display:inline-flex;align-items:center;gap:.3rem;
+      font-family:'Cinzel',serif;font-size:.46rem;letter-spacing:.2em;
+      color:#9955ee;border:1px solid rgba(140,80,220,.3);
+      padding:.2rem .6rem;margin-left:.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     LOGIN SCREEN
+═══════════════════════════════════════ -->
+<div id="login-screen">
+  <canvas id="login-stars" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></canvas>
+  <div class="login-box">
+    <div class="login-logo">Aura Flow</div>
+    <div class="login-sub">Admin · 後台管理</div>
+    <label class="login-label">帳號</label>
+    <input class="login-input" type="text" id="l-user" placeholder="username" autocomplete="username">
+    <label class="login-label">密碼</label>
+    <input class="login-input" type="password" id="l-pass" placeholder="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">登入後台</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MAIN ADMIN
+═══════════════════════════════════════ -->
+<div id="admin-main">
+
+<nav>
+  <a href="index.html" class="nav-logo">Aura Flow</a>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('blog',this)">部落格管理</button>
+    <button class="tab-btn" onclick="switchTab('products',this)">商品管理</button>
+    <button class="tab-btn" onclick="switchTab('scheduled',this)">定時發布
+      <span class="count-badge" id="sched-count" style="margin-left:.4rem">0</span>
+    </button>
+  </div>
+  <div class="nav-right">
+    <a href="blog.html" class="nav-back">← 前台</a>
+    <button class="logout-btn" onclick="doLogout()">登出</button>
+  </div>
+</nav>
+
+<!-- ══════ TAB: 部落格 ══════ -->
+<div id="tab-blog" class="tab-content active">
+<div class="wrap">
+  <div class="page-title">部落格管理</div>
+  <p class="page-sub">新增文章、使用 AI 產生內容，或設定定時發布</p>
+
+  <div class="main-grid">
+    <!-- 左欄 -->
+    <div>
+      <!-- AI 自動撰寫 -->
+      <div class="panel">
+        <div class="panel-head">AI 自動撰寫文章 <span style="font-size:.5rem;color:rgba(68,136,204,.8)">✦ 推薦</span></div>
+        <div class="panel-body">
+          <div style="margin-bottom:1.5rem">
+            <div class="step"><span class="step-badge">1</span><span class="step-text">複製下方提示詞到 <strong>Claude / ChatGPT</strong>，填入主題後發送</span></div>
+            <div class="step"><span class="step-badge">2</span><span class="step-text">AI 回覆 JSON 格式文章資料</span></div>
+            <div class="step"><span class="step-badge">3</span><span class="step-text">貼入下方「AI 輸出 JSON」欄位，點擊「匯入文章」</span></div>
+            <div class="step"><span class="step-badge">4</span><span class="step-text">匯出 <strong>posts.json</strong>，替換 <code>data/posts.json</code> 即可發布</span></div>
+          </div>
+          <label>AI 提示詞模板</label>
+          <div class="ai-prompt-box" id="prompt-box">
+請幫我為「Aura Flow 靈光流動」靈性部落格撰寫一篇文章。
+
+主題：【在此填入主題，例如：粉晶的功效與使用方法】
+分類：【靈數知識 / 水晶知識 / 年度運勢 / 脈輪療癒 / 其中一個】
+
+請以下列 JSON 格式輸出，不要有其他說明文字：
+
+{
+  "id": "唯一英文 ID（用連字符）",
+  "title": "文章標題",
+  "category": "分類名稱",
+  "categoryColor": "#6633bb",
+  "date": "今天日期 YYYY-MM-DD",
+  "author": "Aura Flow",
+  "excerpt": "100字以內摘要",
+  "coverColor": "#0e0b07",
+  "coverAccent": "#6633bb",
+  "tags": ["標籤1","標籤2","標籤3"],
+  "content": "文章內容（Markdown格式）"
+}</div>
+          <button class="copy-btn" onclick="copyPrompt()">複製</button>
+          <div class="form-row" style="margin-top:1.5rem">
+            <label>AI 輸出 JSON</label>
+            <textarea id="ai-json" placeholder='{"id":"my-post","title":"...","content":"..."}'></textarea>
+          </div>
+          <button class="btn btn-blue btn-block" onclick="importFromAI()">✦ 匯入 AI 文章</button>
+        </div>
+      </div>
+
+      <!-- 手動新增 -->
+      <div class="panel">
+        <div class="panel-head">手動新增文章</div>
+        <div class="panel-body">
+          <div class="form-row-2">
+            <div class="form-row" style="margin-bottom:0">
+              <label>文章 ID（英文）</label>
+              <input type="text" id="f-id" placeholder="my-article-slug">
+            </div>
+            <div class="form-row" style="margin-bottom:0">
+              <label>發布日期</label>
+              <input type="date" id="f-date">
+            </div>
+          </div>
+          <div class="form-row" style="margin-top:1.2rem">
+            <label>標題</label>
+            <input type="text" id="f-title" placeholder="文章標題">
+          </div>
+          <div class="form-row-2">
+            <div class="form-row" style="margin-bottom:0">
+              <label>分類</label>
+              <select id="f-cat">
+                <option>靈數知識</option><option>水晶知識</option>
+                <option>年度運勢</option><option>脈輪療癒</option><option>其他</option>
+              </select>
+            </div>
+            <div class="form-row" style="margin-bottom:0">
+              <label>分類顏色</label>
+              <input type="text" id="f-catcolor" placeholder="#6633bb">
+            </div>
+          </div>
+          <div class="form-row" style="margin-top:1.2rem">
+            <label>摘要</label>
+            <textarea id="f-excerpt" style="min-height:80px" placeholder="文章摘要"></textarea>
+          </div>
+          <div class="form-row">
+            <label>標籤（逗號分隔）</label>
+            <input type="text" id="f-tags" placeholder="靈數, 水晶, 脈輪">
+          </div>
+          <div class="form-row">
+            <label>文章內容（Markdown）</label>
+            <textarea id="f-content" style="min-height:300px" placeholder="## 大標題&#10;### 小標題&#10;**粗體**&#10;- 列表項目"></textarea>
+          </div>
+          <button class="btn btn-gold btn-block" onclick="addPost()">+ 新增文章</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右欄 -->
+    <div>
+      <div class="panel">
+        <div class="panel-head">匯出 posts.json</div>
+        <div class="panel-body">
+          <div class="info-box" style="margin-bottom:1.2rem">下載 <strong>posts.json</strong>，替換 <strong>data/posts.json</strong> 即可發布。</div>
+          <button class="btn btn-green btn-block" onclick="exportJSON()">⬇ 下載 posts.json</button>
+          <div style="margin-top:.8rem">
+            <button class="btn btn-red btn-block btn-sm" onclick="clearAllBlog()">清除本機暫存文章</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">現有文章 <span class="count-badge" id="post-count">0</span></div>
+        <div class="panel-body">
+          <div class="post-list" id="post-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════ TAB: 商品管理 ══════ -->
+<div id="tab-products" class="tab-content">
+<div class="wrap">
+  <div class="page-title">商品管理</div>
+  <p class="page-sub">上傳商品圖片、設定名稱與價格，匯出商品資料</p>
+
+  <div class="main-grid">
+    <!-- 左欄：新增商品 -->
+    <div>
+      <div class="panel">
+        <div class="panel-head">新增商品</div>
+        <div class="panel-body">
+          <div class="form-row">
+            <label>商品圖片（可多張）</label>
+            <div class="img-drop-zone" id="drop-zone" onclick="document.getElementById('img-input').click()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+              <div class="img-drop-zone-icon">🖼</div>
+              <div class="img-drop-zone-text">點擊選擇或拖拉圖片至此</div>
+              <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.82rem;color:rgba(44,26,8,.3);margin-top:.4rem">支援 JPG、PNG、WEBP</div>
+            </div>
+            <input type="file" id="img-input" accept="image/*" multiple onchange="handleImgSelect(event)">
+            <div class="img-preview-grid" id="img-preview"></div>
+          </div>
+          <div class="form-row">
+            <label>商品名稱</label>
+            <input type="text" id="p-name" placeholder="例：紫水晶原石 · 淨化能量">
+          </div>
+          <div class="form-row-2">
+            <div class="form-row" style="margin-bottom:0">
+              <label>價格 (NT$)</label>
+              <input type="number" id="p-price" placeholder="880">
+            </div>
+            <div class="form-row" style="margin-bottom:0">
+              <label>庫存</label>
+              <input type="number" id="p-stock" placeholder="10">
+            </div>
+          </div>
+          <div class="form-row">
+            <label>商品分類</label>
+            <select id="p-cat">
+              <option>紫水晶</option><option>粉晶</option><option>黑碧璽</option>
+              <option>拉長石</option><option>月光石</option><option>白水晶</option><option>其他礦石</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>商品描述</label>
+            <textarea id="p-desc" style="min-height:120px" placeholder="描述這件商品的能量特性與適合對象…"></textarea>
+          </div>
+          <button class="btn btn-gold btn-block" onclick="addProduct()">+ 新增商品</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右欄：商品列表 -->
+    <div>
+      <div class="panel">
+        <div class="panel-head">商品匯出</div>
+        <div class="panel-body">
+          <div class="info-box" style="margin-bottom:1.2rem">下載 <strong>products.json</strong>，放入 <strong>data/</strong> 目錄供商品頁讀取。</div>
+          <button class="btn btn-green btn-block" onclick="exportProducts()">⬇ 下載 products.json</button>
+          <div style="margin-top:.8rem">
+            <button class="btn btn-red btn-block btn-sm" onclick="clearAllProducts()">清除所有商品</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">商品列表 <span class="count-badge" id="prod-count">0</span></div>
+        <div class="panel-body" style="padding:1rem">
+          <div class="product-grid" id="product-grid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════ TAB: 定時發布 ══════ -->
+<div id="tab-scheduled" class="tab-content">
+<div class="wrap">
+  <div class="page-title">定時發布</div>
+  <p class="page-sub">設定未來發布日期的文章。系統會在到達日期時自動標記為已發布。</p>
+
+  <div class="main-grid">
+    <div>
+      <div class="panel">
+        <div class="panel-head">新增定時文章</div>
+        <div class="panel-body">
+          <div style="background:rgba(140,80,220,.06);border:1px solid rgba(140,80,220,.2);padding:1rem;margin-bottom:1.5rem;font-family:'Cormorant Garamond',serif;font-size:.92rem;line-height:1.8;color:var(--cream-dim)">
+            設定未來的 <strong>預約發布日期</strong>。每次進入後台時，系統自動將到期文章移至「已發布」列表。
+          </div>
+          <div class="form-row-2">
+            <div class="form-row" style="margin-bottom:0">
+              <label>文章 ID（英文）</label>
+              <input type="text" id="s-id" placeholder="scheduled-post-slug">
+            </div>
+            <div class="form-row" style="margin-bottom:0">
+              <label>預約發布日期</label>
+              <input type="date" id="s-date">
+            </div>
+          </div>
+          <div class="form-row" style="margin-top:1.2rem">
+            <label>標題</label>
+            <input type="text" id="s-title" placeholder="文章標題">
+          </div>
+          <div class="form-row-2">
+            <div class="form-row" style="margin-bottom:0">
+              <label>分類</label>
+              <select id="s-cat">
+                <option>靈數知識</option><option>水晶知識</option>
+                <option>年度運勢</option><option>脈輪療癒</option><option>其他</option>
+              </select>
+            </div>
+            <div class="form-row" style="margin-bottom:0">
+              <label>分類顏色</label>
+              <input type="text" id="s-catcolor" placeholder="#6633bb">
+            </div>
+          </div>
+          <div class="form-row" style="margin-top:1.2rem">
+            <label>摘要</label>
+            <textarea id="s-excerpt" style="min-height:80px"></textarea>
+          </div>
+          <div class="form-row">
+            <label>標籤（逗號分隔）</label>
+            <input type="text" id="s-tags" placeholder="靈數, 水晶">
+          </div>
+          <div class="form-row">
+            <label>文章內容（Markdown）</label>
+            <textarea id="s-content" style="min-height:300px" placeholder="## 大標題&#10;### 小標題&#10;**粗體**&#10;- 列表項目"></textarea>
+          </div>
+          <button class="btn btn-purple btn-block" onclick="addScheduled()">⏰ 加入定時排程</button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel">
+        <div class="panel-head">待發布文章 <span class="count-badge" id="sched-list-count">0</span></div>
+        <div class="panel-body">
+          <div class="post-list" id="sched-list"></div>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:1.5rem">
+        <div class="panel-head">一鍵發布所有到期文章</div>
+        <div class="panel-body">
+          <div class="info-box" style="margin-bottom:1rem">點擊下方按鈕，將所有「已到達發布日期」的文章移入已發布列表，然後匯出 posts.json。</div>
+          <button class="btn btn-green btn-block" onclick="publishDue()">✦ 發布所有到期文章</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</div><!-- end admin-main -->
+
+<div id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════
+   LOGIN
+═══════════════════════════════════════ */
+const ADMIN_USER = 'auraflow';
+const ADMIN_PASS = 'aura2026';
+
+function doLogin(){
+  const u = document.getElementById('l-user').value.trim();
+  const p = document.getElementById('l-pass').value;
+  if(u===ADMIN_USER && p===ADMIN_PASS){
+    sessionStorage.setItem('af_auth','1');
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('admin-main').style.display='block';
+    init();
+  } else {
+    document.getElementById('login-err').textContent = '帳號或密碼錯誤，請再試一次';
+    document.getElementById('l-pass').value='';
+  }
+}
+
+function doLogout(){
+  sessionStorage.removeItem('af_auth');
+  location.reload();
+}
+
+// Check auth on load
+if(sessionStorage.getItem('af_auth')==='1'){
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('admin-main').style.display='block';
+  init();
+}
+
+/* ─── Login star canvas ─── */
+(function(){
+  const c = document.getElementById('login-stars');
+  if(!c) return;
+  const ctx = c.getContext('2d');
+  let stars=[];
+  function resize(){ c.width=innerWidth; c.height=innerHeight; }
+  function mk(){ return{x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.2+.3,phase:Math.random()*Math.PI*2,spd:Math.random()*.015+.005,base:Math.random()*.5+.05,amp:Math.random()*.4+.15} }
+  function draw(t){
+    ctx.clearRect(0,0,c.width,c.height);
+    for(const s of stars){
+      const o=s.base+s.amp*Math.sin(s.phase+t*s.spd);
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(200,170,255,${o})`;ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  resize(); stars=Array.from({length:180},mk);
+  window.addEventListener('resize',()=>{resize();stars=Array.from({length:180},mk)});
+  requestAnimationFrame(draw);
+})();
+
+/* ═══════════════════════════════════════
+   TABS
+═══════════════════════════════════════ */
+function switchTab(name, btn){
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ═══════════════════════════════════════
+   BLOG DATA
+═══════════════════════════════════════ */
+let extraPosts = JSON.parse(localStorage.getItem('blog_posts_extra')||'[]');
+let scheduledPosts = JSON.parse(localStorage.getItem('blog_scheduled')||'[]');
+let basePostsLoaded = [];
+
+function init(){
+  fetch('./data/posts.json').then(r=>r.json()).then(d=>{
+    basePostsLoaded=d.posts||[];
+    renderList();
+    publishDueAuto();
+    renderScheduled();
+  }).catch(()=>{ renderList(); publishDueAuto(); renderScheduled(); });
+  renderProducts();
+  document.getElementById('f-date').value=today();
+  document.getElementById('s-date').value=today();
+}
+
+function allPosts(){ return [...extraPosts,...basePostsLoaded]; }
+function today(){ return new Date().toISOString().slice(0,10); }
+
+function saveBlog(){ localStorage.setItem('blog_posts_extra',JSON.stringify(extraPosts)); }
+function saveScheduled(){ localStorage.setItem('blog_scheduled',JSON.stringify(scheduledPosts)); }
+
+/* Render blog list */
+function renderList(){
+  const posts=allPosts();
+  document.getElementById('post-count').textContent=posts.length;
+  const list=document.getElementById('post-list');
+  if(!posts.length){ list.innerHTML='<div style="color:var(--cream-dim);font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:.9rem;padding:1rem 0">尚無文章</div>'; return; }
+  list.innerHTML=posts.map(p=>{
+    const isExtra=extraPosts.some(e=>e.id===p.id);
+    return `<div class="post-item">
+      <div class="post-item-info">
+        <div class="post-item-title">${p.title}</div>
+        <div class="post-item-meta">${p.date||''}
+          <span class="post-item-cat">${p.category}</span>
+          ${isExtra?'<span class="post-item-cat badge-new">新增</span>':''}
+        </div>
+      </div>
+      <div class="post-item-actions">
+        ${isExtra?`<button class="btn btn-red btn-sm" onclick="deletePost('${p.id}')">刪除</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function addPost(){
+  const id=document.getElementById('f-id').value.trim();
+  const title=document.getElementById('f-title').value.trim();
+  const content=document.getElementById('f-content').value.trim();
+  if(!id||!title||!content){ toast('請填寫 ID、標題與內容'); return; }
+  if(allPosts().some(p=>p.id===id)){ toast('此 ID 已存在'); return; }
+  const post={id,title,category:document.getElementById('f-cat').value,
+    categoryColor:document.getElementById('f-catcolor').value||'#c8820a',
+    date:document.getElementById('f-date').value||today(),author:'Aura Flow',
+    excerpt:document.getElementById('f-excerpt').value.trim(),
+    coverColor:'#0e0b07',coverAccent:document.getElementById('f-catcolor').value||'#c8820a',
+    tags:document.getElementById('f-tags').value.split(',').map(t=>t.trim()).filter(Boolean),content};
+  extraPosts.unshift(post); saveBlog(); renderList();
+  ['f-id','f-title','f-content','f-excerpt','f-tags','f-catcolor'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-date').value=today();
+  toast('文章已新增！記得匯出 posts.json');
+}
+
+function importFromAI(){
+  const raw=document.getElementById('ai-json').value.trim();
+  if(!raw){ toast('請貼上 AI 輸出 JSON'); return; }
+  try{
+    const match=raw.match(/\{[\s\S]*\}/); if(!match) throw new Error();
+    const post=JSON.parse(match[0]);
+    if(!post.id||!post.title) throw new Error('缺少 id 或 title');
+    if(allPosts().some(p=>p.id===post.id)){ toast('ID 已存在：'+post.id); return; }
+    post.author=post.author||'Aura Flow'; post.date=post.date||today(); post.tags=post.tags||[];
+    extraPosts.unshift(post); saveBlog(); renderList();
+    document.getElementById('ai-json').value='';
+    toast('✦ AI 文章匯入成功！');
+  }catch(e){ toast('JSON 格式錯誤：'+e.message); }
+}
+
+function deletePost(id){
+  if(!confirm('確定刪除？')) return;
+  extraPosts=extraPosts.filter(p=>p.id!==id); saveBlog(); renderList(); toast('已刪除');
+}
+
+function exportJSON(){
+  const combined=[...extraPosts,...basePostsLoaded];
+  const json=JSON.stringify({posts:combined},null,2);
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([json],{type:'application/json'}));
+  a.download='posts.json'; a.click();
+  toast('posts.json 已下載，請替換 data/posts.json');
+}
+
+function clearAllBlog(){
+  if(!confirm('確定清除所有本機文章？')) return;
+  extraPosts=[]; saveBlog(); renderList(); toast('已清除');
+}
+
+function copyPrompt(){
+  const txt=document.getElementById('prompt-box').textContent;
+  navigator.clipboard.writeText(txt).then(()=>toast('提示詞已複製！')).catch(()=>{
+    const ta=document.createElement('textarea'); ta.value=txt;
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta); toast('提示詞已複製！');
+  });
+}
+
+/* ═══════════════════════════════════════
+   SCHEDULED POSTS
+═══════════════════════════════════════ */
+function renderScheduled(){
+  const n=scheduledPosts.length;
+  document.getElementById('sched-count').textContent=n;
+  document.getElementById('sched-list-count').textContent=n;
+  const list=document.getElementById('sched-list');
+  if(!n){ list.innerHTML='<div style="color:var(--cream-dim);font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:.9rem;padding:1rem 0">尚無排程文章</div>'; return; }
+  const t=today();
+  list.innerHTML=scheduledPosts.map(p=>{
+    const isDue=p.date<=t;
+    return `<div class="post-item ${isDue?'':'scheduled'}">
+      <div class="post-item-info">
+        <div class="post-item-title">${p.title}</div>
+        <div class="post-item-meta">預約: ${p.date}
+          <span class="post-item-cat">${p.category}</span>
+          ${isDue?'<span class="sched-badge">⚡ 可發布</span>':'<span class="sched-badge">⏰ 待發布</span>'}
+        </div>
+      </div>
+      <div class="post-item-actions">
+        <button class="btn btn-red btn-sm" onclick="deleteScheduled('${p.id}')">刪除</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function addScheduled(){
+  const id=document.getElementById('s-id').value.trim();
+  const title=document.getElementById('s-title').value.trim();
+  const content=document.getElementById('s-content').value.trim();
+  const date=document.getElementById('s-date').value;
+  if(!id||!title||!content||!date){ toast('請填寫所有欄位'); return; }
+  if(scheduledPosts.some(p=>p.id===id)||allPosts().some(p=>p.id===id)){ toast('ID 已存在'); return; }
+  const post={id,title,category:document.getElementById('s-cat').value,
+    categoryColor:document.getElementById('s-catcolor').value||'#c8820a',
+    date,author:'Aura Flow',
+    excerpt:document.getElementById('s-excerpt').value.trim(),
+    coverColor:'#0e0b07',coverAccent:document.getElementById('s-catcolor').value||'#c8820a',
+    tags:document.getElementById('s-tags').value.split(',').map(t=>t.trim()).filter(Boolean),content};
+  scheduledPosts.push(post); saveScheduled(); renderScheduled();
+  ['s-id','s-title','s-content','s-excerpt','s-tags','s-catcolor'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('s-date').value=today();
+  toast('⏰ 已加入排程！');
+}
+
+function deleteScheduled(id){
+  if(!confirm('確定刪除排程？')) return;
+  scheduledPosts=scheduledPosts.filter(p=>p.id!==id);
+  saveScheduled(); renderScheduled(); toast('已刪除排程');
+}
+
+function publishDueAuto(){
+  const t=today();
+  const due=scheduledPosts.filter(p=>p.date<=t);
+  if(!due.length) return;
+  due.forEach(p=>{ if(!allPosts().some(e=>e.id===p.id)) extraPosts.unshift(p); });
+  scheduledPosts=scheduledPosts.filter(p=>p.date>t);
+  saveBlog(); saveScheduled();
+  renderList(); renderScheduled();
+}
+
+function publishDue(){
+  publishDueAuto();
+  const count=extraPosts.length;
+  exportJSON();
+  toast(`✦ 已發布 ${count} 篇文章並下載 posts.json`);
+}
+
+/* ═══════════════════════════════════════
+   PRODUCT MANAGEMENT
+═══════════════════════════════════════ */
+let products = JSON.parse(localStorage.getItem('af_products')||'[]');
+let currentImages = []; // base64 array for new product
+
+function saveProducts(){ localStorage.setItem('af_products',JSON.stringify(products)); }
+
+function renderProducts(){
+  document.getElementById('prod-count').textContent=products.length;
+  const grid=document.getElementById('product-grid');
+  if(!products.length){
+    grid.innerHTML='<div style="grid-column:1/-1;color:var(--cream-dim);font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:.9rem;padding:.5rem 0">尚無商品</div>';
+    return;
+  }
+  grid.innerHTML=products.map((p,i)=>{
+    const img=p.images&&p.images.length?`<img src="${p.images[0]}" alt="${p.name}">`:`<div class="product-img-placeholder">No Image</div>`;
+    const cnt=p.images&&p.images.length>1?`<div class="product-img-count">+${p.images.length}</div>`:'';
+    return `<div class="product-card">
+      <div class="product-img-wrap">${img}${cnt}</div>
+      <div class="product-card-body">
+        <div class="product-card-name">${p.name}</div>
+        <div class="product-card-price">NT$ ${p.price}</div>
+      </div>
+      <div class="product-card-actions">
+        <button class="btn btn-red btn-sm" onclick="deleteProduct(${i})">刪除</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function handleImgSelect(e){
+  processFiles(Array.from(e.target.files));
+  e.target.value=''; // reset so same files can be re-selected
+}
+
+function handleDrop(e){
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.remove('drag-over');
+  processFiles(Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/')));
+}
+function handleDragOver(e){ e.preventDefault(); document.getElementById('drop-zone').classList.add('drag-over'); }
+function handleDragLeave(){ document.getElementById('drop-zone').classList.remove('drag-over'); }
+
+function processFiles(files){
+  files.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      currentImages.push(ev.target.result);
+      renderImgPreview();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderImgPreview(){
+  const grid=document.getElementById('img-preview');
+  if(!currentImages.length){ grid.innerHTML=''; return; }
+  grid.innerHTML=currentImages.map((src,i)=>`
+    <div class="img-thumb">
+      <img src="${src}" alt="">
+      <div class="img-thumb-del" onclick="removeImg(${i})">✕</div>
+    </div>`).join('');
+}
+
+function removeImg(idx){
+  currentImages.splice(idx,1); renderImgPreview();
+}
+
+function addProduct(){
+  const name=document.getElementById('p-name').value.trim();
+  const price=document.getElementById('p-price').value;
+  if(!name||!price){ toast('請填寫商品名稱與價格'); return; }
+  const product={
+    id:'p-'+Date.now(),name,
+    price:Number(price),
+    stock:Number(document.getElementById('p-stock').value)||0,
+    category:document.getElementById('p-cat').value,
+    description:document.getElementById('p-desc').value.trim(),
+    images:[...currentImages],
+    createdAt:today()
+  };
+  products.unshift(product); saveProducts(); renderProducts();
+  ['p-name','p-price','p-stock','p-desc'].forEach(id=>document.getElementById(id).value='');
+  currentImages=[]; renderImgPreview();
+  toast('✦ 商品已新增！');
+}
+
+function deleteProduct(idx){
+  if(!confirm('確定刪除此商品？')) return;
+  products.splice(idx,1); saveProducts(); renderProducts(); toast('已刪除商品');
+}
+
+function clearAllProducts(){
+  if(!confirm('確定清除所有商品？')) return;
+  products=[]; saveProducts(); renderProducts(); toast('已清除所有商品');
+}
+
+function exportProducts(){
+  const exportData=products.map(p=>({...p,images:p.images.map((_,i)=>`images/product-${p.id}-${i}.jpg`)}));
+  const json=JSON.stringify({products:exportData},null,2);
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([json],{type:'application/json'}));
+  a.download='products.json'; a.click();
+  toast('products.json 已下載！');
+}
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t=setTimeout(()=>el.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>

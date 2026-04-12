@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aura Flow · 靈光流動</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+SC:wght@300;400;600&family=Ma+Shan+Zheng&family=Pinyon+Script&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --bg:#FCFAF8;--bg2:#F5F2EE;--dark:#1a1008;
+  --text:#2C2C2E;--text-d:#4A4036;--text-l:rgba(74,64,54,.5);
+  --gold:#b87c18;--gold-l:#d49a28;--gold-dim:rgba(184,124,24,.35);
+  --sage:#5c7a50;--border:rgba(44,44,46,.08);--borderg:rgba(184,124,24,.18);
+  --white-glass:rgba(255,255,255,0.45);
+  --white-border:rgba(255,255,255,0.7);
+}
+body{background:var(--dark);color:#f5ede0;font-family:'Cormorant Garamond',serif;overflow-x:hidden}
+
+/* ── NAV glassmorphism ── */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2.8rem;height:62px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(20px) saturate(1.6);
+  -webkit-backdrop-filter:blur(20px) saturate(1.6);
+  border-bottom:1px solid rgba(255,255,255,.22);
+  box-shadow:0 4px 16px rgba(0,0,0,.06);
+  transition:background .5s,border-color .5s,box-shadow .5s;
+}
+#nav.solid{
+  background:rgba(252,250,248,.88);
+  border-bottom:1px solid var(--borderg);
+  box-shadow:0 2px 24px rgba(0,0,0,.05);
+}
+#nav.solid .nav-logo{color:var(--text)}
+#nav.solid .nav-links a{color:rgba(74,64,54,.75);font-weight:600}
+#nav.solid .nav-links a:hover{color:var(--gold)}
+.nav-logo{
+  font-family:'Playfair Display',serif;font-style:italic;font-size:1.22rem;letter-spacing:.05em;
+  color:#fff;text-decoration:none;transition:color .3s;
+  text-shadow:0 0 20px rgba(255,210,120,.4);
+}
+.nav-links{display:flex;gap:2.2rem;list-style:none;align-items:center}
+.nav-links a{
+  font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.32em;font-weight:600;
+  color:rgba(255,255,255,.9);text-decoration:none;text-transform:uppercase;
+  transition:color .28s,letter-spacing .28s;
+  position:relative;padding-bottom:3px;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:rgba(255,215,120,.6);transform:scaleX(0);transform-origin:center;
+  transition:transform .28s ease;
+}
+.nav-links a:hover{color:#fff;letter-spacing:.36em}
+.nav-links a:hover::after{transform:scaleX(1)}
+.nav-links a.active{color:#fff}
+.nav-links a.active::after{transform:scaleX(1);background:rgba(255,210,100,.5)}
+@media(max-width:768px){#nav{padding:0 1.2rem}.nav-links{gap:1rem}.nav-links a{font-size:.44rem;letter-spacing:.22em}}
+
+/* ══ VIDEO HERO (75vh) ══ */
+#hero{
+  position:relative;height:75vh;
+  overflow:hidden;background:var(--dark);
+}
+#hero-video{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;
+  filter:sepia(.2) brightness(1.1) contrast(.92) saturate(1.2);
+  opacity:0;transition:opacity 1.2s ease;
+}
+#hero-video.loaded{opacity:1}
+
+/* warm atmosphere blobs */
+.atm{position:absolute;border-radius:50%;pointer-events:none}
+.atm-a{width:680px;height:520px;top:-100px;left:-120px;background:radial-gradient(ellipse,rgba(195,135,40,.28) 0%,transparent 65%);filter:blur(65px);animation:aFloat 18s ease-in-out infinite alternate}
+.atm-b{width:500px;height:600px;bottom:-80px;right:-80px;background:radial-gradient(ellipse,rgba(140,190,90,.09) 0%,transparent 62%);filter:blur(70px);animation:aFloat 22s 3s ease-in-out infinite alternate-reverse}
+.atm-c{width:360px;height:280px;top:25%;right:8%;background:radial-gradient(ellipse,rgba(210,155,55,.16) 0%,transparent 68%);filter:blur(50px);animation:aFloat 14s 1s ease-in-out infinite alternate}
+@keyframes aFloat{0%{transform:translate(0,0) scale(1)}100%{transform:translate(22px,-16px) scale(1.08)}}
+
+.leaf-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;opacity:.22}
+.cx-glow{position:absolute;width:420px;height:420px;border-radius:50%;z-index:2;pointer-events:none;top:50%;left:50%;transform:translate(-50%,-48%);background:radial-gradient(circle,rgba(195,115,25,.18) 0%,transparent 62%);filter:blur(28px);animation:glowPulse 3.2s ease-in-out infinite alternate}
+@keyframes glowPulse{0%{opacity:.6;transform:translate(-50%,-48%) scale(1)}100%{opacity:1;transform:translate(-50%,-52%) scale(1.1)}}
+
+/* hero bottom fade into white content */
+.hero-fade{
+  position:absolute;bottom:0;left:0;right:0;height:60%;
+  background:linear-gradient(to top,
+    var(--bg) 0%,
+    rgba(252,250,248,.9) 18%,
+    rgba(200,155,90,.25) 50%,
+    transparent 100%);
+  z-index:3;pointer-events:none;
+}
+
+/* ── hero UI container ── */
+#hero-ui{
+  position:absolute;inset:0;z-index:10;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding-bottom:6vh;text-align:center;
+}
+
+/* ── Hero title group: no card, text floats freely ── */
+.hero-glass-card{
+  background:none;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  border:none;
+  border-radius:0;
+  padding:0;
+  text-align:center;
+  box-shadow:none;
+  pointer-events:auto;
+  opacity:0;animation:fadeUp 1.4s ease .5s both;
+}
+
+/* ── Hero eyebrow: prominent tagline ── */
+.h-eyebrow{
+  font-family:'Cinzel',serif;font-size:.56rem;letter-spacing:.55em;
+  color:rgba(255,230,160,.82);text-transform:uppercase;margin-bottom:1.8rem;
+  text-shadow:0 0 20px rgba(255,200,80,.3);
+}
+/* ── "Aura Flow" pure white ── */
+.h-brand{
+  font-family:'Playfair Display',serif;font-style:italic;font-weight:700;
+  font-size:clamp(3.8rem,8.5vw,8rem);line-height:1;letter-spacing:-.01em;
+  color:#ffffff;
+  text-shadow:0 2px 30px rgba(0,0,0,.55),0 0 60px rgba(255,255,255,.08);
+}
+/* ── Chinese subtitle ── */
+.h-zh{
+  font-family:'Noto Serif SC',serif;font-weight:300;
+  font-size:clamp(.9rem,2vw,1.15rem);letter-spacing:.8em;
+  color:rgba(255,235,160,.85);margin-top:.8rem;
+  text-shadow:0 0 24px rgba(255,200,80,.25);
+}
+.h-rule{
+  width:65px;height:1px;margin:1.8rem auto;
+  background:linear-gradient(to right,transparent,rgba(255,220,120,.6),transparent);
+}
+/* ── Site tagline below rule ── */
+.h-tag{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(.9rem,1.8vw,1.08rem);letter-spacing:.15em;
+  color:rgba(255,255,255,.62);
+}
+.h-cta{display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center;margin-top:2.2rem}
+
+/* ── Crystal Glassmorphism Buttons ── */
+.btn-crystal{
+  font-family:'Cinzel',serif;font-size:.56rem;letter-spacing:.28em;
+  text-transform:uppercase;text-decoration:none;
+  padding:.78rem 2rem;border-radius:100px;
+  background:rgba(255,255,255,.38);
+  border:1px solid rgba(255,255,255,.7);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  color:#fff;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s, background .3s;
+  display:inline-flex;align-items:center;gap:.5rem;
+}
+.btn-crystal:hover{
+  transform:scale(1.1);
+  background:rgba(255,255,255,.55);
+  box-shadow:0 8px 28px rgba(0,0,0,.15);
+}
+.btn-crystal-gold{
+  font-family:'Cinzel',serif;font-size:.56rem;letter-spacing:.28em;
+  text-transform:uppercase;text-decoration:none;
+  padding:.78rem 2rem;border-radius:100px;
+  background:rgba(184,124,24,.35);
+  border:1px solid rgba(255,210,100,.55);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  color:#ffe8a0;
+  box-shadow:0 4px 16px rgba(0,0,0,.1);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s, background .3s;
+  display:inline-flex;align-items:center;gap:.5rem;
+}
+.btn-crystal-gold:hover{
+  transform:scale(1.1);
+  background:rgba(184,124,24,.55);
+  box-shadow:0 8px 28px rgba(184,124,24,.35);
+}
+
+.s-hint{position:absolute;bottom:1.8rem;left:50%;transform:translateX(-50%);z-index:11;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:0;animation:fadeIn 2s ease 3.4s both}
+.s-hint span{font-family:'Cinzel',serif;font-size:.44rem;letter-spacing:.45em;color:rgba(255,255,255,.3);text-transform:uppercase}
+.s-line{width:1px;height:30px;background:linear-gradient(to bottom,rgba(255,255,255,.4),transparent);animation:sLine 2.2s ease-in-out infinite}
+@keyframes sLine{0%,100%{opacity:.2;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ══ RIGHT SIDE GLASS CARD ══ */
+#side-card{
+  position:fixed;top:50%;right:1.8rem;transform:translateY(-50%);z-index:800;
+  background:var(--white-glass);
+  backdrop-filter:blur(20px) saturate(1.6);-webkit-backdrop-filter:blur(20px) saturate(1.6);
+  border:1px solid var(--white-border);border-radius:16px;
+  padding:1.1rem .9rem;display:flex;flex-direction:column;gap:.5rem;
+  box-shadow:0 4px 16px rgba(0,0,0,.06);
+  opacity:0;pointer-events:none;transition:opacity .5s;
+}
+#side-card.show{opacity:1;pointer-events:auto}
+.slink{font-family:'Cinzel',serif;font-size:.44rem;letter-spacing:.25em;color:var(--text-d);text-decoration:none;text-transform:uppercase;padding:.42rem .7rem;border-radius:9px;border:1px solid rgba(255,255,255,.6);background:rgba(255,255,255,.35);transition:all .28s;display:block;text-align:center;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.slink:hover,.slink.cur{color:var(--gold);background:rgba(255,255,255,.65);border-color:rgba(184,124,24,.3);transform:scale(1.05)}
+@media(max-width:768px){#side-card{display:none}}
+
+/* ══ MAIN CONTENT ══ */
+#main{background:var(--bg);color:var(--text);position:relative;z-index:20}
+
+.lp{position:absolute;border-radius:50%;pointer-events:none;animation:lpD 15s ease-in-out infinite alternate}
+@keyframes lpD{0%{transform:translate(0,0) scale(1)}100%{transform:translate(14px,10px) scale(1.05)}}
+section{position:relative;overflow:hidden}
+
+/* intro */
+.s-intro{padding:9rem 3rem 8rem;background:var(--bg)}
+.intro-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center}
+@media(max-width:800px){.intro-inner{grid-template-columns:1fr;gap:3rem}}
+.intro-label{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.45em;color:var(--sage);text-transform:uppercase;margin-bottom:1.2rem;display:flex;align-items:center;gap:.8rem}
+.intro-label::before{content:'';display:block;width:28px;height:1px;background:var(--sage)}
+.intro-h{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.9rem,4vw,3.2rem);line-height:1.2;color:var(--text);margin-bottom:1.4rem}
+.intro-body{font-family:'Cormorant Garamond',serif;font-size:1.08rem;line-height:2;color:var(--text-d)}
+.intro-body p{margin-bottom:1.1rem}
+.geo{width:min(360px,90vw);height:min(360px,90vw);border-radius:24px;background:#fff;border:1px solid var(--borderg);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.05)}
+.geo svg{position:absolute;inset:0;width:100%;height:100%;opacity:.08;stroke:var(--gold);fill:none}
+.geo-num{font-family:'Playfair Display',serif;font-style:italic;font-size:5.5rem;font-weight:700;color:var(--gold);opacity:.2;line-height:1;position:relative;z-index:1}
+.geo-sub{font-family:'Noto Serif SC',serif;font-size:.72rem;letter-spacing:.28em;color:var(--text-d);margin-top:.5rem;position:relative;z-index:1}
+
+/* pillars */
+.s-pillars{background:var(--bg2);padding:8rem 3rem}
+.sh{text-align:center;margin-bottom:4rem}
+.sh-label{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.48em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem}
+.sh-title{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.8rem,3.5vw,2.8rem);color:var(--text)}
+.pillars-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;max-width:1000px;margin:0 auto}
+.pillar-card{
+  background:#fff;border:1px solid var(--white-border);border-radius:20px;
+  padding:2.8rem 2.2rem;position:relative;overflow:hidden;
+  box-shadow:0 8px 24px rgba(0,0,0,.04);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .35s;
+}
+.pillar-card:hover{transform:translateY(-6px) scale(1.01);box-shadow:0 20px 50px rgba(0,0,0,.08)}
+.pillar-card::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(to right,transparent,rgba(184,124,24,.35),transparent)}
+.pillar-icon{font-size:1.6rem;margin-bottom:1.2rem;display:block}
+.pillar-num{font-family:'Playfair Display',serif;font-style:italic;font-size:3.5rem;font-weight:700;color:var(--gold);opacity:.08;position:absolute;bottom:.5rem;right:1.2rem;line-height:1}
+.pillar-title{font-family:'Noto Serif SC',serif;font-size:1rem;letter-spacing:.1em;color:var(--text);margin-bottom:.8rem}
+.pillar-body{font-family:'Cormorant Garamond',serif;font-size:.98rem;line-height:1.9;color:var(--text-d)}
+
+/* numbers */
+.s-numbers{padding:8rem 3rem;background:var(--bg)}
+.numbers-inner{display:grid;grid-template-columns:repeat(9,1fr);gap:.7rem;max-width:900px;margin:0 auto}
+@media(max-width:600px){.numbers-inner{grid-template-columns:repeat(3,1fr)}}
+.num-tile{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;background:#fff;border:1px solid var(--border);box-shadow:0 4px 12px rgba(0,0,0,.03);transition:all .32s cubic-bezier(.34,1.56,.64,1);cursor:default}
+.num-tile:hover{border-color:var(--gold-dim);transform:scale(1.1);box-shadow:0 10px 28px rgba(0,0,0,.08)}
+.num-tile .n{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.3rem,3vw,2rem);font-weight:700;color:var(--gold)}
+.num-tile .nl{font-family:'Noto Serif SC',serif;font-size:clamp(.38rem,.75vw,.55rem);color:var(--text-l);letter-spacing:.05em;margin-top:.15rem}
+.numbers-cta{text-align:center;margin-top:3.5rem}
+
+/* ══ CTA Section — Amethyst Crystal Mystique ══ */
+.s-cta{
+  padding:10rem 3rem;text-align:center;
+  background:#07030f;
+  position:relative;overflow:hidden;
+}
+/* Top seam: ivory blends into deep crystal dark */
+.s-cta::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:160px;
+  background:linear-gradient(to bottom,var(--bg) 0%,rgba(7,3,15,0) 100%);
+  z-index:1;pointer-events:none;
+}
+/* Subtle noise grain for crystal texture */
+.s-cta::after{
+  content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size:160px 160px;
+  opacity:.45;z-index:1;pointer-events:none;
+}
+
+/* Amethyst glow orbs */
+.cta-glow{
+  position:absolute;inset:0;pointer-events:none;z-index:2;
+}
+.cta-glow::before{
+  content:'';position:absolute;
+  width:700px;height:700px;border-radius:50%;
+  top:50%;left:25%;transform:translate(-50%,-55%);
+  background:radial-gradient(circle,rgba(138,43,226,.18) 0%,rgba(90,0,180,.08) 35%,transparent 65%);
+  filter:blur(50px);
+  animation:crystalPulse 5s ease-in-out infinite alternate;
+}
+.cta-glow::after{
+  content:'';position:absolute;
+  width:500px;height:500px;border-radius:50%;
+  top:50%;right:15%;transform:translate(50%,-45%);
+  background:radial-gradient(circle,rgba(180,80,255,.14) 0%,rgba(100,0,200,.06) 40%,transparent 65%);
+  filter:blur(60px);
+  animation:crystalPulse 7s 1.5s ease-in-out infinite alternate-reverse;
+}
+@keyframes crystalPulse{
+  0%{opacity:.7;scale:1}
+  100%{opacity:1;scale:1.12}
+}
+
+/* Crystal facet lines — SVG overlay injected in HTML */
+.cta-facets{
+  position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.07;
+}
+
+/* Ornamental crystal rule */
+.cta-rule{
+  width:80px;height:1px;margin:0 auto 2.8rem;
+  background:linear-gradient(to right,transparent,rgba(200,150,255,.8),transparent);
+  position:relative;z-index:5;
+}
+.cta-rule::before,.cta-rule::after{
+  content:'✦';position:absolute;top:50%;
+  font-size:.5rem;color:rgba(200,150,255,.7);
+  transform:translateY(-50%);line-height:1;
+}
+.cta-rule::before{left:-1.2rem}
+.cta-rule::after{right:-1.2rem}
+
+.cta-eyebrow{
+  font-family:'Pinyon Script',cursive;
+  font-size:1.4rem;letter-spacing:.1em;
+  color:rgba(200,150,255,.55);
+  margin-bottom:1.4rem;position:relative;z-index:5;
+}
+.cta-title{
+  font-family:'Ma Shan Zheng',cursive;
+  font-size:clamp(3rem,6vw,5.5rem);
+  line-height:1.2;letter-spacing:.06em;
+  color:#f0e8ff;
+  text-shadow:
+    0 0 40px rgba(160,80,255,.5),
+    0 0 80px rgba(120,0,220,.3),
+    0 2px 12px rgba(0,0,0,.5);
+  margin-bottom:1rem;position:relative;z-index:5;
+}
+.cta-sub{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:1.05rem;letter-spacing:.12em;
+  color:rgba(220,190,255,.35);
+  margin-bottom:3.5rem;position:relative;z-index:5;
+}
+.cta-btns{display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center;position:relative;z-index:5}
+
+/* Crystal glassmorphism button — amethyst tint */
+.cta-btn{
+  font-family:'Cinzel',serif;font-size:.56rem;letter-spacing:.28em;
+  text-transform:uppercase;text-decoration:none;
+  padding:.88rem 2.2rem;border-radius:100px;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  display:inline-flex;align-items:center;gap:.5rem;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,background .3s,border-color .3s;
+  position:relative;overflow:hidden;
+}
+.cta-btn:hover{transform:scale(1.1)}
+
+/* Primary: amethyst crystal */
+.cta-btn.gold{
+  color:#e8d0ff;
+  border:1px solid rgba(180,100,255,.5);
+  background:rgba(120,40,200,.22);
+  box-shadow:0 4px 20px rgba(120,0,200,.2),inset 0 1px 0 rgba(255,255,255,.1);
+}
+.cta-btn.gold:hover{
+  background:rgba(140,50,220,.38);
+  border-color:rgba(200,140,255,.7);
+  box-shadow:0 8px 32px rgba(140,0,240,.35),inset 0 1px 0 rgba(255,255,255,.15);
+}
+
+/* Secondary: soft crystal ghost */
+.cta-btn.ghost{
+  color:rgba(220,195,255,.5);
+  border:1px solid rgba(200,160,255,.18);
+  background:rgba(255,255,255,.06);
+  box-shadow:0 4px 16px rgba(0,0,0,.12);
+}
+.cta-btn.ghost:hover{
+  color:rgba(230,210,255,.9);
+  background:rgba(160,80,255,.1);
+  border-color:rgba(200,150,255,.4);
+  box-shadow:0 8px 28px rgba(120,0,200,.2);
+}
+
+/* LINE float */
+#line-float{position:fixed;bottom:2rem;right:2rem;z-index:800;width:52px;height:52px;border-radius:50%;background:#06C755;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(6,199,85,.4);text-decoration:none;transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s}
+#line-float:hover{transform:scale(1.12);box-shadow:0 8px 32px rgba(6,199,85,.55)}
+#line-float svg{width:28px;height:28px;fill:white}
+
+/* ══ VISION SECTION ══ */
+.s-vision{
+  position:relative;overflow:hidden;
+  padding:9rem 3rem 10rem;
+  /* 深靛紫：比純黑更有質感，帶出星空層次 */
+  background:linear-gradient(180deg,#0c0820 0%,#07030f 50%,#050310 100%);
+  text-align:center;
+}
+/* Top gradient: compact, natural ease-in */
+.s-vision::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:140px;
+  background:linear-gradient(to bottom,
+    #FCFAF8 0%,
+    rgba(252,250,248,.85) 15%,
+    rgba(252,250,248,.58) 32%,
+    rgba(252,250,248,.30) 52%,
+    rgba(252,250,248,.10) 70%,
+    rgba(7,3,15,0) 100%
+  );
+  z-index:3;pointer-events:none;
+}
+/* Bottom gradient: compact ease-out */
+.s-vision::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:110px;
+  background:linear-gradient(to top,
+    #050310 0%,
+    rgba(5,3,16,.75) 20%,
+    rgba(7,3,15,.40) 50%,
+    rgba(7,3,15,.10) 78%,
+    rgba(7,3,15,0) 100%
+  );
+  z-index:3;pointer-events:none;
+}
+#star-canvas{
+  position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;
+}
+.vision-inner{position:relative;z-index:2;max-width:760px;margin:0 auto}
+.vision-icon{
+  width:64px;height:64px;margin:0 auto 2.4rem;
+  border-radius:50%;
+  background:rgba(140,50,220,.2);
+  border:1px solid rgba(180,100,255,.35);
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;
+  box-shadow:0 0 30px rgba(140,50,220,.3),inset 0 1px 0 rgba(255,255,255,.1);
+}
+.vision-label{
+  font-family:'Pinyon Script',cursive;
+  font-size:3.6rem;letter-spacing:.04em;font-style:italic;
+  /* 純白帶極淡紫光，清晰醒目 */
+  color:#ffffff;
+  text-shadow:
+    0 0 30px rgba(180,120,255,.5),
+    0 0 70px rgba(130,60,220,.2),
+    0 2px 12px rgba(0,0,0,.4);
+  margin-bottom:1.6rem;line-height:1;
+}
+.vision-quote{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:400;
+  font-size:clamp(1.05rem,2.2vw,1.35rem);letter-spacing:.06em;
+  /* 淺奶油白，易讀 */
+  color:rgba(240,230,255,.82);
+  margin-bottom:1.6rem;
+}
+.vision-quote::before{content:'\201C'}
+.vision-quote::after{content:'\201D'}
+/* 行書體：Ma Shan Zheng + CSS skew 模擬行書斜意 */
+.vision-zh{
+  font-family:'Ma Shan Zheng',cursive;
+  font-size:clamp(1.25rem,2.8vw,1.75rem);letter-spacing:.22em;
+  transform:skewX(-4deg);display:inline-block;
+  /* 從原本 .4 → .85，清楚可見 */
+  color:rgba(210,185,255,.85);
+  text-shadow:0 0 20px rgba(160,100,255,.25);
+  line-height:1.8;
+}
+
+/* ══ FOOTER 3-column ══ */
+footer{
+  background:#050310;
+  border-top:1px solid rgba(140,60,220,.15);
+  padding:4.5rem 5vw 2.8rem;
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr;
+  gap:3rem 2rem;
+  max-width:1100px;margin:0 auto;
+  padding-bottom:3rem;
+  border-bottom:1px solid rgba(140,60,220,.1);
+}
+@media(max-width:768px){.footer-grid{grid-template-columns:1fr;gap:2.5rem}}
+
+/* Left col */
+.footer-col-brand .fb-logo{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:1.5rem;letter-spacing:.04em;
+  color:rgba(220,195,255,.85);
+  display:block;margin-bottom:1rem;
+  text-shadow:0 0 20px rgba(160,80,255,.3);
+}
+.footer-col-brand .fb-desc{
+  font-family:'Noto Serif SC',serif;font-weight:300;
+  font-size:.82rem;line-height:1.9;letter-spacing:.04em;
+  color:rgba(200,175,230,.38);
+  max-width:280px;
+}
+.footer-col-brand .fb-desc-en{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:.82rem;line-height:1.9;
+  color:rgba(200,175,230,.22);
+  margin-top:.4rem;max-width:280px;
+}
+
+/* Mid col */
+.footer-col h4{
+  font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.48em;
+  text-transform:uppercase;color:rgba(180,120,255,.5);
+  margin-bottom:1.4rem;
+}
+.footer-col ul{list-style:none}
+.footer-col ul li{margin-bottom:.8rem}
+.footer-col ul li a{
+  font-family:'Cormorant Garamond',serif;font-size:.95rem;letter-spacing:.05em;
+  color:rgba(255,255,255,.72);text-decoration:none;
+  transition:color .25s,letter-spacing .25s;
+  display:inline-flex;align-items:center;gap:.4rem;
+}
+.footer-col ul li a::before{content:'—';font-size:.55rem;opacity:.35;transition:opacity .25s}
+.footer-col ul li a:hover{color:#fff;letter-spacing:.08em}
+.footer-col ul li a:hover::before{opacity:.8}
+
+/* Right col */
+.footer-contact-item{
+  display:flex;align-items:flex-start;gap:.7rem;
+  margin-bottom:1.1rem;
+}
+.fci-icon{
+  width:28px;height:28px;flex-shrink:0;
+  border-radius:50%;border:1px solid rgba(180,100,255,.25);
+  background:rgba(120,40,200,.12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;
+}
+.fci-text{
+  font-family:'Cormorant Garamond',serif;font-size:.9rem;
+  line-height:1.6;color:rgba(200,175,230,.38);
+}
+.fci-text a{color:rgba(200,175,230,.38);text-decoration:none;transition:color .25s}
+.fci-text a:hover{color:rgba(210,160,255,.85)}
+.fci-label{
+  font-family:'Cinzel',serif;font-size:.42rem;letter-spacing:.3em;
+  text-transform:uppercase;color:rgba(180,120,255,.35);
+  display:block;margin-bottom:.15rem;
+}
+
+/* Bottom bar */
+.footer-bottom{
+  max-width:1100px;margin:2rem auto 0;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;
+}
+.footer-copy{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:.8rem;color:rgba(200,175,230,.18);
+}
+.footer-bottom-links{display:flex;gap:2rem}
+.footer-bottom-links a{
+  font-family:'Cinzel',serif;font-size:.42rem;letter-spacing:.28em;
+  text-transform:uppercase;color:rgba(180,120,255,.22);
+  text-decoration:none;transition:color .25s;
+}
+.footer-bottom-links a:hover{color:rgba(200,150,255,.6)}
+
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<a href="https://lin.ee/YOUR_ID" id="line-float" target="_blank">
+  <svg viewBox="0 0 48 48"><path d="M42 20.7C42 13.6 34.8 8 24 8S6 13.6 6 20.7c0 6.3 5.6 11.6 13.1 12.6.5.1 1.2.4 1.4.9.2.4.1 1.1.1 1.5l-.2 1.4c-.1.5-.4 1.9 1.6 1 2-.9 10.8-6.4 14.7-10.9A11.6 11.6 0 0 0 42 20.7"/></svg>
+</a>
+
+<div id="side-card">
+  <a href="index.html" class="slink cur">首頁</a>
+  <a href="quiz.html"  class="slink">靈數測驗</a>
+  <a href="blog.html"  class="slink">部落格</a>
+</div>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Aura Flow</a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">首頁</a></li>
+    <li><a href="quiz.html">生命靈數</a></li>
+    <li><a href="#">脈輪療癒</a></li>
+    <li><a href="#">水晶能量</a></li>
+    <li><a href="blog.html">靈光流動</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <div class="atm atm-a"></div>
+  <div class="atm atm-b"></div>
+  <div class="atm atm-c"></div>
+  <div class="cx-glow"></div>
+  <svg class="leaf-svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <ellipse cx="240"  cy="190" rx="115" ry="62" fill="rgba(70,95,45,.18)"  transform="rotate(-22 240 190)"/>
+    <ellipse cx="890"  cy="135" rx="92"  ry="50" fill="rgba(70,95,45,.12)" transform="rotate(14 890 135)"/>
+    <ellipse cx="110"  cy="560" rx="105" ry="56" fill="rgba(70,95,45,.14)" transform="rotate(24 110 560)"/>
+    <ellipse cx="1320" cy="400" rx="88"  ry="48" fill="rgba(70,95,45,.1)"  transform="rotate(-18 1320 400)"/>
+  </svg>
+  <video id="hero-video" autoplay muted loop playsinline preload="auto">
+    <source src="./let-the-candle-burn.mp4" type="video/mp4">
+  </video>
+  <div class="hero-fade"></div>
+  <div id="hero-ui">
+    <div class="hero-glass-card" id="aura-card">
+      <div class="h-eyebrow">Numerology · Crystal Energy · Chakra Healing</div>
+      <div class="h-brand">Aura Flow</div>
+      <div class="h-zh">靈 光 流 動</div>
+      <div class="h-rule"></div>
+      <div class="h-tag">生命靈數 · 脈輪療癒 · 水晶能量</div>
+      <div class="h-cta">
+        <a href="quiz.html" class="btn-crystal-gold">✦ 探索我的靈數</a>
+        <a href="blog.html" class="btn-crystal">靈性知識</a>
+      </div>
+    </div>
+  </div>
+  <div class="s-hint"><span>向下探索</span><div class="s-line"></div></div>
+</section>
+
+<main id="main">
+
+  <section class="s-intro">
+    <div class="lp" style="width:480px;height:380px;top:5%;right:-6%;background:radial-gradient(ellipse,rgba(184,124,24,.06),transparent 68%);filter:blur(42px)"></div>
+    <div class="lp" style="width:320px;height:280px;bottom:8%;left:-4%;background:radial-gradient(ellipse,rgba(92,122,80,.07),transparent 68%);filter:blur(36px);animation-delay:-4s"></div>
+    <div class="intro-inner">
+      <div class="rv">
+        <div class="intro-label">關於我們</div>
+        <h2 class="intro-h">古老數字的<br>現代靈性之旅</h2>
+        <div class="intro-body">
+          <p>Aura Flow 相信每個人的生命都是一首精心編排的宇宙樂章。你的生日不只是一個日期，而是宇宙給你靈魂的獨特密碼。</p>
+          <p>透過「生命靈數」解讀你的天賦、課題與人生方向；透過「脈輪療癒」找到能量失衡的核心；透過「水晶處方」為你的靈魂找到最佳共振頻率。</p>
+        </div>
+      </div>
+      <div class="rv" style="transition-delay:.15s;display:flex;align-items:center;justify-content:center">
+        <div class="geo">
+          <svg viewBox="0 0 400 400" stroke-width="1"><circle cx="200" cy="200" r="180"/><circle cx="200" cy="200" r="130"/><circle cx="200" cy="200" r="80"/><polygon points="200,30 362,290 38,290"/><polygon points="200,370 362,110 38,110"/></svg>
+          <div class="geo-num">∞</div>
+          <div class="geo-sub">宇宙能量永恆流動</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s-pillars">
+    <div class="lp" style="width:400px;height:300px;top:-5%;left:38%;background:radial-gradient(ellipse,rgba(184,124,24,.06),transparent 68%);filter:blur(46px)"></div>
+    <div class="sh rv"><div class="sh-label">Three Pillars · 三大核心</div><h2 class="sh-title">你的完整靈性羅盤</h2></div>
+    <div class="pillars-grid">
+      <div class="pillar-card rv" style="transition-delay:.05s"><span class="pillar-icon">◈</span><div class="pillar-title">生命靈數雙盤解析</div><div class="pillar-body">從你的生日提取「外靈數」與「內靈數」，結合九宮格命盤，全面解讀你的個性、天賦與靈魂使命。</div><div class="pillar-num">I</div></div>
+      <div class="pillar-card rv" style="transition-delay:.12s"><span class="pillar-icon">◉</span><div class="pillar-title">七大脈輪能量分析</div><div class="pillar-body">根據你的靈數命盤，精準點出目前能量較弱或失衡的脈輪，給予具體的療癒方向與建議。</div><div class="pillar-num">II</div></div>
+      <div class="pillar-card rv" style="transition-delay:.19s"><span class="pillar-icon">◆</span><div class="pillar-title">客製化水晶能量處方</div><div class="pillar-body">每顆水晶都有獨特的能量頻率。我們根據你的靈數與脈輪狀態，為你精準配對最能共振的水晶能量。</div><div class="pillar-num">III</div></div>
+    </div>
+  </section>
+
+  <section class="s-numbers">
+    <div class="lp" style="width:600px;height:400px;top:0;right:-10%;background:radial-gradient(ellipse,rgba(92,122,80,.06),transparent 68%);filter:blur(52px);opacity:.7;animation-delay:-6s"></div>
+    <div class="sh rv"><div class="sh-label">Life Path Numbers · 生命靈數</div><h2 class="sh-title">你屬於哪個靈數？</h2></div>
+    <div class="numbers-inner">
+      <div class="num-tile rv" style="transition-delay:.04s"><div class="n">1</div><div class="nl">領導者</div></div>
+      <div class="num-tile rv" style="transition-delay:.08s"><div class="n">2</div><div class="nl">協調者</div></div>
+      <div class="num-tile rv" style="transition-delay:.12s"><div class="n">3</div><div class="nl">創造者</div></div>
+      <div class="num-tile rv" style="transition-delay:.16s"><div class="n">4</div><div class="nl">建造者</div></div>
+      <div class="num-tile rv" style="transition-delay:.20s"><div class="n">5</div><div class="nl">自由者</div></div>
+      <div class="num-tile rv" style="transition-delay:.24s"><div class="n">6</div><div class="nl">守護者</div></div>
+      <div class="num-tile rv" style="transition-delay:.28s"><div class="n">7</div><div class="nl">智慧者</div></div>
+      <div class="num-tile rv" style="transition-delay:.32s"><div class="n">8</div><div class="nl">成就者</div></div>
+      <div class="num-tile rv" style="transition-delay:.36s"><div class="n">9</div><div class="nl">人道者</div></div>
+    </div>
+    <div class="numbers-cta rv" style="transition-delay:.4s">
+      <a href="quiz.html" class="btn-crystal-gold" style="display:inline-flex;font-size:.6rem;letter-spacing:.28em;padding:.9rem 2.6rem;border-radius:100px">✦ &nbsp;計算我的生命靈數</a>
+    </div>
+  </section>
+
+  <!-- ══ OUR VISION ══ -->
+  <section class="s-vision">
+    <canvas id="star-canvas"></canvas>
+    <div class="vision-inner">
+      <div class="vision-label rv">Our Vision</div>
+      <p class="vision-quote rv" style="transition-delay:.2s">Align your frequency, unlock your life's natural flow.</p>
+      <p class="vision-zh rv" style="transition-delay:.3s">對齊靈魂頻率，開啟生命的豐盛順流。</p>
+    </div>
+  </section>
+
+
+  <footer>
+    <div class="footer-grid">
+      <!-- Left: Brand -->
+      <div class="footer-col footer-col-brand">
+        <span class="fb-logo">Aura Flow</span>
+        <p class="fb-desc">結合生命靈數分析與脈輪晶礦療癒，為您打造專屬的靈性生活美學。</p>
+        <p class="fb-desc-en">Empowering your spiritual journey with numerology and crystal energy.</p>
+      </div>
+      <!-- Mid: Quick Links -->
+      <div class="footer-col">
+        <h4>快速連結</h4>
+        <ul>
+          <li><a href="index.html">首頁</a></li>
+          <li><a href="quiz.html">探索我的生命靈數</a></li>
+          <li><a href="#">脈輪能量智慧</a></li>
+          <li><a href="#">靈性美學精品</a></li>
+          <li><a href="blog.html">靈數生活部落格</a></li>
+        </ul>
+      </div>
+      <!-- Right: Contact -->
+      <div class="footer-col">
+        <h4>聯絡我們</h4>
+        <div class="footer-contact-item">
+          <div class="fci-icon" style="background:#06C755;border-color:#06C755;padding:0">
+            <svg viewBox="0 0 48 48" width="16" height="16" fill="white"><path d="M42 20.7C42 13.6 34.8 8 24 8S6 13.6 6 20.7c0 6.3 5.6 11.6 13.1 12.6.5.1 1.2.4 1.4.9.2.4.1 1.1.1 1.5l-.2 1.4c-.1.5-.4 1.9 1.6 1 2-.9 10.8-6.4 14.7-10.9A11.6 11.6 0 0 0 42 20.7"/></svg>
+          </div>
+          <div class="fci-text">
+            <span class="fci-label">LINE 官方帳號</span>
+            <a href="https://lin.ee/YOUR_ID" target="_blank">@auraflow</a>
+          </div>
+        </div>
+        <div class="footer-contact-item">
+          <div class="fci-icon">✉</div>
+          <div class="fci-text">
+            <span class="fci-label">客服信箱</span>
+            <a href="mailto:contact@auraflow.com">contact@auraflow.com</a>
+          </div>
+        </div>
+        <div class="footer-contact-item">
+          <div class="fci-icon">◈</div>
+          <div class="fci-text">
+            <span class="fci-label">Instagram</span>
+            <a href="#" target="_blank">@aura.flow.tw</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 Aura Flow · 生命靈數 · 脈輪療癒 · 水晶能量</div>
+      <nav class="footer-bottom-links">
+        <a href="#">隱私政策</a>
+        <a href="#">服務條款</a>
+        <a href="admin.html">後台管理</a>
+      </nav>
+    </div>
+  </footer>
+</main>
+
+<script>
+const vid = document.getElementById('hero-video');
+vid.addEventListener('canplay', () => vid.classList.add('loaded'), { once:true });
+if (vid.readyState >= 3) vid.classList.add('loaded');
+
+
+/* ── Twinkling Stars Canvas (Vision section) ── */
+(function(){
+  const canvas = document.getElementById('star-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, stars = [];
+
+  function resize(){
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  function mkStar(){
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.4 + .3,
+      base: Math.random() * .6 + .1,        // baseline opacity
+      amp:  Math.random() * .55 + .2,        // twinkle amplitude
+      speed: Math.random() * .018 + .006,    // twinkle speed
+      phase: Math.random() * Math.PI * 2,
+      hue:  Math.random() < .3 ? 270 : 260  // mostly purple-white
+    };
+  }
+
+  function init(){
+    resize();
+    stars = Array.from({length: 220}, mkStar);
+  }
+
+  function draw(t){
+    ctx.clearRect(0,0,W,H);
+    for(const s of stars){
+      const opc = s.base + s.amp * (Math.sin(s.phase + t * s.speed));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      // occasional purple-tinted stars
+      const col = s.hue === 270
+        ? `hsla(270,60%,85%,${opc})`
+        : `hsla(260,20%,92%,${opc})`;
+      ctx.fillStyle = col;
+      ctx.fill();
+      // bright core glow on bigger stars
+      if(s.r > 1.2 && opc > .6){
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r * 2.5, 0, Math.PI*2);
+        ctx.fillStyle = `hsla(270,70%,90%,${opc * .12})`;
+        ctx.fill();
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', ()=>{ resize(); stars = Array.from({length:220},mkStar); });
+  init();
+  requestAnimationFrame(draw);
+})();
+
+const nav      = document.getElementById('nav');
+const sideCard = document.getElementById('side-card');
+const hero     = document.getElementById('hero');
+function onScroll(){
+  nav.classList.toggle('solid', window.scrollY > 40);
+  sideCard.classList.toggle('show', window.scrollY > hero.offsetHeight - 80);
+}
+window.addEventListener('scroll', onScroll, {passive:true});
+
+const ro = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+},{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+</script>
+</body>
+</html>

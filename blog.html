@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>靈性部落格 · Aura Flow 靈光流動</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #f7f0e6;
+      --bg2:       #ede5d8;
+      --bg3:       #e5dbd0;
+      --dark:      #180e05;
+      --text:      #2c1a08;
+      --text-d:    rgba(44,26,8,.52);
+      --text-l:    rgba(44,26,8,.35);
+      --gold:      #b07a1a;
+      --gold-l:    #d4a030;
+      --gold-dim:  rgba(176,122,26,.38);
+      --gold-mist: rgba(176,122,26,.07);
+      --sage:      #6e8a60;
+      --sage-l:    rgba(110,138,96,.11);
+      --terra:     #c07050;
+      --border:    rgba(44,26,8,.1);
+      --border-g:  rgba(176,122,26,.18);
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body {
+      background:var(--bg); color:var(--text);
+      font-family:'Noto Serif SC',serif;
+      min-height:100vh; overflow-x:hidden;
+    }
+
+    /* ─── nav ─── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 2.5rem; height:64px;
+      background:rgba(247,240,230,0.92);
+      backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border-g);
+    }
+    .nav-logo {
+      font-family:'Cinzel',serif; font-size:0.8rem;
+      letter-spacing:0.35em; color:var(--gold); text-decoration:none;
+      display:flex; flex-direction:column; line-height:1.2;
+    }
+    .nav-logo span { font-size:0.48rem; letter-spacing:0.25em; color:var(--text-d); font-family:'Cormorant Garamond',serif; font-style:italic; }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a {
+      font-family:'Cinzel',serif; font-size:0.6rem;
+      letter-spacing:0.3em; color:var(--text-d);
+      text-decoration:none; text-transform:uppercase; transition:color 0.3s;
+    }
+    .nav-links a:hover, .nav-links a.active { color:var(--gold); }
+    @media(max-width:600px){
+      nav { padding:0 1.2rem; }
+      .nav-links { gap:1.2rem; }
+      .nav-links a { font-size:0.52rem; }
+    }
+
+    /* ─── dappled light pools ─── */
+    .lp {
+      position:absolute; border-radius:50%;
+      filter:blur(60px); pointer-events:none; z-index:0;
+      animation:drift 12s ease-in-out infinite alternate;
+    }
+    .lp-s { filter:blur(30px); animation-duration:9s; }
+    @keyframes drift {
+      0%   { transform:translate(0,0) scale(1); }
+      100% { transform:translate(18px,12px) scale(1.06); }
+    }
+
+    /* ─── 部落格列表 ─── */
+    #blog-list { padding-top:64px; }
+
+    .blog-hero {
+      padding:5.5rem 2.5rem 4.5rem;
+      text-align:center; position:relative; overflow:hidden;
+      border-bottom:1px solid var(--border-g);
+    }
+    .blog-hero .lp:nth-child(1){ width:380px;height:380px;background:rgba(176,122,26,.09);top:-60px;left:-80px; }
+    .blog-hero .lp:nth-child(2){ width:280px;height:280px;background:rgba(110,138,96,.1);top:20px;right:-60px;animation-direction:alternate-reverse; }
+    .blog-hero .lp:nth-child(3){ width:180px;height:180px;background:rgba(192,112,80,.07);bottom:0;left:40%;animation-duration:15s; }
+    .blog-hero-inner { position:relative; z-index:1; }
+    .blog-eyebrow {
+      font-family:'Cinzel',serif; font-size:0.58rem;
+      letter-spacing:0.55em; color:var(--gold-dim);
+      text-transform:uppercase; margin-bottom:1.2rem;
+    }
+    .blog-title {
+      font-family:'Playfair Display',serif; font-style:italic;
+      font-size:clamp(2rem,5vw,3.8rem); font-weight:400;
+      color:var(--text); letter-spacing:0.03em;
+      margin-bottom:0.6rem;
+    }
+    .blog-title em { color:var(--gold); font-style:italic; }
+    .blog-sub {
+      font-family:'Cormorant Garamond',serif;
+      font-size:1.05rem; font-style:italic;
+      color:var(--text-d); max-width:500px; margin:0 auto;
+    }
+    .blog-divider {
+      width:60px; height:1px;
+      background:linear-gradient(to right,transparent,var(--gold-dim),transparent);
+      margin:1.8rem auto 0;
+    }
+
+    /* 分類篩選 */
+    .filter-bar {
+      display:flex; gap:0.7rem; flex-wrap:wrap;
+      justify-content:center;
+      padding:1.8rem 2.5rem;
+      border-bottom:1px solid var(--border);
+      background:var(--bg);
+    }
+    .filter-btn {
+      font-family:'Cinzel',serif; font-size:0.52rem;
+      letter-spacing:0.3em; text-transform:uppercase;
+      padding:0.45rem 1.1rem; cursor:pointer;
+      border:1px solid var(--border); background:transparent;
+      color:var(--text-l);
+      transition:all 0.3s; border-radius:0;
+    }
+    .filter-btn:hover { color:var(--text-d); border-color:var(--gold-dim); }
+    .filter-btn.active { color:var(--gold); border-color:var(--gold-dim); background:var(--gold-mist); }
+
+    /* 文章列表 */
+    .posts-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(330px,1fr));
+      gap:1px;
+      padding:0;
+      background:var(--border);
+    }
+    .post-card {
+      background:var(--bg); cursor:pointer;
+      position:relative; overflow:hidden;
+      transition:background 0.35s;
+    }
+    .post-card:hover { background:var(--bg2); }
+
+    /* card cover */
+    .post-card-cover {
+      height:190px; position:relative; overflow:hidden;
+    }
+    .cover-gradient {
+      width:100%; height:100%;
+      display:flex; align-items:center; justify-content:center;
+      position:relative;
+    }
+    .cover-num {
+      font-family:'Playfair Display',serif; font-style:italic;
+      font-size:5.5rem; font-weight:400;
+      opacity:0.13; color:white; user-select:none;
+      transition:opacity 0.35s, transform 0.35s;
+    }
+    .post-card:hover .cover-num { opacity:0.22; transform:scale(1.06); }
+
+    /* cover leaf overlay */
+    .cover-gradient::after {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(ellipse at 60% 30%, rgba(255,255,255,.08) 0%, transparent 70%);
+      pointer-events:none;
+    }
+
+    .post-card-body { padding:1.6rem 1.6rem 1.4rem; }
+    .post-cat {
+      display:inline-block;
+      font-family:'Cinzel',serif; font-size:0.48rem;
+      letter-spacing:0.3em; text-transform:uppercase;
+      padding:0.28rem 0.65rem; margin-bottom:0.9rem;
+      border:1px solid; /* color set inline */
+    }
+    .post-title {
+      font-family:'Noto Serif SC',serif;
+      font-size:0.98rem; font-weight:400; line-height:1.6;
+      letter-spacing:0.06em; color:var(--text);
+      margin-bottom:0.6rem;
+      transition:color 0.3s;
+    }
+    .post-card:hover .post-title { color:var(--gold); }
+    .post-excerpt {
+      font-family:'Cormorant Garamond',serif;
+      font-size:0.92rem; line-height:1.75;
+      color:var(--text-d);
+      display:-webkit-box; -webkit-line-clamp:3;
+      -webkit-box-orient:vertical; overflow:hidden;
+    }
+    .post-tags { display:flex; flex-wrap:wrap; gap:0.35rem; margin-top:0.75rem; }
+    .tag {
+      font-family:'Cinzel',serif; font-size:0.44rem;
+      letter-spacing:0.2em; padding:0.22rem 0.55rem;
+      border:1px solid var(--border); color:var(--text-l);
+    }
+    .post-meta {
+      display:flex; justify-content:space-between; align-items:center;
+      margin-top:1.1rem; padding-top:0.9rem;
+      border-top:1px solid var(--border);
+    }
+    .post-date {
+      font-family:'Cinzel',serif; font-size:0.5rem;
+      letter-spacing:0.22em; color:var(--text-l);
+    }
+    .read-more {
+      font-family:'Cinzel',serif; font-size:0.5rem;
+      letter-spacing:0.22em; color:var(--gold-dim);
+      text-transform:uppercase; transition:color 0.3s;
+    }
+    .post-card:hover .read-more { color:var(--gold); }
+
+    /* 無文章 */
+    .empty-state {
+      text-align:center; padding:5rem 2rem;
+      font-family:'Cormorant Garamond',serif; font-style:italic;
+      color:var(--text-d); font-size:1.1rem;
+      background:var(--bg); grid-column:1/-1;
+    }
+
+    /* ─── 單篇文章 ─── */
+    #post-view { display:none; padding-top:64px; }
+    #post-view.show { display:block; }
+
+    .post-hero {
+      padding:5rem 2.5rem 4rem; text-align:center;
+      position:relative; overflow:hidden;
+      border-bottom:1px solid var(--border-g);
+      background:var(--bg);
+    }
+    .post-hero .lp:nth-child(1){ width:320px;height:320px;background:rgba(176,122,26,.08);top:-40px;right:-60px; }
+    .post-hero .lp:nth-child(2){ width:200px;height:200px;background:rgba(110,138,96,.09);bottom:-20px;left:5%; }
+
+    .back-btn {
+      position:absolute; top:2rem; left:2.5rem;
+      background:none; border:none; cursor:pointer;
+      font-family:'Cinzel',serif; font-size:0.56rem;
+      letter-spacing:0.3em; color:var(--text-l);
+      text-transform:uppercase; transition:color 0.3s;
+      display:flex; align-items:center; gap:0.5rem;
+      z-index:2;
+    }
+    .back-btn:hover { color:var(--gold); }
+
+    .post-hero-inner { position:relative; z-index:1; }
+    .post-full-cat {
+      display:inline-block; font-family:'Cinzel',serif;
+      font-size:0.52rem; letter-spacing:0.35em; text-transform:uppercase;
+      padding:0.3rem 0.8rem; border:1px solid; margin-bottom:1.5rem;
+    }
+    .post-full-title {
+      font-family:'Playfair Display',serif; font-style:italic;
+      font-size:clamp(1.5rem,4vw,2.9rem); font-weight:400;
+      line-height:1.35; letter-spacing:0.03em; color:var(--text);
+      max-width:720px; margin:0 auto 1rem;
+    }
+    .post-full-meta {
+      font-family:'Cinzel',serif; font-size:0.52rem;
+      letter-spacing:0.3em; color:var(--text-l);
+    }
+
+    .post-full-body {
+      max-width:720px; margin:0 auto;
+      padding:3.5rem 2.5rem 5rem;
+    }
+    .post-content {
+      font-family:'Cormorant Garamond',serif;
+      font-size:1.1rem; line-height:2.05; color:var(--text-d);
+    }
+    .post-content h2 {
+      font-family:'Noto Serif SC',serif; font-size:1.25rem; font-weight:400;
+      color:var(--text); letter-spacing:0.08em; margin:2.8rem 0 1rem;
+      padding-bottom:0.5rem; border-bottom:1px solid var(--border-g);
+    }
+    .post-content h3 {
+      font-family:'Noto Serif SC',serif; font-size:1.05rem; font-weight:400;
+      color:var(--gold); letter-spacing:0.07em; margin:2rem 0 0.7rem;
+    }
+    .post-content p { margin-bottom:1.3rem; }
+    .post-content ul, .post-content ol { padding-left:1.5rem; margin-bottom:1.3rem; }
+    .post-content li { margin-bottom:0.55rem; }
+    .post-content strong { color:var(--text); font-weight:600; }
+    .post-content em { color:var(--sage); }
+    .post-content hr { border:none; border-top:1px solid var(--border-g); margin:2.5rem 0; }
+    .post-content blockquote {
+      border-left:2px solid var(--gold-dim); padding-left:1.5rem;
+      font-style:italic; color:var(--text-d);
+      margin:1.8rem 0; opacity:0.85;
+    }
+
+    /* 相關文章 */
+    .related-section {
+      max-width:720px; margin:0 auto;
+      padding:2.5rem 2.5rem 5rem;
+      border-top:1px solid var(--border-g);
+    }
+    .related-label {
+      font-family:'Cinzel',serif; font-size:0.55rem;
+      letter-spacing:0.45em; color:var(--gold-dim);
+      text-transform:uppercase; margin-bottom:1.5rem;
+    }
+    .related-grid {
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+      gap:1px; background:var(--border);
+    }
+    .related-card {
+      background:var(--bg); border:none; padding:1.2rem;
+      cursor:pointer; transition:background 0.3s;
+    }
+    .related-card:hover { background:var(--bg2); }
+    .related-title {
+      font-family:'Noto Serif SC',serif; font-size:0.85rem;
+      line-height:1.55; color:var(--text);
+      display:-webkit-box; -webkit-line-clamp:2;
+      -webkit-box-orient:vertical; overflow:hidden;
+      transition:color 0.3s;
+    }
+    .related-card:hover .related-title { color:var(--gold); }
+
+    /* ─── footer ─── */
+    footer {
+      border-top:1px solid var(--border-g);
+      padding:2.2rem 2.5rem;
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:1rem;
+      background:var(--bg2);
+    }
+    .footer-logo {
+      font-family:'Cinzel',serif; font-size:0.68rem;
+      letter-spacing:0.35em; color:var(--gold);
+    }
+    .footer-logo span {
+      display:block; font-family:'Cormorant Garamond',serif;
+      font-style:italic; font-size:0.75rem;
+      letter-spacing:0.12em; color:var(--text-d); margin-top:0.2rem;
+    }
+    .footer-links { display:flex; gap:1.5rem; }
+    .footer-links a {
+      font-family:'Cinzel',serif; font-size:0.52rem;
+      letter-spacing:0.28em; color:var(--text-l);
+      text-decoration:none; text-transform:uppercase; transition:color 0.3s;
+    }
+    .footer-links a:hover { color:var(--gold); }
+    .footer-copy {
+      font-family:'Cormorant Garamond',serif; font-style:italic;
+      font-size:0.8rem; color:var(--text-l);
+      width:100%; text-align:center; margin-top:0.5rem;
+    }
+
+    /* ─── LINE float ─── */
+    #line-float {
+      position:fixed; bottom:2rem; right:2rem; z-index:200;
+      width:52px; height:52px; border-radius:50%;
+      background:#06C755; display:flex; align-items:center; justify-content:center;
+      box-shadow:0 4px 20px rgba(6,199,85,.35);
+      text-decoration:none; transition:transform 0.3s, box-shadow 0.3s;
+    }
+    #line-float:hover { transform:scale(1.1); box-shadow:0 6px 28px rgba(6,199,85,.5); }
+    #line-float svg { width:28px; height:28px; fill:white; }
+
+    /* ─── entrance animation ─── */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+    .post-card { animation:fadeUp 0.5s both; }
+
+    /* ─── scroll reveal ─── */
+    .reveal { opacity:0; transform:translateY(22px); transition:opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.in { opacity:1; transform:none; }
+  </style>
+</head>
+<body>
+
+<!-- nav -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    AURA FLOW
+    <span>靈光流動</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">首頁</a></li>
+    <li><a href="quiz.html">靈數測驗</a></li>
+    <li><a href="blog.html" class="active">部落格</a></li>
+  </ul>
+</nav>
+
+<!-- LINE 浮動按鈕 -->
+<a href="https://lin.ee/YOUR_ID" target="_blank" id="line-float" title="LINE 官方帳號">
+  <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 4C12.95 4 4 11.86 4 21.5c0 7.19 4.7 13.44 11.64 16.77-.5 1.87-1.82 6.78-2.08 7.82-.32 1.27.47 1.26 1 .93.4-.26 6.37-4.33 8.95-6.07.78.1 1.58.15 2.39.15 11.05 0 20-7.86 20-17.5S35.05 4 24 4z"/>
+  </svg>
+</a>
+
+<!-- ═══ 文章列表 ═══ -->
+<div id="blog-list">
+
+  <div class="blog-hero">
+    <div class="lp"></div>
+    <div class="lp"></div>
+    <div class="lp"></div>
+    <div class="blog-hero-inner">
+      <div class="blog-eyebrow">Wisdom · 靈性知識</div>
+      <h1 class="blog-title"><em>靈性</em>部落格</h1>
+      <p class="blog-sub">靈數、水晶、脈輪與命理的深度知識分享</p>
+      <div class="blog-divider"></div>
+    </div>
+  </div>
+
+  <div class="filter-bar" id="filter-bar">
+    <button class="filter-btn active" data-cat="all" onclick="filterPosts('all',this)">全部文章</button>
+  </div>
+
+  <div class="posts-grid" id="posts-grid"></div>
+
+  <footer>
+    <div class="footer-logo">
+      AURA FLOW
+      <span>靈光流動 · Spiritual Numerology</span>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">首頁</a>
+      <a href="quiz.html">靈數測驗</a>
+      <a href="admin.html">管理後台</a>
+    </div>
+    <div class="footer-copy">© 2026 Aura Flow · 靈光流動 · All rights reserved</div>
+  </footer>
+</div>
+
+<!-- ═══ 單篇文章 ═══ -->
+<div id="post-view">
+
+  <div class="post-hero">
+    <div class="lp"></div>
+    <div class="lp"></div>
+    <button class="back-btn" onclick="backToList()">← 返回部落格</button>
+    <div class="post-hero-inner">
+      <div class="post-full-cat" id="pv-cat"></div>
+      <h1 class="post-full-title" id="pv-title"></h1>
+      <div class="post-full-meta" id="pv-meta"></div>
+    </div>
+  </div>
+
+  <div class="post-full-body">
+    <div class="post-content" id="pv-content"></div>
+  </div>
+
+  <div class="related-section">
+    <div class="related-label">延伸閱讀</div>
+    <div class="related-grid" id="pv-related"></div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">
+      AURA FLOW
+      <span>靈光流動 · Spiritual Numerology</span>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">首頁</a>
+      <a href="quiz.html">靈數測驗</a>
+      <a href="blog.html">部落格</a>
+    </div>
+    <div class="footer-copy">© 2026 Aura Flow · 靈光流動 · All rights reserved</div>
+  </footer>
+</div>
+
+<script>
+// ─── 載入文章 ───
+let allPosts = [];
+let activeFilter = 'all';
+
+async function loadPosts() {
+  try {
+    let data;
+    try {
+      const res = await fetch('./data/posts.json');
+      data = await res.json();
+    } catch(e) {
+      const ls = localStorage.getItem('blog_posts');
+      data = ls ? JSON.parse(ls) : { posts:[] };
+    }
+    const lsPosts = JSON.parse(localStorage.getItem('blog_posts_extra') || '[]');
+    allPosts = [...lsPosts, ...data.posts];
+    renderFilterBtns();
+    renderPosts(allPosts);
+  } catch(e) {
+    document.getElementById('posts-grid').innerHTML =
+      '<div class="empty-state">載入文章時發生錯誤，請稍後再試。</div>';
+  }
+}
+
+function renderFilterBtns() {
+  const cats = ['全部文章', ...new Set(allPosts.map(p=>p.category))];
+  const bar = document.getElementById('filter-bar');
+  bar.innerHTML = '';
+  cats.forEach((c,i) => {
+    const key = i===0 ? 'all' : c;
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (key==='all'?' active':'');
+    btn.textContent = c;
+    btn.dataset.cat = key;
+    btn.onclick = () => filterPosts(key, btn);
+    bar.appendChild(btn);
+  });
+}
+
+function filterPosts(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const filtered = cat==='all' ? allPosts : allPosts.filter(p=>p.category===cat);
+  renderPosts(filtered);
+}
+
+function renderPosts(posts) {
+  const grid = document.getElementById('posts-grid');
+  if (!posts.length) {
+    grid.innerHTML = '<div class="empty-state">這個分類目前沒有文章。</div>';
+    return;
+  }
+  grid.innerHTML = posts.map((p,i) => `
+    <div class="post-card" onclick="openPost('${p.id}')" style="animation-delay:${i*0.06}s">
+      <div class="post-card-cover">
+        <div class="cover-gradient" style="background:linear-gradient(135deg,${p.coverColor||'#c8a882'} 0%,${p.coverAccent||'#b07a1a'}44 100%)">
+          <div class="cover-num">${romanize(i+1)}</div>
+        </div>
+      </div>
+      <div class="post-card-body">
+        <span class="post-cat" style="color:${p.categoryColor||'#b07a1a'};border-color:${(p.categoryColor||'#b07a1a')}55">${p.category}</span>
+        <div class="post-title">${p.title}</div>
+        <div class="post-excerpt">${p.excerpt}</div>
+        <div class="post-tags">${(p.tags||[]).slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <div class="post-meta">
+          <span class="post-date">${formatDate(p.date)}</span>
+          <span class="read-more">閱讀全文 →</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── 開啟單篇文章 ───
+function openPost(id) {
+  const post = allPosts.find(p=>p.id===id);
+  if (!post) return;
+
+  const catEl = document.getElementById('pv-cat');
+  catEl.textContent = post.category;
+  catEl.style.color = post.categoryColor||'#b07a1a';
+  catEl.style.borderColor = (post.categoryColor||'#b07a1a')+'55';
+
+  document.getElementById('pv-title').textContent = post.title;
+  document.getElementById('pv-meta').textContent = `${formatDate(post.date)} · ${post.author||'Aura Flow'}`;
+  document.getElementById('pv-content').innerHTML = markdownToHtml(post.content||'');
+
+  const related = allPosts.filter(p=>p.id!==id && p.category===post.category).slice(0,3);
+  document.getElementById('pv-related').innerHTML = related.length
+    ? related.map(r=>`<div class="related-card" onclick="openPost('${r.id}')"><div class="related-title">${r.title}</div></div>`).join('')
+    : '<div style="color:var(--text-d);font-family:\'Cormorant Garamond\',serif;font-style:italic;padding:1rem;background:var(--bg)">暫無相關文章</div>';
+
+  document.getElementById('blog-list').style.display='none';
+  const pv = document.getElementById('post-view');
+  pv.classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+  history.pushState({postId:id},'',`#${id}`);
+}
+
+function backToList() {
+  document.getElementById('post-view').classList.remove('show');
+  document.getElementById('blog-list').style.display='';
+  window.scrollTo({top:0,behavior:'smooth'});
+  history.pushState({},'','blog.html');
+}
+
+window.addEventListener('popstate', e => {
+  if (e.state?.postId) openPost(e.state.postId);
+  else backToList();
+});
+
+// 頁面載入時檢查 hash
+if (location.hash) {
+  const id = location.hash.slice(1);
+  loadPosts().then(()=>{ if(id) openPost(id); });
+} else {
+  loadPosts();
+}
+
+// ─── scroll reveal ───
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold:0.08 });
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// ─── 工具函數 ───
+function formatDate(str) {
+  if (!str) return '';
+  const [y,m,d] = str.split('-');
+  return `${y} 年 ${parseInt(m)} 月 ${parseInt(d)} 日`;
+}
+
+function romanize(num) {
+  const r=['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+  return r[num]||String(num);
+}
+
+// 簡易 Markdown → HTML
+function markdownToHtml(md) {
+  return md
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, s=>`<ul>${s}</ul>`)
+    .replace(/^---$/gm, '<hr>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/^([^<\n].+)$/gm, (m, line) => {
+      if (!line.startsWith('<')) return `<p>${line}</p>`;
+      return line;
+    })
+    .replace(/<p><\/p>/g,'')
+    .replace(/<p>(<h[23]>)/g,'$1')
+    .replace(/(<\/h[23]>)<\/p>/g,'$1')
+    .replace(/<p>(<ul>)/g,'$1')
+    .replace(/(<\/ul>)<\/p>/g,'$1')
+    .replace(/<p>(<hr>)<\/p>/g,'$1');
+}
+</script>
+</body>
+</html>

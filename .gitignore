@@ -1,0 +1,11 @@
+# 暫存/測試資料夾
+frames/
+image.test/
+nano banana&claude/
+
+# Claude 設定
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db

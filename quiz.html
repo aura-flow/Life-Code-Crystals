@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>生命靈數測驗 · Aura Flow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+  :root {
+    --bg:      #f7f0e6;
+    --bg2:     #ede5d8;
+    --bg3:     #e4d9c8;
+    --dark:    #180e05;
+    --text:    #2c1a08;
+    --text-d:  rgba(44,26,8,.52);
+    --gold:    #b07a1a;
+    --gold-l:  #d4a030;
+    --gold-dim:rgba(176,122,26,.35);
+    --sage:    #6e8a60;
+    --sage-l:  rgba(110,138,96,.1);
+    --terra:   #c07050;
+    --border:  rgba(44,26,8,.1);
+    --shadow:  0 2px 24px rgba(44,26,8,.06);
+    --acc:     var(--gold);  /* dynamic accent by chakra */
+    --acc-rgb: 176,122,26;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',serif;min-height:100vh;cursor:none;overflow-x:hidden;}
+
+  #cur  {position:fixed;width:7px;height:7px;background:var(--acc);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:background .4s;}
+  #ring {position:fixed;width:28px;height:28px;border:1px solid rgba(var(--acc-rgb),.3);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);}
+
+  /* ─── nav ─── */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:62px;background:rgba(247,240,230,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
+  .nav-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--text);text-decoration:none;}
+  .nav-links{display:flex;gap:2rem;list-style:none;}
+  .nav-links a{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.35em;color:var(--text-d);text-decoration:none;text-transform:uppercase;transition:color .3s;}
+  .nav-links a:hover,.nav-links a.active{color:var(--gold);}
+  @media(max-width:600px){nav{padding:0 1.2rem;}.nav-links{gap:1.2rem;}.nav-links a{font-size:.48rem;}}
+
+  /* ─── page wrap ─── */
+  .pw{padding-top:62px;min-height:100vh;}
+
+  /* light decorators */
+  .lp{position:absolute;border-radius:60% 40% 50% 70% / 55% 65% 35% 45%;background:radial-gradient(ellipse,rgba(176,130,30,.06) 0%,transparent 65%);filter:blur(35px);pointer-events:none;animation:drift 14s ease-in-out infinite alternate;}
+  .lp-s{position:absolute;border-radius:45% 60% 50% 40% / 60% 45% 55% 40%;background:radial-gradient(ellipse,rgba(110,138,96,.07) 0%,transparent 65%);filter:blur(30px);pointer-events:none;animation:drift 18s 3s ease-in-out infinite alternate;}
+  @keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(10px,-7px) scale(1.03)}100%{transform:translate(-5px,5px) scale(.97)}}
+
+  /* ─── QUIZ SECTION ─── */
+  #quiz-section{min-height:calc(100vh - 62px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 1.5rem;position:relative;overflow:hidden;}
+
+  .quiz-eyebrow{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.5em;color:var(--sage);text-transform:uppercase;margin-bottom:1.4rem;text-align:center;display:flex;align-items:center;justify-content:center;gap:.8rem;}
+  .quiz-eyebrow::before,.quiz-eyebrow::after{content:'';display:block;width:24px;height:1px;background:var(--sage);}
+  .quiz-h{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(2rem,5vw,3.5rem);color:var(--text);text-align:center;margin-bottom:.7rem;}
+  .quiz-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:var(--text-d);text-align:center;letter-spacing:.06em;margin-bottom:3.5rem;}
+
+  /* date input */
+  .date-row{display:flex;gap:1rem;align-items:flex-end;margin-bottom:2.8rem;flex-wrap:wrap;justify-content:center;}
+  .date-field{display:flex;flex-direction:column;gap:.5rem;}
+  .date-label{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.4em;color:var(--text-d);text-transform:uppercase;text-align:center;}
+  .date-input{background:white;border:1px solid var(--border);border-bottom:2px solid var(--gold-dim);color:var(--text);font-family:'Playfair Display',serif;font-size:1.5rem;letter-spacing:.05em;padding:.7rem 1rem;text-align:center;width:110px;outline:none;transition:border-color .3s,box-shadow .3s;-moz-appearance:textfield;}
+  .date-input.wide{width:150px;}
+  .date-input::-webkit-inner-spin-button,.date-input::-webkit-outer-spin-button{-webkit-appearance:none;}
+  .date-input:focus{border-color:var(--gold);box-shadow:0 4px 16px rgba(176,122,26,.1);}
+  .date-sep{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold-dim);padding-bottom:.75rem;}
+
+  /* calc button */
+  .calc-btn{position:relative;overflow:hidden;cursor:pointer;display:inline-flex;align-items:center;gap:.8rem;padding:1rem 3rem;border:1px solid var(--gold-dim);background:white;color:var(--gold);font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.35em;text-transform:uppercase;transition:all .35s;box-shadow:var(--shadow);}
+  .calc-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(176,122,26,.06) 50%,transparent 60%);transform:translateX(-100%);transition:transform .5s;}
+  .calc-btn:hover::before{transform:translateX(100%);}
+  .calc-btn:hover{background:rgba(176,122,26,.05);border-color:var(--gold);box-shadow:0 4px 24px rgba(176,122,26,.12);}
+  #err-msg{color:#a03020;font-size:.78rem;margin-top:1rem;font-family:'Cinzel',serif;letter-spacing:.18em;min-height:1.2rem;text-align:center;}
+
+  /* calc overlay */
+  #calc-overlay{position:fixed;inset:0;background:rgba(247,240,230,.95);backdrop-filter:blur(12px);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;}
+  #calc-overlay.show{display:flex;}
+  #spin-n{font-family:'Playfair Display',serif;font-style:italic;font-size:9rem;font-weight:700;color:var(--gold);line-height:1;text-shadow:0 0 40px rgba(176,122,26,.3);}
+  .calc-msg{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.5em;color:var(--text-d);text-transform:uppercase;animation:blink 1s ease-in-out infinite;}
+  @keyframes blink{0%,100%{opacity:.35}50%{opacity:1}}
+
+  /* ─── RESULT SECTION ─── */
+  #result-section{display:none;padding:4rem 1.5rem 6rem;}
+  #result-section.show{display:block;}
+
+  /* dual numbers hero */
+  .r-hero{text-align:center;margin-bottom:4rem;animation:fadeUp .9s both;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+  .dual-display{display:flex;align-items:flex-end;justify-content:center;gap:3rem;flex-wrap:wrap;margin-bottom:2rem;}
+  .number-block{display:flex;flex-direction:column;align-items:center;}
+  .nb-label{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.45em;color:var(--text-d);text-transform:uppercase;margin-bottom:.5rem;}
+  .nb-num{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;line-height:1;color:var(--acc);transition:color .5s;text-shadow:0 0 40px rgba(var(--acc-rgb),.25);}
+  .nb-num.big{font-size:clamp(6rem,14vw,11rem);}
+  .nb-num.sml{font-size:clamp(3.5rem,8vw,6rem);opacity:.65;}
+  .nb-sep{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--gold-dim);padding-bottom:1.5rem;align-self:flex-end;}
+  .nb-name{font-family:'Noto Serif SC',serif;font-size:.85rem;letter-spacing:.12em;color:var(--text-d);margin-top:.4rem;}
+  .nb-name-en{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.3em;color:var(--acc);text-transform:uppercase;margin-top:.2rem;}
+
+  .r-intro{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;line-height:1.9;color:var(--text-d);max-width:620px;margin:0 auto;}
+
+  .sec-rule{width:100%;max-width:860px;margin:3rem auto;height:1px;background:linear-gradient(to right,transparent,var(--border),rgba(176,122,26,.3),var(--border),transparent);}
+  .sec-label{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.45em;color:var(--gold);text-transform:uppercase;text-align:center;margin-bottom:2rem;}
+
+  /* ─── 九宮格 ─── */
+  .lo-shu-wrap{max-width:520px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;}
+  @media(max-width:600px){.lo-shu-wrap{grid-template-columns:1fr;}}
+  .lo-shu{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;width:100%;max-width:240px;}
+  .ls-cell{aspect-ratio:1;background:white;border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;transition:all .4s;position:relative;}
+  .ls-cell.active{background:rgba(var(--acc-rgb),.07);border-color:rgba(var(--acc-rgb),.3);}
+  .ls-cell.strong{background:rgba(var(--acc-rgb),.14);border-color:rgba(var(--acc-rgb),.5);}
+  .ls-cell.missing{background:rgba(44,26,8,.02);border-color:rgba(44,26,8,.06);}
+  .ls-num{font-family:'Playfair Display',serif;font-style:italic;font-size:1.3rem;font-weight:700;color:var(--text-d);}
+  .ls-cell.active .ls-num,.ls-cell.strong .ls-num{color:var(--acc);}
+  .ls-cell.missing .ls-num{color:rgba(44,26,8,.18);}
+  .ls-dots{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;max-width:28px;}
+  .ls-dot{width:5px;height:5px;border-radius:50%;background:var(--acc);opacity:.7;}
+  .ls-cell.missing .ls-dot{display:none;}
+
+  .lo-shu-legend{flex:1;}
+  .lsl-title{font-family:'Noto Serif SC',serif;font-size:.9rem;letter-spacing:.08em;color:var(--text);margin-bottom:1rem;}
+  .missing-list{display:flex;flex-direction:column;gap:.6rem;}
+  .missing-item{padding:.7rem 1rem;background:rgba(44,26,8,.03);border-left:2px solid rgba(44,26,8,.1);border-left-color:var(--acc);}
+  .missing-num{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--acc);margin-bottom:.15rem;}
+  .missing-chakra{font-family:'Noto Serif SC',serif;font-size:.72rem;letter-spacing:.06em;color:var(--text);margin-bottom:.2rem;}
+  .missing-desc{font-family:'Cormorant Garamond',serif;font-size:.88rem;color:var(--text-d);line-height:1.6;}
+
+  /* ─── 4-card grid ─── */
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;max-width:900px;margin:0 auto;}
+  .info-card{background:white;border:1px solid var(--border);padding:2rem;box-shadow:var(--shadow);animation:fadeUp .6s both;transition:box-shadow .3s;}
+  .info-card:hover{box-shadow:0 8px 32px rgba(44,26,8,.08);}
+  .info-card:nth-child(2){animation-delay:.1s;}
+  .info-card:nth-child(3){animation-delay:.2s;}
+  .info-card:nth-child(4){animation-delay:.3s;}
+  .card-icon{font-size:1.2rem;margin-bottom:.8rem;display:block;}
+  .card-title{font-family:'Noto Serif SC',serif;font-size:.85rem;letter-spacing:.12em;color:var(--acc);margin-bottom:.8rem;transition:color .5s;}
+  .card-body{font-family:'Cormorant Garamond',serif;font-size:.97rem;line-height:1.85;color:var(--text-d);}
+  .tag-list{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.8rem;}
+  .tag{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.18em;padding:.28rem .65rem;border:1px solid var(--border);color:var(--text-d);}
+  .tag.pos{border-color:rgba(110,138,96,.4);color:var(--sage);}
+  .tag.neg{border-color:rgba(160,48,32,.25);color:#a04030;}
+
+  /* ─── chakra strip ─── */
+  .chakra-section{max-width:700px;margin:0 auto;animation:fadeUp .6s .4s both;}
+  .chakra-strip{display:flex;align-items:flex-end;justify-content:center;gap:0;}
+  .ch-item{display:flex;flex-direction:column;align-items:center;gap:.45rem;flex:1;}
+  .ch-orb{width:38px;height:38px;border-radius:50%;background:rgba(44,26,8,.05);border:1.5px solid rgba(44,26,8,.1);transition:all .5s;}
+  .ch-item.active .ch-orb{width:54px;height:54px;border-color:var(--c-col,var(--gold));box-shadow:0 0 20px var(--c-col,var(--gold)),0 0 40px rgba(var(--c-rgb,176,122,26),.2);background:rgba(var(--c-rgb,176,122,26),.12);animation:orb-p 2.5s ease-in-out infinite;}
+  .ch-item.weak .ch-orb{width:38px;height:38px;border-color:rgba(160,48,32,.3);background:rgba(160,48,32,.05);}
+  @keyframes orb-p{0%,100%{box-shadow:0 0 20px var(--c-col),0 0 40px rgba(var(--c-rgb),.2)}50%{box-shadow:0 0 30px var(--c-col),0 0 60px rgba(var(--c-rgb),.4)}}
+  .ch-name{font-family:'Noto Serif SC',serif;font-size:.52rem;letter-spacing:.04em;color:var(--text-d);text-align:center;transition:color .5s;}
+  .ch-item.active .ch-name{color:var(--c-col,var(--gold));}
+  .ch-item.weak .ch-name{color:rgba(160,48,32,.7);}
+  .ch-en{font-family:'Cinzel',serif;font-size:.42rem;letter-spacing:.12em;color:rgba(44,26,8,.2);}
+  .ch-item.active .ch-en{color:rgba(var(--c-rgb,176,122,26),.6);}
+
+  .chakra-detail{margin-top:1.2rem;padding:1.2rem 2rem;background:white;border:1px solid var(--border);border-top:2px solid var(--acc);text-align:center;transition:border-color .5s;}
+  .chakra-detail-name{font-family:'Noto Serif SC',serif;font-size:1.05rem;color:var(--acc);margin-bottom:.4rem;transition:color .5s;}
+  .chakra-detail-desc{font-family:'Cormorant Garamond',serif;font-size:.95rem;font-style:italic;color:var(--text-d);line-height:1.65;}
+
+  /* ─── crystals ─── */
+  .crystal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.2rem;max-width:760px;margin:0 auto;}
+  .crystal-card{background:white;border:1px solid var(--border);padding:2rem 1.5rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.9rem;text-decoration:none;animation:fadeUp .6s both;transition:transform .3s,box-shadow .3s,border-color .3s;}
+  .crystal-card:nth-child(2){animation-delay:.1s;}
+  .crystal-card:nth-child(3){animation-delay:.2s;}
+  .crystal-card:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(44,26,8,.1);border-color:rgba(var(--acc-rgb),.3);}
+  .gem{width:56px;height:56px;}
+  .gem svg{width:100%;height:100%;}
+  .c-name{font-family:'Noto Serif SC',serif;font-size:.95rem;letter-spacing:.08em;color:var(--text);}
+  .c-en{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.28em;color:var(--gold);text-transform:uppercase;margin-top:-.5rem;}
+  .c-desc{font-family:'Cormorant Garamond',serif;font-size:.9rem;font-style:italic;color:var(--text-d);line-height:1.65;}
+  .c-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.3rem;border:1px solid rgba(var(--acc-rgb),.35);color:var(--gold);font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;transition:all .3s;}
+  .c-btn:hover{background:rgba(var(--acc-rgb),.06);}
+
+  /* LINE CTA block */
+  .line-cta-block{max-width:600px;margin:0 auto;background:white;border:1px solid var(--border);padding:2.5rem;text-align:center;box-shadow:var(--shadow);}
+  .line-cta-block .lc-h{font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:var(--text);margin-bottom:.8rem;}
+  .line-cta-block .lc-b{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.97rem;color:var(--text-d);line-height:1.8;margin-bottom:1.5rem;}
+  .line-btn{display:inline-flex;align-items:center;gap:.7rem;padding:.85rem 2.2rem;background:#06C755;color:white;font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.3em;text-decoration:none;text-transform:uppercase;transition:background .3s,transform .3s;border:none;cursor:pointer;}
+  .line-btn:hover{background:#05b04a;transform:translateY(-2px);}
+
+  .restart-wrap{text-align:center;margin-top:4rem;}
+  .restart-btn{background:none;border:none;cursor:pointer;font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.38em;color:var(--text-d);text-transform:uppercase;padding:.8rem 1.5rem;border-bottom:1px solid var(--border);transition:all .3s;}
+  .restart-btn:hover{color:var(--gold);border-color:var(--gold-dim);}
+
+  footer{border-top:1px solid var(--border);padding:2rem 2.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;background:var(--bg);}
+  .footer-brand{font-family:'Playfair Display',serif;font-style:italic;font-size:.9rem;color:var(--text-d);}
+  .footer-links{display:flex;gap:1.5rem;}
+  .footer-links a{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.3em;color:var(--text-d);text-decoration:none;text-transform:uppercase;transition:color .3s;}
+  .footer-links a:hover{color:var(--gold);}
+
+  /* LINE float */
+  #line-float{position:fixed;bottom:2rem;right:2rem;z-index:300;width:50px;height:50px;border-radius:50%;background:#06C755;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(6,199,85,.35);text-decoration:none;transition:transform .3s;}
+  #line-float:hover{transform:scale(1.08);}
+  #line-float svg{width:26px;height:26px;}
+  @media(max-width:600px){.chakra-strip{gap:0;}.ch-orb{width:28px;height:28px;}.ch-item.active .ch-orb{width:38px;height:38px;}.ch-name{font-size:.42rem;}.ch-en{display:none;}}
+  </style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="ring"></div>
+
+<a href="https://lin.ee/YOUR_ID" id="line-float" target="_blank">
+  <svg viewBox="0 0 48 48" fill="white"><path d="M42 20.7C42 13.6 34.8 8 24 8S6 13.6 6 20.7c0 6.3 5.6 11.6 13.1 12.6.5.1 1.2.4 1.4.9.2.4.1 1.1.1 1.5l-.2 1.4c-.1.5-.4 1.9 1.6 1 2-.9 10.8-6.4 14.7-10.9A11.6 11.6 0 0 0 42 20.7"/></svg>
+</a>
+
+<nav>
+  <a href="index.html" class="nav-logo">Flow &amp; Aura</a>
+  <ul class="nav-links">
+    <li><a href="index.html">首頁</a></li>
+    <li><a href="quiz.html" class="active">靈數測驗</a></li>
+    <li><a href="blog.html">部落格</a></li>
+  </ul>
+</nav>
+
+<div id="calc-overlay">
+  <div id="spin-n">7</div>
+  <div class="calc-msg">解讀命運密碼中⋯</div>
+</div>
+
+<div class="pw">
+
+<!-- ════ 測驗輸入 ════ -->
+<section id="quiz-section">
+  <div class="lp"  style="width:500px;height:400px;top:5%;right:-10%"></div>
+  <div class="lp-s" style="width:300px;height:300px;bottom:5%;left:-5%"></div>
+
+  <div class="quiz-eyebrow">Numerology · 生命靈數</div>
+  <h1 class="quiz-h">探索你的生命靈數</h1>
+  <p class="quiz-sub">輸入你的生日，讓數字揭示靈魂的密碼</p>
+
+  <div class="date-row">
+    <div class="date-field">
+      <label class="date-label" for="inp-y">年份</label>
+      <input class="date-input wide" type="number" id="inp-y" placeholder="1990" min="1920" max="2025">
+    </div>
+    <div class="date-sep">/</div>
+    <div class="date-field">
+      <label class="date-label" for="inp-m">月份</label>
+      <input class="date-input" type="number" id="inp-m" placeholder="05" min="1" max="12">
+    </div>
+    <div class="date-sep">/</div>
+    <div class="date-field">
+      <label class="date-label" for="inp-d">日期</label>
+      <input class="date-input" type="number" id="inp-d" placeholder="15" min="1" max="31">
+    </div>
+  </div>
+  <button class="calc-btn" onclick="startCalc()">✦ &nbsp;揭示我的靈魂密碼</button>
+  <div id="err-msg"></div>
+</section>
+
+<!-- ════ 結果 ════ -->
+<section id="result-section">
+
+  <!-- 雙靈數 -->
+  <div class="r-hero">
+    <div class="dual-display">
+      <div class="number-block">
+        <div class="nb-label">外靈數 · Life Path</div>
+        <div class="nb-num big" id="r-outer">7</div>
+        <div class="nb-name" id="r-outer-name">智慧者</div>
+        <div class="nb-name-en" id="r-outer-en">The Seeker</div>
+      </div>
+      <div class="nb-sep">×</div>
+      <div class="number-block">
+        <div class="nb-label">內靈數 · Birthday</div>
+        <div class="nb-num sml" id="r-inner">6</div>
+        <div class="nb-name" id="r-inner-name">守護者</div>
+        <div class="nb-name-en" id="r-inner-en">The Nurturer</div>
+      </div>
+    </div>
+    <p class="r-intro" id="r-intro"></p>
+  </div>
+
+  <!-- 九宮格 -->
+  <div class="sec-rule"></div>
+  <div class="sec-label">九宮格命盤 · Lo Shu Grid</div>
+  <div class="lo-shu-wrap" style="max-width:580px;margin:0 auto;">
+    <div>
+      <div class="lo-shu" id="lo-shu-grid"></div>
+    </div>
+    <div class="lo-shu-legend">
+      <div class="lsl-title">缺失數字與脈輪課題</div>
+      <div class="missing-list" id="missing-list"></div>
+    </div>
+  </div>
+
+  <!-- 4 cards -->
+  <div class="sec-rule"></div>
+  <div class="sec-label">命盤解析</div>
+  <div class="cards-grid">
+    <div class="info-card">
+      <span class="card-icon">⚡</span>
+      <div class="card-title">事業運勢</div>
+      <div class="card-body" id="r-career"></div>
+    </div>
+    <div class="info-card">
+      <span class="card-icon">♡</span>
+      <div class="card-title">愛情關係</div>
+      <div class="card-body" id="r-love"></div>
+    </div>
+    <div class="info-card">
+      <span class="card-icon">✦</span>
+      <div class="card-title">天賦優點</div>
+      <div id="r-strengths" class="tag-list"></div>
+    </div>
+    <div class="info-card">
+      <span class="card-icon">◇</span>
+      <div class="card-title">成長課題</div>
+      <div id="r-weaknesses" class="tag-list"></div>
+    </div>
+  </div>
+
+  <!-- chakra -->
+  <div class="sec-rule"></div>
+  <div class="sec-label">脈輪能量分析</div>
+  <div class="chakra-section">
+    <div class="chakra-strip" id="chakra-strip"></div>
+    <div class="chakra-detail">
+      <div class="chakra-detail-name" id="r-chakra-name"></div>
+      <div class="chakra-detail-desc" id="r-chakra-desc"></div>
+    </div>
+  </div>
+
+  <!-- crystals -->
+  <div class="sec-rule"></div>
+  <div class="sec-label">命定水晶處方</div>
+  <div class="crystal-grid" id="crystal-grid"></div>
+
+  <!-- LINE CTA -->
+  <div class="sec-rule"></div>
+  <div class="line-cta-block">
+    <div class="lc-h">需要更深度的命盤解析？</div>
+    <div class="lc-b">加入官方 LINE，與命理師進行一對一深度諮詢。<br>包含完整命盤報告書、客製化水晶飾品設計，以及年度運勢規劃。</div>
+    <a href="https://lin.ee/YOUR_ID" class="line-btn" target="_blank">加入 LINE 官方帳號</a>
+  </div>
+
+  <div class="restart-wrap">
+    <button class="restart-btn" onclick="restart()">← 重新測驗</button>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">Aura Flow · 靈光流動</div>
+  <nav class="footer-links">
+    <a href="index.html">首頁</a><a href="quiz.html">靈數測驗</a><a href="blog.html">部落格</a>
+  </nav>
+</footer>
+</div>
+
+<script>
+const SHOP = 'https://yourcrystalshop.com';
+const LINE = 'https://lin.ee/YOUR_ID';
+
+// ── 七大脈輪 ──
+const CHAKRAS=[
+  {id:1,name:'海底輪',en:'Root',       col:'#cc3333',rgb:'204,51,51'},
+  {id:2,name:'臍輪',  en:'Sacral',     col:'#dd7722',rgb:'221,119,34'},
+  {id:3,name:'太陽輪',en:'Solar Plexus',col:'#ccaa00',rgb:'204,170,0'},
+  {id:4,name:'心輪',  en:'Heart',      col:'#33aa55',rgb:'51,170,85'},
+  {id:5,name:'喉輪',  en:'Throat',     col:'#3366cc',rgb:'51,102,204'},
+  {id:6,name:'眉心輪',en:'Third Eye',  col:'#6633bb',rgb:'102,51,187'},
+  {id:7,name:'頂輪',  en:'Crown',      col:'#9922aa',rgb:'153,34,170'},
+];
+
+// ── 缺失數字的脈輪含義 ──
+const MISSING_MAP={
+  1:{chakraId:1,name:'海底輪',desc:'根基穩固感需要加強，建議滋養安全感與接地能量'},
+  2:{chakraId:2,name:'臍輪',  desc:'情感連結與直覺力需要培養，與自身感受建立連結'},
+  3:{chakraId:3,name:'太陽輪',desc:'自我表達與個人力量有待開發，強化自信能量'},
+  4:{chakraId:1,name:'海底輪',desc:'結構感與踏實感需要強化，建立生活秩序'},
+  5:{chakraId:5,name:'喉輪',  desc:'溝通表達課題需要關注，說出真實的自己'},
+  6:{chakraId:4,name:'心輪',  desc:'愛與創造力能量需要平衡，開啟心輪流動'},
+  7:{chakraId:6,name:'眉心輪',desc:'直覺洞察力需要喚醒，信任內在的知曉'},
+  8:{chakraId:7,name:'頂輪',  desc:'靈性連結與高我智慧需要加強'},
+  9:{chakraId:7,name:'頂輪',  desc:'宇宙意識與服務精神需要激活'},
+};
+
+// ── 靈數資料 ──
+const DATA={
+  1:{name:'領導者',nameEn:'The Leader',color:'#c4703a',rgb:'196,112,58',chakraId:1,
+    intro:'你是天生的開拓者，充滿獨立精神與創新能量。宇宙賦予你開創新局的使命，你的光芒難以被掩蓋。',
+    career:'具備強烈的領導力，適合自行創業或管理職位。你的決斷力讓你在競爭環境中脫穎而出。',
+    love:'在感情中渴望主導，需要欣賞你獨立個性的伴侶。學習「退讓」是你的愛情課題。',
+    strengths:['決斷力強','充滿創造力','獨立自主','意志堅定','感染力強'],
+    weaknesses:['固執己見','缺乏耐心','難以接受批評','忽略他人感受'],
+    chakra:{name:'海底輪',desc:'掌管安全感、生存本能與行動力，你的能量根植於大地，穩固而有力。'},
+    crystals:[{name:'紅碧玉',en:'Red Jasper',col:'#b03030',rgb:'176,48,48',desc:'穩固根基，增強行動力與勇氣'},{name:'石榴石',en:'Garnet',col:'#9b1d1d',rgb:'155,29,29',desc:'激活熱情，強化領導魅力'},{name:'黑曜石',en:'Obsidian',col:'#2a2020',rgb:'42,32,32',desc:'保護能量，清除前進阻礙'}]},
+  2:{name:'協調者',nameEn:'The Peacemaker',color:'#b07a1a',rgb:'176,122,26',chakraId:2,
+    intro:'你是靈魂的橋梁，擁有細膩的感知力與天生的外交手腕。2號靈數者以愛與和諧連結世界中的每一個靈魂。',
+    career:'擅長合作、溝通與調解，適合心理諮詢、外交、教育或藝術領域。你的直覺讓你在幕後運籌帷幄。',
+    love:'你是天生的戀人，深情而敏感。全力付出，但要小心過度依賴而失去自我。',
+    strengths:['高度同理心','善於傾聽','直覺靈敏','耐心細膩','天生外交家'],
+    weaknesses:['過度敏感','容易依賴','迴避衝突','自我懷疑'],
+    chakra:{name:'臍輪',desc:'掌管情感、創造力與親密關係，你的能量在流動的水中找到共鳴。'},
+    crystals:[{name:'月光石',en:'Moonstone',col:'#c8c8e0',rgb:'200,200,224',desc:'增強直覺，平衡情緒能量'},{name:'粉晶',en:'Rose Quartz',col:'#e8a8b8',rgb:'232,168,184',desc:'開啟心輪，吸引愛的能量'},{name:'橙方解石',en:'Orange Calcite',col:'#e8900a',rgb:'232,144,10',desc:'激活情感中心，增強創造熱情'}]},
+  3:{name:'創造者',nameEn:'The Creator',color:'#b07a1a',rgb:'176,122,26',chakraId:3,
+    intro:'你是宇宙的藝術家，用語言、藝術和歡笑照亮世界。3號靈數者擁有無窮的創造力與表達天賦。',
+    career:'天賦異稟於創意表達，適合藝術、寫作、設計、娛樂或公關。你的魅力讓任何場合都因你生動。',
+    love:'你的感情多姿多彩，熱情奔放。需要欣賞你活潑本性的伴侶，避免因追求刺激影響深度。',
+    strengths:['創意豐沛','樂觀開朗','口才出眾','富有魅力','感染力強'],
+    weaknesses:['注意力分散','情緒起伏','拖延傾向','流於表面'],
+    chakra:{name:'太陽神經叢輪',desc:'掌管自信、意志力與個人力量，太陽般的你注定要發光發熱。'},
+    crystals:[{name:'黃水晶',en:'Citrine',col:'#e8c820',rgb:'232,200,32',desc:'帶來豐盛喜悅，激活創造力'},{name:'太陽石',en:'Sunstone',col:'#e8a030',rgb:'232,160,48',desc:'增強個人魅力，散發耀眼光芒'},{name:'虎眼石',en:"Tiger's Eye",col:'#a87820',rgb:'168,120,32',desc:'集中注意力，強化意志力'}]},
+  4:{name:'建造者',nameEn:'The Builder',color:'#6e8a60',rgb:'110,138,96',chakraId:1,
+    intro:'你是大地的基石，以踏實與紀律為世界立下穩固根基。4號靈數者是可信賴的守護者與秩序的維護者。',
+    career:'擅長組織、規劃與執行，適合工程、建築、財務、法律或行政管理。',
+    love:'在感情中忠誠而穩定，傾向長期承諾。以行動表達愛意，要學習更多情感表達。',
+    strengths:['腳踏實地','高度可靠','組織能力強','有始有終','誠信正直'],
+    weaknesses:['過於固執','抗拒改變','工作狂傾向','忽略情感需求'],
+    chakra:{name:'海底輪',desc:'掌管安全感、根基穩固與物質基礎，大地的力量讓你屹立不搖。'},
+    crystals:[{name:'煙晶',en:'Smoky Quartz',col:'#6a5a4a',rgb:'106,90,74',desc:'接地氣，釋放壓力與緊繃'},{name:'綠松石',en:'Turquoise',col:'#3a9a8a',rgb:'58,154,138',desc:'帶來平衡，強化溝通信任'},{name:'紅碧玉',en:'Red Jasper',col:'#b03030',rgb:'176,48,48',desc:'穩固根基，增強耐力毅力'}]},
+  5:{name:'自由者',nameEn:'The Freedom Seeker',color:'#3366cc',rgb:'51,102,204',chakraId:5,
+    intro:'你是宇宙的旅行者，以變化與冒險為生命燃料。5號靈數者是天生的自由靈魂，渴望體驗生命的無限可能。',
+    career:'最適合需要變化的工作，如旅遊、行銷、媒體、業務或創業。你在靈活環境中如魚得水。',
+    love:'感情充滿激情但需要空間與自由。你害怕被束縛，需要能與你共同探索生命的伴侶。',
+    strengths:['高度適應力','勇於冒險','思想靈活','充滿魅力','溝通能力強'],
+    weaknesses:['缺乏持久力','衝動行事','容易分心','對承諾感到恐懼'],
+    chakra:{name:'喉輪',desc:'掌管溝通、自我表達與真實性，你的聲音是改變世界的力量。'},
+    crystals:[{name:'海藍寶',en:'Aquamarine',col:'#5ab8c8',rgb:'90,184,200',desc:'清晰表達，帶來冒險勇氣'},{name:'藍紋瑪瑙',en:'Blue Lace Agate',col:'#88b8d8',rgb:'136,184,216',desc:'平靜心神，促進清晰溝通'},{name:'青金石',en:'Lapis Lazuli',col:'#1a3a8a',rgb:'26,58,138',desc:'開啟智慧，強化自我表達'}]},
+  6:{name:'守護者',nameEn:'The Nurturer',color:'#33aa55',rgb:'51,170,85',chakraId:4,
+    intro:'你是愛的化身，以溫暖和責任感滋養周圍的每一個靈魂。6號靈數者是家庭與社群的守護天使。',
+    career:'天生適合照護與服務，如醫療、教育、諮商、社會工作或室內設計。',
+    love:'你是最深情的伴侶，願意為愛犧牲一切。學習愛自己如同愛他人，避免在付出中失去自我。',
+    strengths:['溫暖體貼','高度責任感','和諧創造者','美感出眾','忠誠守信'],
+    weaknesses:['過度犧牲','完美主義','控制慾強','難以拒絕他人'],
+    chakra:{name:'心輪',desc:'掌管愛、同情心與人際關係，你的心是宇宙中最溫暖的燈塔。'},
+    crystals:[{name:'粉晶',en:'Rose Quartz',col:'#e8a8b8',rgb:'232,168,184',desc:'療癒心靈，吸引無條件的愛'},{name:'綠幽靈',en:'Green Phantom',col:'#50a050',rgb:'80,160,80',desc:'帶來豐盛，療癒家庭關係'},{name:'祖母綠',en:'Emerald',col:'#1a9040',rgb:'26,144,64',desc:'強化心輪，帶來希望與更新'}]},
+  7:{name:'智慧者',nameEn:'The Seeker',color:'#6633bb',rgb:'102,51,187',chakraId:6,
+    intro:'你是靈魂的哲學家，用深邃的思考探索宇宙的終極真相。7號靈數者是神秘學與智慧的天生守門人。',
+    career:'最適合深度研究與分析，如科學研究、哲學、心理學、靈性探索或IT技術。',
+    love:'感情深沉而神秘，不易輕易投入。需要靈性與智識層面連結的伴侶，而非只是表面吸引。',
+    strengths:['深度分析力','靈性智慧','直覺精準','獨立思考','追求真相'],
+    weaknesses:['過度內向','情感疏離','多疑傾向','完美主義'],
+    chakra:{name:'眉心輪',desc:'掌管直覺、洞察力與靈性視野，你的第三眼看透世界的本質。'},
+    crystals:[{name:'紫水晶',en:'Amethyst',col:'#8844cc',rgb:'136,68,204',desc:'增強靈性洞察，帶來內在平靜'},{name:'青金石',en:'Lapis Lazuli',col:'#1a3a8a',rgb:'26,58,138',desc:'開啟第三眼，連結宇宙智慧'},{name:'拉長石',en:'Labradorite',col:'#3a6888',rgb:'58,104,136',desc:'神秘防護石，增強直覺力量'}]},
+  8:{name:'成就者',nameEn:'The Achiever',color:'#b07a1a',rgb:'176,122,26',chakraId:3,
+    intro:'你是物質世界的煉金術師，擁有將夢想轉化為現實的強大力量。8號靈數者生來是掌握豐盛與成就的王者。',
+    career:'天生的商業領袖，適合金融、投資、企業管理、法律或房地產。',
+    love:'在感情中強勢而忠誠，將伴侶視為人生戰略夥伴。需要在事業中留給愛情足夠的空間。',
+    strengths:['強大執行力','財務天賦','領導魅力','意志如鐵','戰略思維'],
+    weaknesses:['物質主義','控制慾強','工作生活失衡','難以示弱'],
+    chakra:{name:'太陽神經叢輪',desc:'掌管個人力量、意志與豐盛吸引力，你是宇宙豐盛能量的最佳管道。'},
+    crystals:[{name:'黃鐵礦',en:'Pyrite',col:'#c8a820',rgb:'200,168,32',desc:'豐盛吸引石，帶來財富與成功'},{name:'黑碧璽',en:'Black Tourmaline',col:'#1a1a2a',rgb:'26,26,42',desc:'強力保護，屏蔽負能量攻擊'},{name:'金髮晶',en:'Rutilated Quartz',col:'#d4a840',rgb:'212,168,64',desc:'放大能量，加速目標達成'}]},
+  9:{name:'人道者',nameEn:'The Humanitarian',color:'#9922aa',rgb:'153,34,170',chakraId:7,
+    intro:'你是宇宙的療癒者，帶著服務全人類的神聖使命降臨。9號靈數者擁有博愛的靈魂與完成一個輪迴的智慧。',
+    career:'最適合服務型、藝術型或靈性工作，如社會服務、藝術創作、靈性教導、醫療或非營利組織。',
+    love:'你的愛廣博而深沉，有時超越個人的愛情。需要一個理解你靈性使命的伴侶。',
+    strengths:['悲天憫人','藝術天賦','深邃智慧','無私奉獻','靈性感知'],
+    weaknesses:['過度理想化','情緒複雜','難以放手','自我犧牲'],
+    chakra:{name:'頂輪',desc:'掌管靈性連結、高我意識與宇宙融合，你是來自星光的使者。'},
+    crystals:[{name:'白水晶',en:'Clear Quartz',col:'#e8e8f0',rgb:'232,232,240',desc:'萬能療癒石，放大所有意圖'},{name:'透石膏',en:'Selenite',col:'#f0f0e0',rgb:'240,240,224',desc:'連結高我，淨化空間能量'},{name:'捷克隕石',en:'Moldavite',col:'#2a6830',rgb:'42,104,48',desc:'高頻轉化石，加速靈魂進化'}]},
+  11:{name:'啟示者',nameEn:'The Illuminator',color:'#7722bb',rgb:'119,34,187',chakraId:6,
+    intro:'你擁有大師靈數 11，是宇宙派來的靈性使者。你介於 2 與更高頻之間，擁有超凡的直覺與啟示他人的神聖使命。',
+    career:'適合靈性指導、心理治療、藝術創作、教育或任何需要直覺與啟發的工作。',
+    love:'你的感情極為深刻，幾乎帶有心電感應的連結。需要接受你靈性深度的伴侶。',
+    strengths:['超凡直覺','靈性感知','深度同理','激勵他人','創意洞見'],
+    weaknesses:['過度敏感','焦慮傾向','自我懷疑','理想現實落差'],
+    chakra:{name:'眉心輪 × 頂輪',desc:'雙重啟動高頻能量中心，連結靈性洞見與宇宙意識。你是兩個世界之間的橋樑。'},
+    crystals:[{name:'月光石',en:'Moonstone',col:'#c8c8e0',rgb:'200,200,224',desc:'增強直覺，平衡靈性與情感'},{name:'透石膏',en:'Selenite',col:'#f0f0e0',rgb:'240,240,224',desc:'淨化高頻通道，連結天使領域'},{name:'藍晶石',en:'Kyanite',col:'#4488cc',rgb:'68,136,204',desc:'對齊所有脈輪，傳遞宇宙信息'}]},
+  22:{name:'大師建造者',nameEn:'The Master Builder',color:'#b07a1a',rgb:'176,122,26',chakraId:0,
+    intro:'你擁有最高等的大師靈數 22，兼具夢想者的遠見與建造者的能力。宇宙委你以將偉大夢想付諸實現的神聖重任。',
+    career:'適合大規模建設性工作，如建築、政治、社會改革、大型企業或任何能影響廣大人群的事業。',
+    love:'你在感情中既有深情也有遠見，尋找能共同實現偉大夢想的靈魂伴侶。',
+    strengths:['宏觀遠見','強大執行力','整合能力','使命感強','務實理想主義'],
+    weaknesses:['完美主義','壓力過大','難以放鬆','對自己過苛'],
+    chakra:{name:'七大脈輪全開',desc:'你的能量流貫全身七大脈輪，是宇宙最完整的能量體現。你來此完成宏大的使命。'},
+    crystals:[{name:'白水晶',en:'Clear Quartz',col:'#e8e8f0',rgb:'232,232,240',desc:'整合所有能量，放大宏大意圖'},{name:'拉長石',en:'Labradorite',col:'#3a6888',rgb:'58,104,136',desc:'連結多維視角，展現神奇可能'},{name:'彩電氣石',en:'Rainbow Tourmaline',col:'#4a7a4a',rgb:'74,122,74',desc:'整合所有脈輪，實現完整蛻變'}]},
+};
+
+// ── 九宮格 Lo Shu layout ──
+const LO_SHU=[[4,9,2],[3,5,7],[8,1,6]];
+
+// ── 計算 ──
+function reduce(str){
+  let n=[...str].reduce((a,c)=>a+parseInt(c),0);
+  while(n>9&&n!==11&&n!==22)n=[...String(n)].reduce((a,c)=>a+parseInt(c),0);
+  return n;
+}
+function calcOuter(y,m,d){return reduce(`${y}${String(m).padStart(2,'0')}${String(d).padStart(2,'0')}`);}
+function calcInner(d){return reduce(String(d));}
+function countDigits(y,m,d){
+  const s=`${y}${String(m).padStart(2,'0')}${String(d).padStart(2,'0')}`;
+  const cnt={};
+  for(let i=1;i<=9;i++)cnt[i]=0;
+  [...s].forEach(c=>{const n=parseInt(c);if(n>=1&&n<=9)cnt[n]=(cnt[n]||0)+1;});
+  return cnt;
+}
+
+// ── cursor ──
+const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function f(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(f);})();
+
+// ── start calc ──
+function startCalc(){
+  const y=parseInt(document.getElementById('inp-y').value);
+  const m=parseInt(document.getElementById('inp-m').value);
+  const d=parseInt(document.getElementById('inp-d').value);
+  const err=document.getElementById('err-msg');
+  if(!y||!m||!d||y<1900||y>2025||m<1||m>12||d<1||d>31){err.textContent='請輸入有效的生日日期';return;}
+  err.textContent='';
+  const ov=document.getElementById('calc-overlay');
+  ov.classList.add('show');
+  const sp=document.getElementById('spin-n');
+  const ns=[1,3,7,2,9,5,4,8,6,11,22,1,7,3];
+  let i=0;
+  const t=setInterval(()=>{sp.textContent=ns[i++%ns.length];},80);
+  setTimeout(()=>{
+    clearInterval(t);
+    const outer=calcOuter(y,m,d);
+    const inner=calcInner(d);
+    sp.textContent=outer;
+    setTimeout(()=>{ov.classList.remove('show');showResult(y,m,d,outer,inner);},600);
+  },1800);
+}
+
+// ── show result ──
+function showResult(y,m,d,outer,inner){
+  const od=DATA[outer]||DATA[9];
+  const id_=DATA[inner]||DATA[9];
+  const cnt=countDigits(y,m,d);
+
+  // update CSS accent
+  document.documentElement.style.setProperty('--acc',od.color);
+  document.documentElement.style.setProperty('--acc-rgb',od.rgb);
+
+  // dual numbers
+  document.getElementById('r-outer').textContent=outer;
+  document.getElementById('r-outer-name').textContent=od.name;
+  document.getElementById('r-outer-en').textContent=od.nameEn;
+  document.getElementById('r-inner').textContent=inner;
+  document.getElementById('r-inner-name').textContent=id_.name;
+  document.getElementById('r-inner-en').textContent=id_.nameEn;
+  document.getElementById('r-intro').textContent=od.intro;
+
+  // nine-square grid
+  const grid=document.getElementById('lo-shu-grid');
+  grid.innerHTML='';
+  LO_SHU.forEach(row=>row.forEach(n=>{
+    const c=cnt[n]||0;
+    const cell=document.createElement('div');
+    cell.className='ls-cell '+(c===0?'missing':c>=3?'strong':'active');
+    cell.innerHTML=`<div class="ls-num">${n}</div><div class="ls-dots">${Array(c).fill('<div class="ls-dot"></div>').join('')}</div>`;
+    grid.appendChild(cell);
+  }));
+
+  // missing numbers analysis
+  const missing=Object.entries(cnt).filter(([,v])=>v===0).map(([k])=>parseInt(k));
+  const missList=document.getElementById('missing-list');
+  if(missing.length){
+    missList.innerHTML=missing.slice(0,4).map(n=>{
+      const mm=MISSING_MAP[n];
+      if(!mm)return '';
+      const ch=CHAKRAS.find(c=>c.id===mm.chakraId);
+      return `<div class="missing-item"><div class="missing-num">${n} · ${mm.name}</div><div class="missing-chakra" style="color:${ch?.col||'var(--acc)'}">⟡ ${mm.name}</div><div class="missing-desc">${mm.desc}</div></div>`;
+    }).join('');
+  }else{
+    missList.innerHTML='<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;color:var(--text-d);font-size:.95rem">你的命盤數字完整，七大脈輪均有基本能量支撐。</div>';
+  }
+
+  // 4 cards
+  document.getElementById('r-career').textContent=od.career;
+  document.getElementById('r-love').textContent=od.love;
+  document.getElementById('r-strengths').innerHTML=od.strengths.map(s=>`<span class="tag pos">${s}</span>`).join('');
+  document.getElementById('r-weaknesses').innerHTML=od.weaknesses.map(w=>`<span class="tag neg">${w}</span>`).join('');
+
+  // chakra strip
+  const strip=document.getElementById('chakra-strip');
+  const weakCh=new Set(missing.map(n=>MISSING_MAP[n]?.chakraId).filter(Boolean));
+  strip.innerHTML='';
+  CHAKRAS.forEach(ch=>{
+    const isActive=(od.chakraId===0||ch.id===od.chakraId);
+    const isWeak=weakCh.has(ch.id)&&!isActive;
+    const el=document.createElement('div');
+    el.className='ch-item'+(isActive?' active':isWeak?' weak':'');
+    if(isActive){el.style.setProperty('--c-col',ch.col);el.style.setProperty('--c-rgb',ch.rgb);}
+    el.innerHTML=`<div class="ch-orb"></div><div class="ch-name">${ch.name}</div><div class="ch-en">${ch.en}</div>`;
+    strip.appendChild(el);
+  });
+  document.getElementById('r-chakra-name').textContent=od.chakra.name;
+  document.getElementById('r-chakra-name').style.color=od.color;
+  document.getElementById('r-chakra-desc').textContent=od.chakra.desc;
+
+  // crystals
+  document.getElementById('crystal-grid').innerHTML=od.crystals.map((c,i)=>`
+    <a class="crystal-card" href="${SHOP}/search?q=${encodeURIComponent(c.name)}" target="_blank" style="animation-delay:${i*.1}s">
+      <div class="gem">${gemSVG(c.col,c.rgb)}</div>
+      <div><div class="c-name">${c.name}</div><div class="c-en">${c.en}</div></div>
+      <div class="c-desc">${c.desc}</div>
+      <span class="c-btn">選購水晶 →</span>
+    </a>`).join('');
+
+  // switch sections
+  document.getElementById('quiz-section').style.display='none';
+  document.getElementById('result-section').classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function gemSVG(col,rgb){
+  const id='g'+rgb.replace(/,/g,'');
+  return `<svg viewBox="0 0 60 60"><defs><linearGradient id="${id}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="rgba(255,255,255,.35)"/><stop offset="50%" stop-color="${col}" stop-opacity=".9"/><stop offset="100%" stop-color="${col}" stop-opacity=".55"/></linearGradient></defs><polygon points="30,5 55,20 55,40 30,55 5,40 5,20" fill="url(#${id})" stroke="rgba(255,255,255,.2)" stroke-width="1"/><polygon points="30,5 55,20 30,25 5,20" fill="rgba(255,255,255,.15)"/></svg>`;
+}
+
+function restart(){
+  document.getElementById('result-section').classList.remove('show');
+  document.getElementById('quiz-section').style.display='';
+  document.documentElement.style.setProperty('--acc','#b07a1a');
+  document.documentElement.style.setProperty('--acc-rgb','176,122,26');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('quiz-section').style.display!=='none')startCalc();
+});
+</script>
+</body>
+</html>

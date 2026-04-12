@@ -196,6 +196,35 @@
   #line-float:hover{transform:scale(1.08);}
   #line-float svg{width:26px;height:26px;}
   @media(max-width:600px){.chakra-strip{gap:0;}.ch-orb{width:28px;height:28px;}.ch-item.active .ch-orb{width:38px;height:38px;}.ch-name{font-size:.42rem;}.ch-en{display:none;}}
+
+  /* ─── font size bumps ─── */
+  .r-intro{font-size:1.15rem;}
+  .card-body{font-size:1.05rem;}
+  .chakra-detail-desc{font-size:1.02rem;}
+  .c-desc{font-size:.97rem;}
+  .missing-desc{font-size:.95rem;}
+  .nb-name{font-size:.95rem;}
+
+  /* ─── 靈魂使命 ─── */
+  .mission-panel{max-width:720px;margin:0 auto;background:white;border:1px solid var(--border);border-top:3px solid var(--acc);padding:2.5rem 3rem;transition:border-color .5s;animation:fadeUp .6s .1s both;}
+  .mission-body{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;line-height:1.9;color:var(--text);margin-bottom:1.5rem;}
+  .mantra-label{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;margin-bottom:.6rem;}
+  .mantra-text{font-family:'Noto Serif SC',serif;font-size:.95rem;line-height:1.75;color:var(--text-d);padding:.9rem 1.2rem;background:rgba(var(--acc-rgb),.04);border-left:2px solid rgba(var(--acc-rgb),.3);}
+
+  /* ─── 缺數能量補給 ─── */
+  .me-intro{text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:var(--text-d);margin-bottom:2rem;letter-spacing:.04em;}
+  .me-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.2rem;max-width:900px;margin:0 auto;}
+  .me-card{background:white;border:1px solid var(--border);padding:1.8rem;animation:fadeUp .6s both;}
+  .me-card:nth-child(2){animation-delay:.08s;}
+  .me-card:nth-child(3){animation-delay:.16s;}
+  .me-card:nth-child(4){animation-delay:.24s;}
+  .me-header{display:flex;align-items:center;gap:.9rem;margin-bottom:1rem;}
+  .me-badge{width:50px;height:50px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-style:italic;font-size:1.9rem;font-weight:700;color:var(--acc);background:rgba(var(--acc-rgb),.07);transition:color .5s,background .5s;}
+  .me-num-name{font-family:'Noto Serif SC',serif;font-size:.9rem;letter-spacing:.06em;color:var(--text);margin-bottom:.15rem;}
+  .me-crystal-tag{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;}
+  .me-desc{font-family:'Cormorant Garamond',serif;font-size:.97rem;line-height:1.75;color:var(--text-d);margin-bottom:.85rem;}
+  .me-practice{font-size:.9rem;font-family:'Cormorant Garamond',serif;color:var(--text-d);line-height:1.65;padding:.6rem .9rem;background:var(--sage-l);border-left:2px solid var(--sage);margin-bottom:.6rem;}
+  .me-affirmation{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--text-d);padding:.6rem .9rem;border-left:2px solid rgba(var(--acc-rgb),.3);background:rgba(var(--acc-rgb),.03);}
   </style>
 </head>
 <body>
@@ -313,6 +342,15 @@
     </div>
   </div>
 
+  <!-- 靈魂使命 -->
+  <div class="sec-rule"></div>
+  <div class="sec-label">靈魂使命 · Soul Mission</div>
+  <div class="mission-panel" id="mission-panel">
+    <div class="mission-body" id="r-mission"></div>
+    <div class="mantra-label">能量肯定語</div>
+    <div class="mantra-text" id="r-mantra"></div>
+  </div>
+
   <!-- chakra -->
   <div class="sec-rule"></div>
   <div class="sec-label">脈輪能量分析</div>
@@ -328,6 +366,14 @@
   <div class="sec-rule"></div>
   <div class="sec-label">命定水晶處方</div>
   <div class="crystal-grid" id="crystal-grid"></div>
+
+  <!-- 缺數能量補給 -->
+  <div id="missing-energy-wrap" style="display:none">
+    <div class="sec-rule"></div>
+    <div class="sec-label">缺數能量補給 · Missing Number Remedy</div>
+    <p class="me-intro">這是針對你命盤中缺少的數字所提供的個人化水晶能量建議</p>
+    <div class="me-grid" id="me-grid"></div>
+  </div>
 
   <!-- LINE CTA -->
   <div class="sec-rule"></div>
@@ -365,109 +411,177 @@ const CHAKRAS=[
   {id:7,name:'頂輪',  en:'Crown',      col:'#9922aa',rgb:'153,34,170'},
 ];
 
-// ── 缺失數字的脈輪含義 ──
+// ── 缺失數字的脈輪含義（含水晶療方） ──
 const MISSING_MAP={
-  1:{chakraId:1,name:'海底輪',desc:'根基穩固感需要加強，建議滋養安全感與接地能量'},
-  2:{chakraId:2,name:'臍輪',  desc:'情感連結與直覺力需要培養，與自身感受建立連結'},
-  3:{chakraId:3,name:'太陽輪',desc:'自我表達與個人力量有待開發，強化自信能量'},
-  4:{chakraId:1,name:'海底輪',desc:'結構感與踏實感需要強化，建立生活秩序'},
-  5:{chakraId:5,name:'喉輪',  desc:'溝通表達課題需要關注，說出真實的自己'},
-  6:{chakraId:4,name:'心輪',  desc:'愛與創造力能量需要平衡，開啟心輪流動'},
-  7:{chakraId:6,name:'眉心輪',desc:'直覺洞察力需要喚醒，信任內在的知曉'},
-  8:{chakraId:7,name:'頂輪',  desc:'靈性連結與高我智慧需要加強'},
-  9:{chakraId:7,name:'頂輪',  desc:'宇宙意識與服務精神需要激活'},
+  1:{chakraId:1,name:'海底輪',
+    desc:'缺乏1數代表自信與獨立行動力需要加強。容易讓他人主導決定，難以堅守自我立場，需積極培養自我意識與主動出擊的勇氣。',
+    crystal:'紅碧玉',crystalCol:'#b03030',
+    practice:'每日記錄3件展現勇氣的行動；練習獨立完成一件事而不尋求他人認可，感受自主的力量。',
+    affirmation:'我信任自己的判斷，我有勇氣主導自己的人生方向。'},
+  2:{chakraId:2,name:'臍輪',
+    desc:'缺乏2數代表耐心、合作能量與情感敏感度不足。可能過於急躁或忽略他人感受，需培養傾聽與換位思考的深度。',
+    crystal:'月光石',crystalCol:'#c8c8e0',
+    practice:'練習主動傾聽，讓對方說完再回應；每週安排獨處靜心時光，感受自身的情感流動。',
+    affirmation:'我放慢腳步，在寧靜中感受生命的細膩，合作讓我更完整。'},
+  3:{chakraId:3,name:'太陽輪',
+    desc:'缺乏3數代表創造力與自我表達能量需要開發。可能壓抑情感或覺得難以輕鬆表達內心世界，喜悅的流動受到阻礙。',
+    crystal:'黃水晶',crystalCol:'#e8c820',
+    practice:'嘗試任何創作形式（繪畫、寫日記、唱歌）；允許自己不完美地玩耍，釋放內在小孩的活力。',
+    affirmation:'我的創意與歡笑是世界的禮物，我自由地表達最真實的自己。'},
+  4:{chakraId:1,name:'海底輪',
+    desc:'缺乏4數代表耐心、秩序感與踏實能量不足。可能難以堅持計畫或建立穩定結構，生活中有漂浮不定的感覺。',
+    crystal:'煙晶',crystalCol:'#6a5a4a',
+    practice:'建立一個每日固定的小習慣（如早起靜心）；嘗試30天挑戰，體驗一步步積累的踏實感。',
+    affirmation:'我一步一步穩健前行，每天的積累都在為豐盛的未來奠定基礎。'},
+  5:{chakraId:5,name:'喉輪',
+    desc:'缺乏5數代表適應力與冒險精神需要培養。可能過於保守或害怕改變，生活因此失去活力與流動的生命力。',
+    crystal:'海藍寶',crystalCol:'#5ab8c8',
+    practice:'每月嘗試一件從未做過的事；練習對不確定性保持開放的心，擁抱生命帶來的驚喜。',
+    affirmation:'我擁抱生命的變化，每一次改變都是靈魂進化的美好契機。'},
+  6:{chakraId:4,name:'心輪',
+    desc:'缺乏6數代表責任感與愛的能量需要啟動。可能難以承擔責任或給予穩定的愛，在關係中的持續付出是重要的功課。',
+    crystal:'粉晶',crystalCol:'#e8a8b8',
+    practice:'每週對身邊的人做一件善意的行動；練習接受他人的幫助，讓愛雙向流動。',
+    affirmation:'愛是宇宙的能量，我在給予與接受的流動中體驗靈魂的圓滿。'},
+  7:{chakraId:6,name:'眉心輪',
+    desc:'缺乏7數代表內省與靈性探索能量較弱。可能過於關注外在而忽略內心世界，需深化自我了解與信任直覺的能力。',
+    crystal:'紫水晶',crystalCol:'#8844cc',
+    practice:'每日10分鐘靜心或冥想；接觸哲學或靈性書籍，記錄夢境與直覺感受，與內在對話。',
+    affirmation:'我信任內在的神聖智慧，在寧靜深處我知曉所需的一切。'},
+  8:{chakraId:7,name:'頂輪',
+    desc:'缺乏8數代表個人力量與對豐盛的信心需要加強。在面對物質世界時可能感到力不從心，需培養健康的豐盛意識。',
+    crystal:'黃鐵礦',crystalCol:'#c8a820',
+    practice:'設定一個具體的財務或職涯目標；每日對自己說「我有能力達成目標」，練習果斷決策。',
+    affirmation:'我是豐盛能量的磁鐵，宇宙支持我以力量與正直創造真正的成就。'},
+  9:{chakraId:7,name:'頂輪',
+    desc:'缺乏9數代表慈悲心與完成能量需要加強。可能有難以放手的傾向，或缺乏服務他人、廣大奉獻的視野。',
+    crystal:'白水晶',crystalCol:'#e8e8f8',
+    practice:'練習原諒某件讓你放不下的事；參與志願服務，感受付出帶來的靈魂喜悅。',
+    affirmation:'我以慈悲心懷抱世界，在放下中我找到靈魂最深處的自由。'},
 };
 
 // ── 靈數資料 ──
 const DATA={
-  1:{name:'領導者',nameEn:'The Leader',color:'#c4703a',rgb:'196,112,58',chakraId:1,
-    intro:'你是天生的開拓者，充滿獨立精神與創新能量。宇宙賦予你開創新局的使命，你的光芒難以被掩蓋。',
-    career:'具備強烈的領導力，適合自行創業或管理職位。你的決斷力讓你在競爭環境中脫穎而出。',
-    love:'在感情中渴望主導，需要欣賞你獨立個性的伴侶。學習「退讓」是你的愛情課題。',
-    strengths:['決斷力強','充滿創造力','獨立自主','意志堅定','感染力強'],
-    weaknesses:['固執己見','缺乏耐心','難以接受批評','忽略他人感受'],
-    chakra:{name:'海底輪',desc:'掌管安全感、生存本能與行動力，你的能量根植於大地，穩固而有力。'},
-    crystals:[{name:'紅碧玉',en:'Red Jasper',col:'#b03030',rgb:'176,48,48',desc:'穩固根基，增強行動力與勇氣'},{name:'石榴石',en:'Garnet',col:'#9b1d1d',rgb:'155,29,29',desc:'激活熱情，強化領導魅力'},{name:'黑曜石',en:'Obsidian',col:'#2a2020',rgb:'42,32,32',desc:'保護能量，清除前進阻礙'}]},
-  2:{name:'協調者',nameEn:'The Peacemaker',color:'#b07a1a',rgb:'176,122,26',chakraId:2,
-    intro:'你是靈魂的橋梁，擁有細膩的感知力與天生的外交手腕。2號靈數者以愛與和諧連結世界中的每一個靈魂。',
-    career:'擅長合作、溝通與調解，適合心理諮詢、外交、教育或藝術領域。你的直覺讓你在幕後運籌帷幄。',
-    love:'你是天生的戀人，深情而敏感。全力付出，但要小心過度依賴而失去自我。',
-    strengths:['高度同理心','善於傾聽','直覺靈敏','耐心細膩','天生外交家'],
-    weaknesses:['過度敏感','容易依賴','迴避衝突','自我懷疑'],
-    chakra:{name:'臍輪',desc:'掌管情感、創造力與親密關係，你的能量在流動的水中找到共鳴。'},
-    crystals:[{name:'月光石',en:'Moonstone',col:'#c8c8e0',rgb:'200,200,224',desc:'增強直覺，平衡情緒能量'},{name:'粉晶',en:'Rose Quartz',col:'#e8a8b8',rgb:'232,168,184',desc:'開啟心輪，吸引愛的能量'},{name:'橙方解石',en:'Orange Calcite',col:'#e8900a',rgb:'232,144,10',desc:'激活情感中心，增強創造熱情'}]},
-  3:{name:'創造者',nameEn:'The Creator',color:'#b07a1a',rgb:'176,122,26',chakraId:3,
-    intro:'你是宇宙的藝術家，用語言、藝術和歡笑照亮世界。3號靈數者擁有無窮的創造力與表達天賦。',
-    career:'天賦異稟於創意表達，適合藝術、寫作、設計、娛樂或公關。你的魅力讓任何場合都因你生動。',
-    love:'你的感情多姿多彩，熱情奔放。需要欣賞你活潑本性的伴侶，避免因追求刺激影響深度。',
-    strengths:['創意豐沛','樂觀開朗','口才出眾','富有魅力','感染力強'],
-    weaknesses:['注意力分散','情緒起伏','拖延傾向','流於表面'],
-    chakra:{name:'太陽神經叢輪',desc:'掌管自信、意志力與個人力量，太陽般的你注定要發光發熱。'},
-    crystals:[{name:'黃水晶',en:'Citrine',col:'#e8c820',rgb:'232,200,32',desc:'帶來豐盛喜悅，激活創造力'},{name:'太陽石',en:'Sunstone',col:'#e8a030',rgb:'232,160,48',desc:'增強個人魅力，散發耀眼光芒'},{name:'虎眼石',en:"Tiger's Eye",col:'#a87820',rgb:'168,120,32',desc:'集中注意力，強化意志力'}]},
+  1:{name:'領導者',nameEn:'The Pioneer',color:'#c4703a',rgb:'196,112,58',chakraId:1,
+    intro:'你是宇宙的第一道光，帶著開創新局的神聖使命降臨。獨立、勇氣與原創性是你靈魂的核心語言，你渾身散發著無可取代的先驅氣質。你的存在提醒世界：真正的領導力，源自於成為最真實的自己。',
+    career:'你在任何需要先驅精神的領域都能發光——創業家、高階管理者、發明家或政治領袖。你不擅長屈居他人之下，最需要能獨立發揮的環境。你最強的職涯策略是：敢於第一個站出來，引領方向。',
+    love:'感情中你熱情強烈，有磁力般的吸引力，但主導的本能可能讓伴侶感到窒息。最深的課題是：學習合作而非征服，在關係中允許另一半也能發光，這才是你真正的愛情圓滿。',
+    mission:'成為你那個時代的先行者，以無畏的勇氣為後來者鋪開嶄新的道路。你的使命是點燃他人心中沉睡的火焰，讓世界因你的存在而更加勇敢。',
+    mantra:'「我信任自己的直覺，我有勇氣走在最前方，我的獨特性是宇宙給世界的禮物。」',
+    strengths:['決斷力強','充滿創造力','獨立自主','意志堅定','感染力強','勇於開創'],
+    weaknesses:['固執己見','缺乏耐心','難以接受批評','忽略他人感受','孤立傾向'],
+    chakra:{name:'海底輪 · Root Chakra',desc:'掌管安全感、生存本能與行動力。你的能量如大地般穩固，根植於深厚的自我信任之中。當你連結海底輪，你的行動力將如山嶽般不可動搖。'},
+    crystals:[{name:'紅碧玉',en:'Red Jasper',col:'#b03030',rgb:'176,48,48',desc:'穩固根基能量，增強行動力與英勇的生命力，是領導者最有力的護身石'},{name:'石榴石',en:'Garnet',col:'#9b1d1d',rgb:'155,29,29',desc:'激活熱情與深層生命力，強化你天生的領導魅力與強大吸引力'},{name:'黑曜石',en:'Obsidian',col:'#2a2020',rgb:'42,32,32',desc:'強力保護能量場，清除前進道路上的負能量與內在阻礙'}]},
+  2:{name:'和諧者',nameEn:'The Peacemaker',color:'#b07a1a',rgb:'176,122,26',chakraId:2,
+    intro:'你是靈魂的橋梁，擁有與生俱來的細膩感知力與天賦外交手腕。2號靈數者以愛與和諧為使命，你看見的不是人與人之間的差異，而是連結彼此的那條看不見的金線。你的溫柔，是這個世界最需要的力量。',
+    career:'擅長合作、溝通與調解，適合心理諮詢、外交、醫療照護、教育或藝術領域。你的直覺力讓你能感知他人未言說的需求，在幕後運籌帷幄、成就他人，是你最大的天賦之所在。',
+    love:'你是天生的戀人，深情而敏感，以全身心投入每一段關係。學習在給予的同時保留自我空間，才能讓你的愛情真正長久。你值得被同樣細心、溫柔地對待。',
+    mission:'成為連結靈魂的橋梁，以你細膩的感知帶來和諧與愛的共振。你來到這裡，是為了讓世界記得：合作比競爭更有力量，溫柔比強悍更深遠。',
+    mantra:'「我的敏感是天賦，我在靜默中感知宇宙的流動，我值得被深愛與珍視。」',
+    strengths:['高度同理心','善於傾聽','直覺靈敏','耐心細膩','天生外交家','促進和諧'],
+    weaknesses:['過度敏感','容易依賴','迴避衝突','自我懷疑','情感界限模糊'],
+    chakra:{name:'臍輪 · Sacral Chakra',desc:'掌管情感、創造力與親密連結。你的能量在流動的水中找到共鳴，你的使命是讓情感如河流般自然流淌，而非被壓抑在心底。'},
+    crystals:[{name:'月光石',en:'Moonstone',col:'#c8c8e0',rgb:'200,200,224',desc:'增強直覺與情感智慧，平衡內在陰陽能量，引導你跟隨靈魂的月光前行'},{name:'粉晶',en:'Rose Quartz',col:'#e8a8b8',rgb:'232,168,184',desc:'開啟心輪，帶來無條件的愛，吸引溫柔的靈魂進入你的生命圓舞'},{name:'橙方解石',en:'Orange Calcite',col:'#e8900a',rgb:'232,144,10',desc:'激活情感中心，清除舊有情感阻塞，重燃內在創造的熱情'}]},
+  3:{name:'創造者',nameEn:'The Creator',color:'#c8a020',rgb:'200,160,32',chakraId:3,
+    intro:'你是宇宙的藝術家，天生以語言、色彩和歡笑照亮世界。3號靈數者擁有無窮的創造力與自我表達天賦，你的笑聲是療癒，你的作品是魔法。當你忠實地活出自己的創意，你就是對世界最大的祝福。',
+    career:'天賦異稟於創意表達，適合藝術創作、寫作、設計、演藝、公關或品牌行銷。你的語言魅力讓任何場合都因你生動，能在瞬間打動人心是你無與倫比的優勢。',
+    love:'你的感情多姿多彩，熱情奔放，對伴侶充滿創意的浪漫表達。需要欣賞你活潑靈魂、給你創作空間的另一半。學習讓感情擁有深度，不只是熱情的火花。',
+    mission:'以你的創造力和光明能量照亮每一個你觸碰到的角落。你的使命是表達，是創造，是讓人們記起生命本來就是一件藝術品——快樂是你傳遞給世界最重要的信息。',
+    mantra:'「我的創意是宇宙的流動，我自由表達靈魂的色彩，歡笑是我的神聖語言。」',
+    strengths:['創意豐沛','樂觀開朗','口才出眾','富有魅力','感染力強','藝術天賦'],
+    weaknesses:['注意力分散','情緒起伏大','拖延傾向','流於表面','缺乏持久力'],
+    chakra:{name:'太陽神經叢輪 · Solar Plexus',desc:'掌管自信、意志力與個人力量。太陽般的你注定要發光發熱，當你的太陽輪完全開放，你的創造力將如陽光般無可阻擋地傾瀉而出。'},
+    crystals:[{name:'黃水晶',en:'Citrine',col:'#e8c820',rgb:'232,200,32',desc:'帶來豐盛喜悅，激活創造力之源，號稱「商人之石」帶來持續好運'},{name:'太陽石',en:'Sunstone',col:'#e8a030',rgb:'232,160,48',desc:'增強個人魅力與自信光芒，讓你在人群中自然而然耀眼奪目'},{name:'虎眼石',en:"Tiger's Eye",col:'#a87820',rgb:'168,120,32',desc:'集中注意力，強化意志力，幫你將閃光的想法轉化為具體成果'}]},
   4:{name:'建造者',nameEn:'The Builder',color:'#6e8a60',rgb:'110,138,96',chakraId:1,
-    intro:'你是大地的基石，以踏實與紀律為世界立下穩固根基。4號靈數者是可信賴的守護者與秩序的維護者。',
-    career:'擅長組織、規劃與執行，適合工程、建築、財務、法律或行政管理。',
-    love:'在感情中忠誠而穩定，傾向長期承諾。以行動表達愛意，要學習更多情感表達。',
-    strengths:['腳踏實地','高度可靠','組織能力強','有始有終','誠信正直'],
-    weaknesses:['過於固執','抗拒改變','工作狂傾向','忽略情感需求'],
-    chakra:{name:'海底輪',desc:'掌管安全感、根基穩固與物質基礎，大地的力量讓你屹立不搖。'},
-    crystals:[{name:'煙晶',en:'Smoky Quartz',col:'#6a5a4a',rgb:'106,90,74',desc:'接地氣，釋放壓力與緊繃'},{name:'綠松石',en:'Turquoise',col:'#3a9a8a',rgb:'58,154,138',desc:'帶來平衡，強化溝通信任'},{name:'紅碧玉',en:'Red Jasper',col:'#b03030',rgb:'176,48,48',desc:'穩固根基，增強耐力毅力'}]},
+    intro:'你是大地的基石，以踏實、紀律與忠誠為這個世界立下穩固的根基。4號靈數者是可信賴的守護者與秩序的維護者，你的價值不在於一夜暴富，而在於建立真正能夠長久傳承的事物。你的穩定，是世界最寶貴的資產。',
+    career:'擅長組織規劃與縝密執行，適合工程、建築、財務規劃、法律或行政管理。你在混亂中帶來秩序，在不穩定中創造結構，是任何團隊中最不可缺少的中流砥柱。',
+    love:'你在感情中忠誠而穩定，是伴侶最可靠的後盾，傾向以行動而非甜言蜜語表達愛意。學習適時說出心中的感受，讓另一半也能感受到你深藏於行動背後的溫柔與深情。',
+    mission:'為這個時代建立真實而持久的事物——無論是建築、制度、家庭還是事業。你的使命是用雙手和汗水創造能夠超越時間考驗的豐盛根基，讓後代站在你的肩膀上繼續前行。',
+    mantra:'「我的努力是神聖的祈禱，每一步踏實的積累都在為豐盛的未來奠定永恆的基礎。」',
+    strengths:['腳踏實地','高度可靠','組織能力強','有始有終','誠信正直','耐力超群'],
+    weaknesses:['過於固執','抗拒改變','工作狂傾向','忽略情感需求','過度保守'],
+    chakra:{name:'海底輪 · Root Chakra',desc:'掌管安全感、根基穩固與物質基礎。你與大地能量深度連結，海底輪的穩固讓你成為周圍人的安全感來源，也是你創造豐盛的永恆根本。'},
+    crystals:[{name:'煙晶',en:'Smoky Quartz',col:'#6a5a4a',rgb:'106,90,74',desc:'接地氣、釋放壓力與心理緊繃，幫助你在高壓中保持冷靜與清明'},{name:'綠松石',en:'Turquoise',col:'#3a9a8a',rgb:'58,154,138',desc:'帶來心靈平衡，軟化頑固能量，強化誠信基礎與人際深度信任'},{name:'紅碧玉',en:'Red Jasper',col:'#b03030',rgb:'176,48,48',desc:'穩固根基能量，增強耐力與毅力，讓你的努力更持久更有力'}]},
   5:{name:'自由者',nameEn:'The Freedom Seeker',color:'#3366cc',rgb:'51,102,204',chakraId:5,
-    intro:'你是宇宙的旅行者，以變化與冒險為生命燃料。5號靈數者是天生的自由靈魂，渴望體驗生命的無限可能。',
-    career:'最適合需要變化的工作，如旅遊、行銷、媒體、業務或創業。你在靈活環境中如魚得水。',
-    love:'感情充滿激情但需要空間與自由。你害怕被束縛，需要能與你共同探索生命的伴侶。',
-    strengths:['高度適應力','勇於冒險','思想靈活','充滿魅力','溝通能力強'],
-    weaknesses:['缺乏持久力','衝動行事','容易分心','對承諾感到恐懼'],
-    chakra:{name:'喉輪',desc:'掌管溝通、自我表達與真實性，你的聲音是改變世界的力量。'},
-    crystals:[{name:'海藍寶',en:'Aquamarine',col:'#5ab8c8',rgb:'90,184,200',desc:'清晰表達，帶來冒險勇氣'},{name:'藍紋瑪瑙',en:'Blue Lace Agate',col:'#88b8d8',rgb:'136,184,216',desc:'平靜心神，促進清晰溝通'},{name:'青金石',en:'Lapis Lazuli',col:'#1a3a8a',rgb:'26,58,138',desc:'開啟智慧，強化自我表達'}]},
+    intro:'你是宇宙的旅行者，以變化與冒險為生命的燃料。5號靈數者是天生的自由靈魂，渴望體驗生命的無限可能——對你而言，每一扇新開的門都是一個奇蹟。你的使命是活得多元、廣闊、不受束縛。',
+    career:'最適合需要靈活與變化的工作：旅遊、媒體、行銷、業務、創業或任何不被辦公桌束縛的工作。你在靈活環境中如魚得水，固定的框架只會熄滅你的光芒，讓你的才華無法伸展。',
+    love:'感情充滿激情與刺激，但你對長期承諾可能感到恐懼。你需要一個給你空間呼吸、能與你共同冒險的伴侶。最深的功課是：學習在自由與承諾之間找到神聖的平衡點。',
+    mission:'透過你的多元體驗，為世界帶來改變的風潮。你的使命是打破框架、拓展邊界，讓那些被恐懼束縛的靈魂，透過你的故事看見另一種更自由的生命可能。',
+    mantra:'「我擁抱生命的無限可能，每一次改變都是靈魂的進化，我在流動中找到真正的自由。」',
+    strengths:['高度適應力','勇於冒險','思想靈活','充滿魅力','溝通能力強','感官敏銳'],
+    weaknesses:['缺乏持久力','衝動行事','容易分心','對承諾感到恐懼','過度追求刺激'],
+    chakra:{name:'喉輪 · Throat Chakra',desc:'掌管溝通、自我表達與真實性。你的聲音是改變世界的力量，當你真實說出自己的體驗與想法，整個宇宙都在傾聽你說話。'},
+    crystals:[{name:'海藍寶',en:'Aquamarine',col:'#5ab8c8',rgb:'90,184,200',desc:'清晰溝通，帶來冒險的勇氣與內心的平靜，是旅行者最重要的守護石'},{name:'藍紋瑪瑙',en:'Blue Lace Agate',col:'#88b8d8',rgb:'136,184,216',desc:'平靜浮躁心神，促進清晰優雅的溝通，讓你的話語更有力量'},{name:'青金石',en:'Lapis Lazuli',col:'#1a3a8a',rgb:'26,58,138',desc:'開啟智慧之眼，強化自我表達的真實性與深度洞見'}]},
   6:{name:'守護者',nameEn:'The Nurturer',color:'#33aa55',rgb:'51,170,85',chakraId:4,
-    intro:'你是愛的化身，以溫暖和責任感滋養周圍的每一個靈魂。6號靈數者是家庭與社群的守護天使。',
-    career:'天生適合照護與服務，如醫療、教育、諮商、社會工作或室內設計。',
-    love:'你是最深情的伴侶，願意為愛犧牲一切。學習愛自己如同愛他人，避免在付出中失去自我。',
-    strengths:['溫暖體貼','高度責任感','和諧創造者','美感出眾','忠誠守信'],
-    weaknesses:['過度犧牲','完美主義','控制慾強','難以拒絕他人'],
-    chakra:{name:'心輪',desc:'掌管愛、同情心與人際關係，你的心是宇宙中最溫暖的燈塔。'},
-    crystals:[{name:'粉晶',en:'Rose Quartz',col:'#e8a8b8',rgb:'232,168,184',desc:'療癒心靈，吸引無條件的愛'},{name:'綠幽靈',en:'Green Phantom',col:'#50a050',rgb:'80,160,80',desc:'帶來豐盛，療癒家庭關係'},{name:'祖母綠',en:'Emerald',col:'#1a9040',rgb:'26,144,64',desc:'強化心輪，帶來希望與更新'}]},
+    intro:'你是愛的化身，以溫暖、責任感與美的眼光滋養周圍每一個靈魂。6號靈數者是家庭與社群的守護天使，你天生渴望創造和諧、保護所愛之人，讓每一個來到你身邊的人都感到被珍視與深深接納。',
+    career:'天生適合照護與服務型工作：醫療、教育、心理諮商、社會工作、室內設計或美業。你對美與和諧的敏銳感知，讓你在任何創造美好環境的領域都能大放異彩。',
+    love:'你是最深情的伴侶，願意為愛全力付出。然而真正的愛不是控制，也不是犧牲自我。最重要的功課是先好好愛自己，才能給出真正滋養他人的愛，而不是耗盡自己的付出。',
+    mission:'以你的愛與美創造一個更溫柔、更和諧的世界。你的使命是提醒每一個生命：被愛與被照顧是所有人的基本權利，而你的溫暖是這個時代最珍貴的療癒力量。',
+    mantra:'「愛始於自我，我在給予與接受愛之間保持神聖的平衡，我的溫柔正在改變世界。」',
+    strengths:['溫暖體貼','高度責任感','和諧創造者','美感出眾','忠誠守信','療癒能量'],
+    weaknesses:['過度犧牲','完美主義','控制慾強','難以拒絕他人','自我忽略'],
+    chakra:{name:'心輪 · Heart Chakra',desc:'掌管愛、同情心與人際關係的神聖中心。你的心是宇宙中最溫暖的燈塔，當你的心輪完全綻放，愛的能量將如春風般流遍你所在之處。'},
+    crystals:[{name:'粉晶',en:'Rose Quartz',col:'#e8a8b8',rgb:'232,168,184',desc:'療癒心靈舊傷，吸引無條件的愛，讓你的心輪柔軟而充滿光芒'},{name:'綠幽靈',en:'Green Phantom',col:'#50a050',rgb:'80,160,80',desc:'帶來豐盛意識，療癒家庭關係，引導人生進入更豐盛的全新格局'},{name:'祖母綠',en:'Emerald',col:'#1a9040',rgb:'26,144,64',desc:'強化心輪能量，帶來希望、更新與深度療癒的神聖綠色生命力'}]},
   7:{name:'智慧者',nameEn:'The Seeker',color:'#6633bb',rgb:'102,51,187',chakraId:6,
-    intro:'你是靈魂的哲學家，用深邃的思考探索宇宙的終極真相。7號靈數者是神秘學與智慧的天生守門人。',
-    career:'最適合深度研究與分析，如科學研究、哲學、心理學、靈性探索或IT技術。',
-    love:'感情深沉而神秘，不易輕易投入。需要靈性與智識層面連結的伴侶，而非只是表面吸引。',
-    strengths:['深度分析力','靈性智慧','直覺精準','獨立思考','追求真相'],
-    weaknesses:['過度內向','情感疏離','多疑傾向','完美主義'],
-    chakra:{name:'眉心輪',desc:'掌管直覺、洞察力與靈性視野，你的第三眼看透世界的本質。'},
-    crystals:[{name:'紫水晶',en:'Amethyst',col:'#8844cc',rgb:'136,68,204',desc:'增強靈性洞察，帶來內在平靜'},{name:'青金石',en:'Lapis Lazuli',col:'#1a3a8a',rgb:'26,58,138',desc:'開啟第三眼，連結宇宙智慧'},{name:'拉長石',en:'Labradorite',col:'#3a6888',rgb:'58,104,136',desc:'神秘防護石，增強直覺力量'}]},
+    intro:'你是靈魂的哲學家，用深邃的思考探索宇宙的終極真相。7號靈數者是神秘學與智慧的天生守門人，你天生與看不見的世界有著深刻的連結。你的存在本身就是一個謎，而解開這個謎，正是你此生最美的旅程。',
+    career:'最適合深度研究與分析：科學研究、哲學、心理學、靈性探索、資訊技術或任何需要穿透表面、尋找真理的工作。你在孤獨中工作得最好，深度遠比廣度更重要。',
+    love:'感情深沉而神秘，你不輕易投入，但一旦決定就是深入靈魂的連結。你需要能在靈性與智識層面與你對話的伴侶。最深的課題是：學習打開自己，讓人真正走進你的內心世界。',
+    mission:'成為這個時代的神秘知識守護者，將深邃的智慧轉化為他人能夠理解的語言。你是溝通可見與不可見世界之間的橋梁，你的洞見是給這個時代的珍貴禮物。',
+    mantra:'「我信任內在的神聖智慧，在寧靜深處我知曉一切，我的直覺是宇宙最真實的聲音。」',
+    strengths:['深度分析力','靈性智慧','直覺精準','獨立思考','追求真相','神秘洞察'],
+    weaknesses:['過度內向','情感疏離','多疑傾向','完美主義','孤立自己'],
+    chakra:{name:'眉心輪 · Third Eye Chakra',desc:'掌管直覺、洞察力與靈性視野。你的第三眼天生開啟，能看透世界表象背後的真實本質。信任這份看見，它是你此生最強大的指引。'},
+    crystals:[{name:'紫水晶',en:'Amethyst',col:'#8844cc',rgb:'136,68,204',desc:'增強靈性洞察力，帶來深層內在平靜，被稱為「靈性覺醒之石」'},{name:'青金石',en:'Lapis Lazuli',col:'#1a3a8a',rgb:'26,58,138',desc:'開啟第三眼，連結宇宙深層智慧，強化直覺與神秘洞見能力'},{name:'拉長石',en:'Labradorite',col:'#3a6888',rgb:'58,104,136',desc:'神秘防護石，增強直覺力量，揭示隱藏的真相與宇宙可能性'}]},
   8:{name:'成就者',nameEn:'The Achiever',color:'#b07a1a',rgb:'176,122,26',chakraId:3,
-    intro:'你是物質世界的煉金術師，擁有將夢想轉化為現實的強大力量。8號靈數者生來是掌握豐盛與成就的王者。',
-    career:'天生的商業領袖，適合金融、投資、企業管理、法律或房地產。',
-    love:'在感情中強勢而忠誠，將伴侶視為人生戰略夥伴。需要在事業中留給愛情足夠的空間。',
-    strengths:['強大執行力','財務天賦','領導魅力','意志如鐵','戰略思維'],
-    weaknesses:['物質主義','控制慾強','工作生活失衡','難以示弱'],
-    chakra:{name:'太陽神經叢輪',desc:'掌管個人力量、意志與豐盛吸引力，你是宇宙豐盛能量的最佳管道。'},
-    crystals:[{name:'黃鐵礦',en:'Pyrite',col:'#c8a820',rgb:'200,168,32',desc:'豐盛吸引石，帶來財富與成功'},{name:'黑碧璽',en:'Black Tourmaline',col:'#1a1a2a',rgb:'26,26,42',desc:'強力保護，屏蔽負能量攻擊'},{name:'金髮晶',en:'Rutilated Quartz',col:'#d4a840',rgb:'212,168,64',desc:'放大能量，加速目標達成'}]},
+    intro:'你是物質世界的煉金術師，擁有將夢想轉化為具體現實的強大力量。8號靈數者生來掌握豐盛與成就的能量，你與宇宙之間有著業力的深厚契約：給予你力量，你以此服務更大的善。當你善用力量，你將成為他人眼中的奇蹟。',
+    career:'天生的商業領袖，適合金融投資、企業管理、法律、房地產或任何需要戰略眼光的領域。你有能力在財富的世界中穿梭自如，以正直與智慧引導雄心，是你最高的職涯哲學。',
+    love:'在感情中你強勢而忠誠，視伴侶為人生最重要的戰略夥伴。需要在野心勃勃的事業中為愛留下真正的空間，讓另一半感受到他們在你心中不可撼動的重要性。',
+    mission:'掌握物質力量、創造真正的豐盛，然後將所得用於提升更多人的生命。你的使命是示範：財富與靈性可以同行，成功與善良可以共存，力量用於服務才是最高的成就。',
+    mantra:'「我是豐盛的管道，宇宙的力量通過我流動，我以智慧與正直創造真正的成就。」',
+    strengths:['強大執行力','財務天賦','領導魅力','意志如鐵','戰略思維','勇於承擔'],
+    weaknesses:['物質主義傾向','控制慾強','工作生活失衡','難以示弱','過度強勢'],
+    chakra:{name:'太陽神經叢輪 · Solar Plexus',desc:'掌管個人力量、意志力與豐盛吸引力。你是宇宙豐盛能量最強大的管道之一，當你的太陽輪平衡，力量與溫柔在你身上完美共存。'},
+    crystals:[{name:'黃鐵礦',en:'Pyrite',col:'#c8a820',rgb:'200,168,32',desc:'豐盛吸引石，帶來財富好運與強大的成功能量，強化意志力與企圖心'},{name:'黑碧璽',en:'Black Tourmaline',col:'#1a1a2a',rgb:'26,26,42',desc:'強力防護能量場，屏蔽負能量侵擾，保護你的成就免受嫉妒破壞'},{name:'金髮晶',en:'Rutilated Quartz',col:'#d4a840',rgb:'212,168,64',desc:'放大豐盛意圖，加速目標達成，被稱為「成就加速器」'}]},
   9:{name:'人道者',nameEn:'The Humanitarian',color:'#9922aa',rgb:'153,34,170',chakraId:7,
-    intro:'你是宇宙的療癒者，帶著服務全人類的神聖使命降臨。9號靈數者擁有博愛的靈魂與完成一個輪迴的智慧。',
-    career:'最適合服務型、藝術型或靈性工作，如社會服務、藝術創作、靈性教導、醫療或非營利組織。',
-    love:'你的愛廣博而深沉，有時超越個人的愛情。需要一個理解你靈性使命的伴侶。',
-    strengths:['悲天憫人','藝術天賦','深邃智慧','無私奉獻','靈性感知'],
-    weaknesses:['過度理想化','情緒複雜','難以放手','自我犧牲'],
-    chakra:{name:'頂輪',desc:'掌管靈性連結、高我意識與宇宙融合，你是來自星光的使者。'},
-    crystals:[{name:'白水晶',en:'Clear Quartz',col:'#e8e8f0',rgb:'232,232,240',desc:'萬能療癒石，放大所有意圖'},{name:'透石膏',en:'Selenite',col:'#f0f0e0',rgb:'240,240,224',desc:'連結高我，淨化空間能量'},{name:'捷克隕石',en:'Moldavite',col:'#2a6830',rgb:'42,104,48',desc:'高頻轉化石，加速靈魂進化'}]},
+    intro:'你是宇宙的療癒者，帶著服務全人類的神聖使命降臨。9號靈數者擁有博愛的靈魂與完成一個輪迴週期的深邃智慧。你已在靈性旅程中走得最遠，你所有的人生經歷都在為你的使命服務：療癒、啟發、圓滿。',
+    career:'最適合服務型、藝術型或靈性工作：社會服務、藝術創作、靈性教導、醫療照護、非營利機構或心靈工作。你的靈魂不是為個人成就而來，而是為了更大的善與光。',
+    love:'你的愛廣博而深沉，幾乎超越個人愛情的範疇。有時你愛整個世界，卻忘了愛眼前的那個人。需要一個理解你靈性深度、能與你共同承擔使命的真正靈魂伴侶。',
+    mission:'以你的智慧與慈悲療癒世界。你此生的使命是完成，是放下，是在圓滿中離去，再在圓滿中重生。你是最後一個數字，也是一切循環嶄新的開始。',
+    mantra:'「我以慈悲擁抱世界，在放下中我找到真正的自由，服務是我靈魂最深的喜悅。」',
+    strengths:['悲天憫人','藝術天賦','深邃智慧','無私奉獻','靈性感知','完成能量'],
+    weaknesses:['過度理想化','情緒複雜','難以放手','自我犧牲','失望感強烈'],
+    chakra:{name:'頂輪 · Crown Chakra',desc:'掌管靈性連結、高我意識與宇宙融合。你是最接近星光的靈魂，當你的頂輪完全開放，你與宇宙意識合而為一，成為純粹的光與愛的化身。'},
+    crystals:[{name:'白水晶',en:'Clear Quartz',col:'#e8e8f0',rgb:'232,232,240',desc:'萬能療癒石，放大所有靈性意圖，最純淨的光之結晶與宇宙能量放大器'},{name:'透石膏',en:'Selenite',col:'#f0f0e0',rgb:'240,240,224',desc:'連結高我智慧，淨化空間與能量場，是靈性工作者最重要的護持石'},{name:'捷克隕石',en:'Moldavite',col:'#2a6830',rgb:'42,104,48',desc:'高頻轉化石，加速靈魂進化，是最強大的星際能量礦石與靈性催化劑'}]},
   11:{name:'啟示者',nameEn:'The Illuminator',color:'#7722bb',rgb:'119,34,187',chakraId:6,
-    intro:'你擁有大師靈數 11，是宇宙派來的靈性使者。你介於 2 與更高頻之間，擁有超凡的直覺與啟示他人的神聖使命。',
-    career:'適合靈性指導、心理治療、藝術創作、教育或任何需要直覺與啟發的工作。',
-    love:'你的感情極為深刻，幾乎帶有心電感應的連結。需要接受你靈性深度的伴侶。',
-    strengths:['超凡直覺','靈性感知','深度同理','激勵他人','創意洞見'],
-    weaknesses:['過度敏感','焦慮傾向','自我懷疑','理想現實落差'],
-    chakra:{name:'眉心輪 × 頂輪',desc:'雙重啟動高頻能量中心，連結靈性洞見與宇宙意識。你是兩個世界之間的橋樑。'},
-    crystals:[{name:'月光石',en:'Moonstone',col:'#c8c8e0',rgb:'200,200,224',desc:'增強直覺，平衡靈性與情感'},{name:'透石膏',en:'Selenite',col:'#f0f0e0',rgb:'240,240,224',desc:'淨化高頻通道，連結天使領域'},{name:'藍晶石',en:'Kyanite',col:'#4488cc',rgb:'68,136,204',desc:'對齊所有脈輪，傳遞宇宙信息'}]},
+    intro:'你擁有大師靈數 11，是宇宙派遣來啟迪這個時代的靈性使者。你感知到他人無法察覺的細微能量，你的直覺幾乎達到超自然的精確度。這份禮物同時帶來強烈的敏感，你的使命是學習承載光，而不被光所灼傷。',
+    career:'適合靈性指引、心理治療、藝術創作、教育啟發或任何需要深度直覺的工作。你是天生的啟示者，往往能說出別人心中說不出口的真相，引發靈魂層面的深度共鳴。',
+    love:'你的感情擁有近乎心電感應的深度連結，能感受伴侶靈魂層面的波動。需要一個能接受你靈性深度、不因你的敏感而感到不安的靈魂伴侶，這樣的相遇是你的命定禮物。',
+    mission:'成為這個時代的靈性燈塔，以你超凡的直覺與洞察力，喚醒沉睡中的靈魂。你是兩個世界之間的橋梁，你的存在本身就是一個神聖的邀請——回到光中。',
+    mantra:'「我是光的管道，我的敏感是天賜的禮物，我以愛與智慧引領靈魂找到回家的路。」',
+    strengths:['超凡直覺','靈性感知','深度同理','激勵他人','創意洞見','啟示能量'],
+    weaknesses:['過度敏感','焦慮傾向','自我懷疑','理想現實落差','能量界限脆弱'],
+    chakra:{name:'眉心輪 × 頂輪 雙啟動',desc:'大師靈數11同時啟動眉心輪與頂輪的雙重高頻能量中心，你在靈性洞見與宇宙意識之間架起橋樑，是可見與不可見世界的守望者。'},
+    crystals:[{name:'月光石',en:'Moonstone',col:'#c8c8e0',rgb:'200,200,224',desc:'增強直覺與靈性感知，平衡強烈的情感能量，保護你敏感脆弱的能量場'},{name:'透石膏',en:'Selenite',col:'#f0f0e0',rgb:'240,240,224',desc:'淨化高頻能量通道，連結天使領域指引，帶來深層靈性清明與方向感'},{name:'藍晶石',en:'Kyanite',col:'#4488cc',rgb:'68,136,204',desc:'對齊並淨化所有脈輪，是傳遞宇宙訊息最有效、最精準的水晶媒介'}]},
   22:{name:'大師建造者',nameEn:'The Master Builder',color:'#b07a1a',rgb:'176,122,26',chakraId:0,
-    intro:'你擁有最高等的大師靈數 22，兼具夢想者的遠見與建造者的能力。宇宙委你以將偉大夢想付諸實現的神聖重任。',
-    career:'適合大規模建設性工作，如建築、政治、社會改革、大型企業或任何能影響廣大人群的事業。',
-    love:'你在感情中既有深情也有遠見，尋找能共同實現偉大夢想的靈魂伴侶。',
-    strengths:['宏觀遠見','強大執行力','整合能力','使命感強','務實理想主義'],
-    weaknesses:['完美主義','壓力過大','難以放鬆','對自己過苛'],
-    chakra:{name:'七大脈輪全開',desc:'你的能量流貫全身七大脈輪，是宇宙最完整的能量體現。你來此完成宏大的使命。'},
-    crystals:[{name:'白水晶',en:'Clear Quartz',col:'#e8e8f0',rgb:'232,232,240',desc:'整合所有能量，放大宏大意圖'},{name:'拉長石',en:'Labradorite',col:'#3a6888',rgb:'58,104,136',desc:'連結多維視角，展現神奇可能'},{name:'彩電氣石',en:'Rainbow Tourmaline',col:'#4a7a4a',rgb:'74,122,74',desc:'整合所有脈輪，實現完整蛻變'}]},
+    intro:'你擁有所有靈數中最強大的大師靈數 22，被稱為「大師建造者」。你兼具夢想者的遠見與實踐者的能力，宇宙將最宏大的使命賦予你：將偉大的夢想付諸實現，留下超越個人的不朽遺產。這份使命沉重卻神聖。',
+    career:'適合大規模建設性工作：建築、政治、社會改革、大型企業或任何能影響廣大人群的事業。你有能力將靈感轉化為影響千萬人的具體成果，而這正是你此生最神聖的任務。',
+    love:'你在感情中同樣擁有遠大的視野，尋找能與你共同實現偉大夢想的靈魂伴侶。學習在使命感中留下純粹屬於愛的空間，給自己和伴侶都多一點脆弱的特權與安全感。',
+    mission:'以你宏大的遠見與務實的力量，在這個時代建立真正能改變世界的事物。你來此是為了留下遺產——讓後世的人因你的存在而活得更好、更有希望。',
+    mantra:'「我將宇宙的偉大藍圖帶入現實，一磚一瓦，我正在共同建造一個更美好的世界。」',
+    strengths:['宏觀遠見','強大執行力','整合能力','使命感極強','務實理想主義','影響力巨大'],
+    weaknesses:['完美主義','承受壓力過大','難以放鬆','對自己過苛','忽略個人需求'],
+    chakra:{name:'七大脈輪 全面開啟',desc:'大師靈數22的能量流貫全身七大脈輪，你是宇宙中最完整的能量體現。這份完整性帶來無上的力量，也帶來相應深重的責任與使命。'},
+    crystals:[{name:'白水晶',en:'Clear Quartz',col:'#e8e8f0',rgb:'232,232,240',desc:'整合所有能量，放大宏大的靈性意圖，是最純淨的光之建造工具'},{name:'拉長石',en:'Labradorite',col:'#3a6888',rgb:'58,104,136',desc:'連結多維視角，展現隱藏的神奇可能，為夢想工程鋪展完整的宇宙藍圖'},{name:'彩色碧璽',en:'Rainbow Tourmaline',col:'#4a7a4a',rgb:'74,122,74',desc:'整合七大脈輪能量，帶來彩虹般完整的蛻變與全面的靈魂深度平衡'}]},
+  33:{name:'大師療癒者',nameEn:'The Master Teacher',color:'#cc3399',rgb:'204,51,153',chakraId:4,
+    intro:'你擁有最稀有的大師靈數 33，被稱為「大師療癒者」。這是所有靈數中最高的慈悲頻率，你的靈魂攜帶著整個人類集體的療癒使命降臨。你的存在本身就是一份恩典，你的愛是一種奇蹟。這份天賦沉甸甸，也無比神聖。',
+    career:'最適合療癒與教導工作：靈性老師、心理治療師、藝術療癒師或任何以無私服務為核心的工作。你的影響力不在於個人成就，而在於你所喚醒、療癒和啟迪的千萬顆靈魂。',
+    love:'你的愛具有神性般的包容與慈悲，幾乎超越了個人愛情的範疇。真正的功課是：在普世之愛與個人親密關係之間找到平衡，讓近在眼前的人也能感受到你深邃而溫暖的愛。',
+    mission:'以無條件的愛療癒世界，以智慧啟迪靈魂。你是光與愛最純粹的管道，你的使命是提醒每一個靈魂：他們本質上是神聖的，是被愛的，是完整的，永遠如此。',
+    mantra:'「我是宇宙慈悲最純粹的管道，我的愛無條件流動，我以光療癒每一個觸碰我的靈魂。」',
+    strengths:['最高慈悲頻率','無條件的愛','靈性療癒力','創造性表達','啟迪他人','神性智慧'],
+    weaknesses:['情感過度負荷','難以設定界限','過度犧牲','理想主義過強','忽略自身需求'],
+    chakra:{name:'心輪 × 頂輪 神聖慈悲',desc:'大師靈數33以心輪為核心，同時與頂輪完全開啟。你是宇宙無條件之愛最純粹的化身，你的心是這個時代最需要的療癒聖地。'},
+    crystals:[{name:'粉紅碧璽',en:'Pink Tourmaline',col:'#e060a0',rgb:'224,96,160',desc:'激活最高頻率的心輪能量，帶來神性之愛的深層療癒力量與慈悲光芒'},{name:'舒俱徠石',en:'Sugilite',col:'#8844aa',rgb:'136,68,170',desc:'大師療癒石，連結宇宙慈悲意識，保護高度敏感的療癒者能量場'},{name:'透石膏',en:'Selenite',col:'#f0f0e0',rgb:'240,240,224',desc:'淨化療癒通道，連結天使高我指引，是大師靈數最重要的神聖護持石'}]},
 };
 
 // ── 九宮格 Lo Shu layout ──
@@ -476,7 +590,7 @@ const LO_SHU=[[4,9,2],[3,5,7],[8,1,6]];
 // ── 計算 ──
 function reduce(str){
   let n=[...str].reduce((a,c)=>a+parseInt(c),0);
-  while(n>9&&n!==11&&n!==22)n=[...String(n)].reduce((a,c)=>a+parseInt(c),0);
+  while(n>9&&n!==11&&n!==22&&n!==33)n=[...String(n)].reduce((a,c)=>a+parseInt(c),0);
   return n;
 }
 function calcOuter(y,m,d){return reduce(`${y}${String(m).padStart(2,'0')}${String(d).padStart(2,'0')}`);}
@@ -568,6 +682,11 @@ function showResult(y,m,d,outer,inner){
   document.getElementById('r-strengths').innerHTML=od.strengths.map(s=>`<span class="tag pos">${s}</span>`).join('');
   document.getElementById('r-weaknesses').innerHTML=od.weaknesses.map(w=>`<span class="tag neg">${w}</span>`).join('');
 
+  // 靈魂使命
+  document.getElementById('r-mission').textContent=od.mission||'';
+  document.getElementById('r-mantra').textContent=od.mantra||'';
+  document.getElementById('mission-panel').style.borderTopColor=od.color;
+
   // chakra strip
   const strip=document.getElementById('chakra-strip');
   const weakCh=new Set(missing.map(n=>MISSING_MAP[n]?.chakraId).filter(Boolean));
@@ -584,6 +703,31 @@ function showResult(y,m,d,outer,inner){
   document.getElementById('r-chakra-name').textContent=od.chakra.name;
   document.getElementById('r-chakra-name').style.color=od.color;
   document.getElementById('r-chakra-desc').textContent=od.chakra.desc;
+
+  // 缺數能量補給
+  const meWrap=document.getElementById('missing-energy-wrap');
+  const meGrid=document.getElementById('me-grid');
+  if(missing.length){
+    meWrap.style.display='block';
+    meGrid.innerHTML=missing.slice(0,6).map((n,i)=>{
+      const mm=MISSING_MAP[n];
+      if(!mm)return '';
+      return `<div class="me-card" style="animation-delay:${i*.08}s">
+        <div class="me-header">
+          <div class="me-badge" style="background:rgba(var(--acc-rgb),.07);color:var(--acc)">${n}</div>
+          <div>
+            <div class="me-num-name">缺數 ${n} · 補足${mm.name}能量</div>
+            <div class="me-crystal-tag">推薦水晶 · ${mm.crystal}</div>
+          </div>
+        </div>
+        <div class="me-desc">${mm.desc}</div>
+        <div class="me-practice">⟡ 能量練習：${mm.practice}</div>
+        <div class="me-affirmation">${mm.affirmation}</div>
+      </div>`;
+    }).join('');
+  }else{
+    meWrap.style.display='none';
+  }
 
   // crystals
   document.getElementById('crystal-grid').innerHTML=od.crystals.map((c,i)=>`

@@ -35,11 +35,11 @@
 
   /* ─── nav ─── */
   nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:62px;background:rgba(247,240,230,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
-  .nav-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--text);text-decoration:none;}
+  .nav-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:1.25rem;color:var(--text);text-decoration:none;}
   .nav-links{display:flex;gap:2rem;list-style:none;}
-  .nav-links a{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.35em;color:var(--text-d);text-decoration:none;text-transform:uppercase;transition:color .3s;}
+  .nav-links a{font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.35em;color:var(--text-d);text-decoration:none;text-transform:uppercase;transition:color .3s;}
   .nav-links a:hover,.nav-links a.active{color:var(--gold);}
-  @media(max-width:600px){nav{padding:0 1.2rem;}.nav-links{gap:1.2rem;}.nav-links a{font-size:.48rem;}}
+  @media(max-width:600px){nav{padding:0 1.2rem;}.nav-links{gap:1.2rem;}.nav-links a{font-size:.68rem;}}
 
   /* ─── page wrap ─── */
   .pw{padding-top:62px;min-height:100vh;}
@@ -52,15 +52,15 @@
   /* ─── QUIZ SECTION ─── */
   #quiz-section{min-height:calc(100vh - 62px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 1.5rem;position:relative;overflow:hidden;}
 
-  .quiz-eyebrow{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.5em;color:var(--sage);text-transform:uppercase;margin-bottom:1.4rem;text-align:center;display:flex;align-items:center;justify-content:center;gap:.8rem;}
+  .quiz-eyebrow{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.5em;color:var(--sage);text-transform:uppercase;margin-bottom:1.4rem;text-align:center;display:flex;align-items:center;justify-content:center;gap:.8rem;}
   .quiz-eyebrow::before,.quiz-eyebrow::after{content:'';display:block;width:24px;height:1px;background:var(--sage);}
-  .quiz-h{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(2rem,5vw,3.5rem);color:var(--text);text-align:center;margin-bottom:.7rem;}
-  .quiz-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:var(--text-d);text-align:center;letter-spacing:.06em;margin-bottom:3.5rem;}
+  .quiz-h{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(2.2rem,5vw,3.8rem);color:var(--text);text-align:center;margin-bottom:.7rem;}
+  .quiz-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.15rem;color:var(--text-d);text-align:center;letter-spacing:.06em;margin-bottom:3.5rem;}
 
   /* date input */
   .date-row{display:flex;gap:1rem;align-items:flex-end;margin-bottom:2.8rem;flex-wrap:wrap;justify-content:center;}
   .date-field{display:flex;flex-direction:column;gap:.5rem;}
-  .date-label{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.4em;color:var(--text-d);text-transform:uppercase;text-align:center;}
+  .date-label{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.4em;color:var(--text-d);text-transform:uppercase;text-align:center;}
   .date-input{background:white;border:1px solid var(--border);border-bottom:2px solid var(--gold-dim);color:var(--text);font-family:'Playfair Display',serif;font-size:1.5rem;letter-spacing:.05em;padding:.7rem 1rem;text-align:center;width:110px;outline:none;transition:border-color .3s,box-shadow .3s;-moz-appearance:textfield;}
   .date-input.wide{width:150px;}
   .date-input::-webkit-inner-spin-button,.date-input::-webkit-outer-spin-button{-webkit-appearance:none;}
@@ -68,7 +68,7 @@
   .date-sep{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold-dim);padding-bottom:.75rem;}
 
   /* calc button */
-  .calc-btn{position:relative;overflow:hidden;cursor:pointer;display:inline-flex;align-items:center;gap:.8rem;padding:1rem 3rem;border:1px solid var(--gold-dim);background:white;color:var(--gold);font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.35em;text-transform:uppercase;transition:all .35s;box-shadow:var(--shadow);}
+  .calc-btn{position:relative;overflow:hidden;cursor:pointer;display:inline-flex;align-items:center;gap:.8rem;padding:1rem 3rem;border:1px solid var(--gold-dim);background:white;color:var(--gold);font-family:'Cinzel',serif;font-size:.85rem;letter-spacing:.35em;text-transform:uppercase;transition:all .35s;box-shadow:var(--shadow);}
   .calc-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(176,122,26,.06) 50%,transparent 60%);transform:translateX(-100%);transition:transform .5s;}
   .calc-btn:hover::before{transform:translateX(100%);}
   .calc-btn:hover{background:rgba(176,122,26,.05);border-color:var(--gold);box-shadow:0 4px 24px rgba(176,122,26,.12);}
@@ -91,7 +91,7 @@
 
   .dual-display{display:flex;align-items:flex-end;justify-content:center;gap:3rem;flex-wrap:wrap;margin-bottom:2rem;}
   .number-block{display:flex;flex-direction:column;align-items:center;}
-  .nb-label{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.45em;color:var(--text-d);text-transform:uppercase;margin-bottom:.5rem;}
+  .nb-label{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.45em;color:var(--text-d);text-transform:uppercase;margin-bottom:.5rem;}
   .nb-num{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;line-height:1;color:var(--acc);transition:color .5s;text-shadow:0 0 40px rgba(var(--acc-rgb),.25);}
   .nb-num.big{font-size:clamp(6rem,14vw,11rem);}
   .nb-num.sml{font-size:clamp(3.5rem,8vw,6rem);opacity:.65;}
@@ -102,7 +102,7 @@
   .r-intro{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;line-height:1.9;color:var(--text-d);max-width:620px;margin:0 auto;}
 
   .sec-rule{width:100%;max-width:860px;margin:3rem auto;height:1px;background:linear-gradient(to right,transparent,var(--border),rgba(176,122,26,.3),var(--border),transparent);}
-  .sec-label{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.45em;color:var(--gold);text-transform:uppercase;text-align:center;margin-bottom:2rem;}
+  .sec-label{font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.45em;color:var(--gold);text-transform:uppercase;text-align:center;margin-bottom:2rem;}
 
   /* ─── 九宮格 ─── */
   .lo-shu-wrap{max-width:520px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;}
@@ -135,8 +135,8 @@
   .info-card:nth-child(3){animation-delay:.2s;}
   .info-card:nth-child(4){animation-delay:.3s;}
   .card-icon{font-size:1.2rem;margin-bottom:.8rem;display:block;}
-  .card-title{font-family:'Noto Serif SC',serif;font-size:.85rem;letter-spacing:.12em;color:var(--acc);margin-bottom:.8rem;transition:color .5s;}
-  .card-body{font-family:'Cormorant Garamond',serif;font-size:.97rem;line-height:1.85;color:var(--text-d);}
+  .card-title{font-family:'Noto Serif SC',serif;font-size:1rem;letter-spacing:.12em;color:var(--acc);margin-bottom:.8rem;transition:color .5s;}
+  .card-body{font-family:'Cormorant Garamond',serif;font-size:1.12rem;line-height:1.85;color:var(--text-d);}
   .tag-list{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.8rem;}
   .tag{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.18em;padding:.28rem .65rem;border:1px solid var(--border);color:var(--text-d);}
   .tag.pos{border-color:rgba(110,138,96,.4);color:var(--sage);}
@@ -225,8 +225,8 @@
   .arrow-nums{font-family:'Playfair Display',serif;font-style:italic;font-size:.95rem;color:var(--acc);white-space:nowrap;min-width:50px;}
   .arrow-item.missing .arrow-nums{color:var(--text-d);}
   .arrow-info{display:flex;flex-direction:column;gap:.1rem;}
-  .arrow-name{font-family:'Noto Serif SC',serif;font-size:.75rem;letter-spacing:.05em;color:var(--text);}
-  .arrow-desc{font-family:'Cormorant Garamond',serif;font-size:.85rem;color:var(--text-d);line-height:1.5;}
+  .arrow-name{font-family:'Noto Serif SC',serif;font-size:.9rem;letter-spacing:.05em;color:var(--text);}
+  .arrow-desc{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--text-d);line-height:1.5;}
 
   /* ─── result card sections ─── */
   .result-card{background:white;border:1px solid var(--border);max-width:900px;margin:0 auto 1.8rem;box-shadow:var(--shadow);overflow:hidden;}
@@ -237,12 +237,20 @@
   .rc-body{padding:2rem;}
 
   /* ─── font size bumps ─── */
-  .r-intro{font-size:1.15rem;}
-  .card-body{font-size:1.05rem;}
-  .chakra-detail-desc{font-size:1.02rem;}
-  .c-desc{font-size:.97rem;}
-  .missing-desc{font-size:.95rem;}
-  .nb-name{font-size:.95rem;}
+  .r-intro{font-size:1.22rem;}
+  .card-body{font-size:1.12rem;}
+  .chakra-detail-desc{font-size:1.08rem;}
+  .c-desc{font-size:1.05rem;}
+  .missing-desc{font-size:1.02rem;}
+  .nb-name{font-size:1.05rem;}
+  .lsl-title{font-size:1rem;}
+  .missing-num{font-size:1.1rem;}
+  .missing-chakra{font-size:.82rem;}
+  .missing-desc{font-size:1.02rem;}
+  .arrows-title{font-size:1rem;}
+  .rc-title{font-size:1rem;}
+  .fn-label{font-size:.68rem;}
+  .fn-name{font-size:1.05rem;}
 
   /* ─── 靈魂使命 ─── */
   .mission-panel{max-width:720px;margin:0 auto;background:white;border:1px solid var(--border);border-top:3px solid var(--acc);padding:2.5rem 3rem;transition:border-color .5s;animation:fadeUp .6s .1s both;}
@@ -780,24 +788,24 @@ const DATA={
 };
 
 // ── 九宮格 Lo Shu layout ──
-// 九宮格：順序排列 1-9（非傳統洛書魔方陣）
-// 1 | 2 | 3
-// 4 | 5 | 6
-// 7 | 8 | 9
-const LO_SHU=[[1,2,3],[4,5,6],[7,8,9]];
+// 九宮格：直欄排列（左→右各欄由上往下 1→3, 4→6, 7→9）
+// 1 | 4 | 7
+// 2 | 5 | 8
+// 3 | 6 | 9
+const LO_SHU=[[1,4,7],[2,5,8],[3,6,9]];
 
 // 連線定義：三數箭頭（完整箭）+ 二數箭頭（短箭）
 const ARROWS=[
-  // ── 行箭（橫向三數）──
-  {nums:[1,2,3],label:'思想箭',plane:'心智平面',desc:'思維活躍，學習力強，具備優異的溝通與表達能力'},
-  {nums:[4,5,6],label:'意志箭',plane:'意志平面',desc:'意志堅定，情感穩健，擁有強烈的執行力與恆心'},
-  {nums:[7,8,9],label:'行動箭',plane:'實踐平面',desc:'行動力十足，務實幹練，能將想法化為具體成果'},
-  // ── 列箭（縱向三數）──
-  {nums:[1,4,7],label:'決心箭',plane:'記憶之軸',desc:'記憶力佳，決心堅定，擁有強大的意志力與毅力'},
-  {nums:[2,5,8],label:'感知箭',plane:'感知之軸',desc:'直覺敏銳，情感豐富，感知力超強，善解人意'},
-  {nums:[3,6,9],label:'智慧箭',plane:'智慧之軸',desc:'智慧卓越，洞察力強，善於思考與深度溝通表達'},
-  // ── 對角箭（斜向三數）──
-  {nums:[1,5,9],label:'主導箭',plane:'精神主軸',desc:'計畫縝密，有遠見與使命感，天生具備領導才能'},
+  // ── 橫排三數箭 ──
+  {nums:[1,4,7],label:'決心箭',plane:'決心之行',desc:'具備強大毅力與實踐力，意志堅定，有始有終'},
+  {nums:[2,5,8],label:'感知箭',plane:'感知之行',desc:'情感豐富且直覺敏銳，善解人意，感知力超強'},
+  {nums:[3,6,9],label:'智慧箭',plane:'智慧之行',desc:'智慧卓越，洞察力強，善於深度思考與溝通表達'},
+  // ── 直列三數箭 ──
+  {nums:[1,2,3],label:'思想箭',plane:'思想之列',desc:'思維敏捷，學習力強，記憶力佳，善於文字表達'},
+  {nums:[4,5,6],label:'意志箭',plane:'意志之列',desc:'意志堅強，情感穩健，執行力一流，不輕言放棄'},
+  {nums:[7,8,9],label:'行動箭',plane:'行動之列',desc:'行動力十足，務實幹練，能將想法化為具體成果'},
+  // ── 斜角三數箭 ──
+  {nums:[1,5,9],label:'主導箭',plane:'精神主軸',desc:'計畫縝密，有遠見與使命感，天生具備領導統御才能'},
   {nums:[3,5,7],label:'靈性箭',plane:'靈性主軸',desc:'靈性覺知高，直覺強烈，有洞悉人心的深層智慧'},
   // ── 短箭（二數相鄰連線）──
   {nums:[2,4],label:'感性短箭',plane:'感性創意',desc:'感性與創意兼備，擁有豐富的內在想像力與藝術感'},
@@ -894,14 +902,23 @@ function startCalc(){
   },1800);
 }
 
+// 特殊數字固定顏色（先天/生命/天賦/星座）
+const SPECIAL_COLORS={
+  innate:  {color:'#7C5CBF', label:'先天數'},
+  outer:   {color:'#D05070', label:'生命靈數'},
+  talent:  {color:'#2899C0', label:'天賦數'},
+  zodiac:  {color:'#C8960A', label:'星座數'},
+};
+
 // ── build SVG Lo Shu ──
-function buildLoShuSVG(cnt, accentColor, accentRgb){
+// specials: { innate:N, outer:N, talent:N, zodiac:N }
+function buildLoShuSVG(cnt, accentColor, accentRgb, specials){
   const S=252, C=84, R=28;
   const POS={};
   LO_SHU.forEach((row,r)=>row.forEach((n,c)=>{POS[n]={x:c*C+C/2,y:r*C+C/2};}));
 
   // grid background lines
-  let out=`<rect width="${S}" height="${S}" fill="white"/>`;
+  let out=`<rect width="${S}" height="${S}" fill="white" rx="4"/>`;
   for(let i=1;i<3;i++){
     out+=`<line x1="${i*C}" y1="2" x2="${i*C}" y2="${S-2}" stroke="rgba(44,26,8,.07)" stroke-width="1"/>`;
     out+=`<line x1="2" y1="${i*C}" x2="${S-2}" y2="${i*C}" stroke="rgba(44,26,8,.07)" stroke-width="1"/>`;
@@ -916,14 +933,33 @@ function buildLoShuSVG(cnt, accentColor, accentRgb){
     }
   });
 
+  // build a map: number → list of special roles it belongs to
+  const specialRoles={}; // n → [{key, color}]
+  if(specials){
+    Object.entries(specials).forEach(([key,n])=>{
+      if(n>=1&&n<=9){
+        if(!specialRoles[n])specialRoles[n]=[];
+        specialRoles[n].push({key,color:SPECIAL_COLORS[key].color});
+      }
+    });
+  }
+
   // circles + numbers + dots
   for(let n=1;n<=9;n++){
     const p=POS[n], c=cnt[n]||0, present=c>0, strong=c>=3;
     const fill=present?(strong?`rgba(${accentRgb},.16)`:`rgba(${accentRgb},.08)`):`rgba(44,26,8,.025)`;
-    const stroke=present?(strong?accentColor:`rgba(${accentRgb},.55)`):`rgba(44,26,8,.1)`;
+    const innerStroke=present?(strong?accentColor:`rgba(${accentRgb},.55)`):`rgba(44,26,8,.1)`;
     const textFill=present?accentColor:`rgba(44,26,8,.18)`;
     const sw=present?(strong?2.5:1.5):1;
-    out+=`<circle cx="${p.x}" cy="${p.y}" r="${R}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+
+    // outer special rings (one per role, offset outward)
+    const roles=specialRoles[n]||[];
+    roles.forEach((role,idx)=>{
+      const ringR=R+5+idx*7;
+      out+=`<circle cx="${p.x}" cy="${p.y}" r="${ringR}" fill="none" stroke="${role.color}" stroke-width="2.2" opacity=".85"/>`;
+    });
+
+    out+=`<circle cx="${p.x}" cy="${p.y}" r="${R}" fill="${fill}" stroke="${innerStroke}" stroke-width="${sw}"/>`;
     out+=`<text x="${p.x}" y="${p.y-5}" text-anchor="middle" dominant-baseline="middle" font-family="Georgia,serif" font-style="italic" font-weight="700" font-size="20" fill="${textFill}">${n}</text>`;
     if(c>0){
       const dots=Math.min(c,5), dr=2.8, gap=2;
@@ -933,7 +969,17 @@ function buildLoShuSVG(cnt, accentColor, accentRgb){
         out+=`<circle cx="${sx+i*(dr*2+gap)}" cy="${p.y+14}" r="${dr}" fill="${accentColor}" opacity=".65"/>`;
     }
   }
-  return `<svg viewBox="0 0 ${S} ${S}" xmlns="http://www.w3.org/2000/svg" style="border:1px solid rgba(44,26,8,.08)">${out}</svg>`;
+
+  // legend: colored dots + labels at bottom
+  const legendItems=Object.entries(SPECIAL_COLORS);
+  const lx0=8, ly=S-10, lStep=58;
+  legendItems.forEach(([key,info],idx)=>{
+    const x=lx0+idx*lStep;
+    out+=`<circle cx="${x+5}" cy="${ly}" r="4" fill="${info.color}" opacity=".85"/>`;
+    out+=`<text x="${x+13}" y="${ly+1}" dominant-baseline="middle" font-family="sans-serif" font-size="9" fill="rgba(44,26,8,.5)">${info.label}</text>`;
+  });
+
+  return `<svg viewBox="0 0 ${S} ${S+18}" xmlns="http://www.w3.org/2000/svg" style="border:1px solid rgba(44,26,8,.08);border-radius:4px">${out}</svg>`;
 }
 
 // ── show result ──
@@ -969,8 +1015,9 @@ function showResult(y,m,d,outer,inner){
   document.getElementById('r-zodiac-sym').textContent=zodiac.sym;
   document.getElementById('r-intro').textContent=od.intro;
 
-  // SVG Lo Shu
-  document.getElementById('lo-shu-svg-container').innerHTML=buildLoShuSVG(cnt,od.color,od.rgb);
+  // SVG Lo Shu — pass 4 special numbers for ring highlighting
+  const specials={innate, outer, talent, zodiac:zodiac.num};
+  document.getElementById('lo-shu-svg-container').innerHTML=buildLoShuSVG(cnt,od.color,od.rgb,specials);
 
   // missing numbers analysis
   const missing=Object.entries(cnt).filter(([,v])=>v===0).map(([k])=>parseInt(k));

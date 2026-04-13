@@ -61,7 +61,52 @@ body{background:var(--dark);color:#f5ede0;font-family:'Cormorant Garamond',serif
 .nav-links a:hover::after{transform:scaleX(1)}
 .nav-links a.active{color:#fff}
 .nav-links a.active::after{transform:scaleX(1);background:rgba(255,210,100,.5)}
-@media(max-width:768px){#nav{padding:0 1.2rem}.nav-links{gap:1rem}.nav-links a{font-size:.72rem;letter-spacing:.18em}}
+/* ── HAMBURGER ── */
+.nav-ham{
+  display:none;background:none;border:none;cursor:pointer;
+  padding:.4rem .3rem;flex-direction:column;gap:5px;
+  align-items:center;justify-content:center;z-index:910;
+}
+.nav-ham span{
+  display:block;width:22px;height:2px;background:#fff;border-radius:2px;
+  transition:transform .3s,opacity .3s,background .3s;
+}
+#nav.solid .nav-ham span{background:var(--text);}
+.nav-ham.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.nav-ham.open span:nth-child(2){opacity:0;}
+.nav-ham.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+/* ── MOBILE OVERLAY MENU ── */
+.nav-mobile-overlay{
+  display:none;position:fixed;inset:0;z-index:899;
+  background:rgba(10,5,22,.96);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  flex-direction:column;align-items:center;justify-content:center;gap:2.2rem;
+  opacity:0;transition:opacity .32s;pointer-events:none;
+}
+.nav-mobile-overlay.open{opacity:1;pointer-events:auto;}
+.nav-mobile-overlay a{
+  font-family:'Cinzel',serif;font-size:1rem;letter-spacing:.35em;
+  text-transform:uppercase;color:rgba(255,235,160,.78);
+  text-decoration:none;transition:color .25s,letter-spacing .25s;
+  border-bottom:1px solid transparent;padding-bottom:3px;
+}
+.nav-mobile-overlay a:hover,.nav-mobile-overlay a.active{
+  color:#fff;letter-spacing:.42em;border-color:rgba(255,210,100,.4);
+}
+.nav-mobile-close{
+  position:absolute;top:1.4rem;right:1.4rem;
+  background:none;border:none;cursor:pointer;
+  font-size:1.4rem;color:rgba(255,255,255,.4);transition:color .25s;
+  line-height:1;
+}
+.nav-mobile-close:hover{color:#fff;}
+
+@media(max-width:768px){
+  #nav{padding:0 1.2rem;}
+  .nav-links{display:none;}
+  .nav-ham{display:flex;}
+  .nav-mobile-overlay{display:flex;}
+}
 
 /* ══ VIDEO HERO (75vh) ══ */
 #hero{
@@ -569,6 +614,84 @@ footer{
 
 .rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
 .rv.in{opacity:1;transform:none}
+
+/* ══ MOBILE RESPONSIVE ══ */
+@media(max-width:768px){
+  /* Hero */
+  #hero{height:90vh;min-height:520px;}
+  #hero-ui{padding:0 1.4rem 3vh;}
+  .h-eyebrow{font-size:.65rem;letter-spacing:.28em;margin-bottom:1rem;}
+  .h-brand{font-size:clamp(2.8rem,13vw,5rem);}
+  .h-zh{font-size:1rem;letter-spacing:.5em;}
+  .h-rule{margin:1.2rem auto;}
+  .h-tag{font-size:1rem;letter-spacing:.1em;}
+  .h-cta{flex-direction:column;align-items:center;gap:.65rem;margin-top:1.4rem;}
+  .btn-crystal,.btn-crystal-gold{font-size:.72rem;padding:.7rem 1.8rem;width:min(260px,80vw);justify-content:center;}
+
+  /* Intro */
+  .s-intro{padding:5.5rem 1.4rem 4.5rem;}
+  .intro-inner{gap:2.2rem;}
+  .intro-h{font-size:clamp(1.8rem,6vw,2.6rem);}
+  .intro-body{font-size:1.08rem;}
+  .geo{width:min(280px,80vw);height:min(280px,80vw);}
+
+  /* Pillars */
+  .s-pillars{padding:4.5rem 1.4rem;}
+  .pillar-card{padding:1.8rem 1.5rem;}
+  .pillar-body{font-size:1.05rem;}
+
+  /* Numbers */
+  .s-numbers{padding:4.5rem 1.4rem;}
+  .numbers-inner{gap:.55rem;}
+
+  /* CTA */
+  .s-cta{padding:7rem 1.4rem 6rem;}
+  .cta-title{font-size:clamp(2.4rem,10vw,4rem);}
+  .cta-sub{font-size:.92rem;margin-bottom:2.5rem;}
+  .cta-btns{flex-direction:column;align-items:center;gap:.7rem;}
+  .cta-btn{font-size:.72rem;padding:.8rem 2rem;width:min(260px,78vw);justify-content:center;}
+
+  /* Vision */
+  .s-vision{padding:5.5rem 1.4rem 6rem;}
+  .vision-label{font-size:2.6rem;}
+  .vision-quote{font-size:.98rem;}
+  .vision-zh{font-size:1.05rem;}
+
+  /* Footer */
+  footer{padding:3.5rem 1.4rem 2rem;}
+  .footer-bottom{flex-direction:column;align-items:center;text-align:center;gap:.6rem;}
+  .footer-bottom-links{gap:1.4rem;}
+
+  /* Sections general */
+  .sh-title{font-size:clamp(1.7rem,5.5vw,2.4rem);}
+}
+
+@media(max-width:480px){
+  .h-brand{font-size:clamp(2.4rem,15vw,3.6rem);}
+  .h-zh{font-size:.92rem;letter-spacing:.42em;}
+  .h-eyebrow{font-size:.58rem;letter-spacing:.22em;}
+  .btn-crystal,.btn-crystal-gold{width:min(240px,85vw);}
+
+  .intro-h{font-size:clamp(1.6rem,7vw,2.2rem);}
+  .intro-body{font-size:1rem;}
+
+  .s-cta{padding:5.5rem 1rem 5rem;}
+  .cta-title{font-size:clamp(2rem,12vw,3.2rem);}
+  .cta-eyebrow{font-size:1.1rem;}
+
+  .num-tile .nl{font-size:.58rem;}
+  .numbers-inner{gap:.4rem;}
+
+  .sh-title{font-size:clamp(1.5rem,6.5vw,2rem);}
+  .sh-label{font-size:.7rem;letter-spacing:.28em;}
+  .pillar-title{font-size:1.05rem;}
+  .pillar-body{font-size:1rem;}
+
+  footer{padding:3rem 1rem 1.8rem;}
+  .footer-col-brand .fb-desc,.footer-col-brand .fb-desc-en{font-size:.78rem;}
+  .footer-copy{font-size:.7rem;text-align:center;}
+  .footer-bottom-links{flex-wrap:wrap;justify-content:center;gap:.8rem 1rem;}
+}
 </style>
 </head>
 <body>
@@ -592,7 +715,20 @@ footer{
     <li><a href="#">水晶能量</a></li>
     <li><a href="blog.html">靈光流動</a></li>
   </ul>
+  <button class="nav-ham" id="nav-ham" aria-label="開啟選單" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- Mobile nav overlay -->
+<div class="nav-mobile-overlay" id="nav-overlay" role="dialog" aria-label="導覽選單">
+  <button class="nav-mobile-close" id="nav-overlay-close" aria-label="關閉選單">✕</button>
+  <a href="index.html" class="active">首頁</a>
+  <a href="quiz.html">生命靈數</a>
+  <a href="#">脈輪療癒</a>
+  <a href="#">水晶能量</a>
+  <a href="blog.html">靈光流動</a>
+</div>
 
 <section id="hero">
   <div class="atm atm-a"></div>
@@ -751,6 +887,36 @@ footer{
 const vid = document.getElementById('hero-video');
 vid.addEventListener('canplay', () => vid.classList.add('loaded'), { once:true });
 if (vid.readyState >= 3) vid.classList.add('loaded');
+
+/* ── Hamburger menu ── */
+(function(){
+  const ham = document.getElementById('nav-ham');
+  const overlay = document.getElementById('nav-overlay');
+  const closeBtn = document.getElementById('nav-overlay-close');
+  if(!ham || !overlay) return;
+
+  function openMenu(){
+    ham.classList.add('open');
+    ham.setAttribute('aria-expanded','true');
+    overlay.classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeMenu(){
+    ham.classList.remove('open');
+    ham.setAttribute('aria-expanded','false');
+    overlay.classList.remove('open');
+    document.body.style.overflow='';
+  }
+
+  ham.addEventListener('click', openMenu);
+  closeBtn.addEventListener('click', closeMenu);
+
+  // Close on nav link click
+  overlay.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+
+  // Close on Escape key
+  document.addEventListener('keydown', e => { if(e.key==='Escape') closeMenu(); });
+})();
 
 
 /* ── Twinkling Stars Canvas (Vision section) ── */

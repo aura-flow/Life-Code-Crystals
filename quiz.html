@@ -780,18 +780,30 @@ const DATA={
 };
 
 // ── 九宮格 Lo Shu layout ──
-const LO_SHU=[[4,9,2],[3,5,7],[8,1,6]];
+// 九宮格：順序排列 1-9（非傳統洛書魔方陣）
+// 1 | 2 | 3
+// 4 | 5 | 6
+// 7 | 8 | 9
+const LO_SHU=[[1,2,3],[4,5,6],[7,8,9]];
 
-// Lo Shu 箭頭定義
+// 連線定義：三數箭頭（完整箭）+ 二數箭頭（短箭）
 const ARROWS=[
-  {nums:[4,9,2],label:'智慧之箭',desc:'思路清晰，富有智慧與洞察力',dir:'row-top'},
-  {nums:[3,5,7],label:'意志之箭',desc:'意志堅定，擁有強大的精神力量',dir:'row-mid'},
-  {nums:[8,1,6],label:'行動之箭',desc:'行動力強，有始有終，貫徹執行',dir:'row-bot'},
-  {nums:[4,3,8],label:'思想之箭',desc:'思維敏銳，善於理性分析與規劃',dir:'col-left'},
-  {nums:[9,5,1],label:'情感之箭',desc:'情感均衡，人際關係和諧圓融',dir:'col-mid'},
-  {nums:[2,7,6],label:'實踐之箭',desc:'務實可靠，言出必行，信守承諾',dir:'col-right'},
-  {nums:[4,5,6],label:'決心之箭',desc:'意志如鐵，不達目的誓不罷休',dir:'diag-main'},
-  {nums:[2,5,8],label:'直覺之箭',desc:'直覺敏銳，心靈感知力強大',dir:'diag-anti'},
+  // ── 行箭（橫向三數）──
+  {nums:[1,2,3],label:'思想箭',plane:'心智平面',desc:'思維活躍，學習力強，具備優異的溝通與表達能力'},
+  {nums:[4,5,6],label:'意志箭',plane:'意志平面',desc:'意志堅定，情感穩健，擁有強烈的執行力與恆心'},
+  {nums:[7,8,9],label:'行動箭',plane:'實踐平面',desc:'行動力十足，務實幹練，能將想法化為具體成果'},
+  // ── 列箭（縱向三數）──
+  {nums:[1,4,7],label:'決心箭',plane:'記憶之軸',desc:'記憶力佳，決心堅定，擁有強大的意志力與毅力'},
+  {nums:[2,5,8],label:'感知箭',plane:'感知之軸',desc:'直覺敏銳，情感豐富，感知力超強，善解人意'},
+  {nums:[3,6,9],label:'智慧箭',plane:'智慧之軸',desc:'智慧卓越，洞察力強，善於思考與深度溝通表達'},
+  // ── 對角箭（斜向三數）──
+  {nums:[1,5,9],label:'主導箭',plane:'精神主軸',desc:'計畫縝密，有遠見與使命感，天生具備領導才能'},
+  {nums:[3,5,7],label:'靈性箭',plane:'靈性主軸',desc:'靈性覺知高，直覺強烈，有洞悉人心的深層智慧'},
+  // ── 短箭（二數相鄰連線）──
+  {nums:[2,4],label:'感性短箭',plane:'感性創意',desc:'感性與創意兼備，擁有豐富的內在想像力與藝術感'},
+  {nums:[2,6],label:'溝通短箭',plane:'情感溝通',desc:'關懷與感知兼具，人際細膩，善於情感表達'},
+  {nums:[4,8],label:'務實短箭',plane:'踏實成就',desc:'踏實與成就並重，擁有穩健的執行力與現實感'},
+  {nums:[6,8],label:'責任短箭',plane:'責任力量',desc:'責任感強，意志堅毅，有強烈的使命擔當與成就欲'},
 ];
 
 // ── 星座計算 ──
@@ -895,11 +907,12 @@ function buildLoShuSVG(cnt, accentColor, accentRgb){
     out+=`<line x1="2" y1="${i*C}" x2="${S-2}" y2="${i*C}" stroke="rgba(44,26,8,.07)" stroke-width="1"/>`;
   }
 
-  // active arrow connection lines
+  // active arrow connection lines (handles both 3-num and 2-num arrows)
   ARROWS.forEach(a=>{
     if(a.nums.every(n=>(cnt[n]||0)>0)){
-      const p1=POS[a.nums[0]], p2=POS[a.nums[2]];
-      out+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${accentColor}" stroke-width="2.5" stroke-opacity=".5" stroke-linecap="round"/>`;
+      const p1=POS[a.nums[0]], p2=POS[a.nums[a.nums.length-1]];
+      const isShort=a.nums.length===2;
+      out+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${accentColor}" stroke-width="${isShort?1.8:2.5}" stroke-opacity="${isShort?.35:.5}" stroke-dasharray="${isShort?'4,3':''}" stroke-linecap="round"/>`;
     }
   });
 
@@ -975,10 +988,12 @@ function showResult(y,m,d,outer,inner){
   // arrows legend
   document.getElementById('arrows-list').innerHTML=ARROWS.map((a,i)=>{
     const active=a.nums.every(n=>(cnt[n]||0)>0);
-    return `<div class="arrow-item${active?'':' missing'}" style="animation-delay:${i*.05}s">
-      <div class="arrow-nums">${a.nums.join('-')}</div>
+    const isShort=a.nums.length===2;
+    return `<div class="arrow-item${active?'':' missing'}${isShort?' short-arrow':''}" style="animation-delay:${i*.05}s">
+      <div class="arrow-nums">${a.nums.join(' – ')}</div>
       <div class="arrow-info">
-        <div class="arrow-name">${active?'✦ ':' '}${a.label}</div>
+        <div class="arrow-name">${active?'✦ ':' '}${a.label}${isShort?' <span style="font-size:.68em;opacity:.55;font-family:\'Cinzel\',serif">(短箭)</span>':''}</div>
+        <div class="arrow-plane" style="font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.18em;color:var(--text-d);opacity:.5;margin-bottom:.1rem">${a.plane}</div>
         <div class="arrow-desc">${a.desc}</div>
       </div>
     </div>`;

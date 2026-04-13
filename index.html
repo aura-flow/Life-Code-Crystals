@@ -164,83 +164,72 @@ body{background:var(--dark);color:#f5ede0;font-family:'Cormorant Garamond',serif
   opacity:0;animation:fadeUp 1.4s ease .5s both;
 }
 
-/* ── Hero eyebrow: white + fine gold stroke ── */
+/* ── Hero eyebrow: prominent tagline ── */
 .h-eyebrow{
   font-family:'Cinzel',serif;font-size:.88rem;letter-spacing:.45em;
-  color:#fff;text-transform:uppercase;margin-bottom:1.8rem;
-  -webkit-text-stroke:.4px rgba(197,160,89,.7);
-  text-shadow:0 0 18px rgba(0,0,0,.4),0 0 6px rgba(0,0,0,.2);
+  color:rgba(255,230,160,.82);text-transform:uppercase;margin-bottom:1.8rem;
+  text-shadow:0 0 20px rgba(255,200,80,.3);
 }
-/* ── "Aura Flow" — white fill + gold outline ── */
+/* ── "Aura Flow" pure white ── */
 .h-brand{
   font-family:'Playfair Display',serif;font-style:italic;font-weight:700;
   font-size:clamp(3.8rem,8.5vw,8rem);line-height:1;letter-spacing:-.01em;
   color:#ffffff;
-  -webkit-text-stroke:1.5px rgba(197,160,89,.82);
-  text-shadow:
-    0 0 6px  rgba(0,0,0,.3),
-    0 0 20px rgba(0,0,0,.4),
-    0 0 50px rgba(0,0,0,.2),
-    0 2px 8px rgba(0,0,0,.35);
+  text-shadow:0 2px 30px rgba(0,0,0,.55),0 0 60px rgba(255,255,255,.08);
 }
-/* ── Chinese subtitle — white + gold stroke ── */
+/* ── Chinese subtitle ── */
 .h-zh{
   font-family:'Iansui',sans-serif;font-weight:700;
   font-size:clamp(1.1rem,2.4vw,1.45rem);letter-spacing:.75em;
-  color:#fff;margin-top:.8rem;
-  -webkit-text-stroke:.8px rgba(197,160,89,.75);
-  text-shadow:0 0 18px rgba(0,0,0,.4),0 0 6px rgba(0,0,0,.2);
+  color:rgba(255,235,160,.85);margin-top:.8rem;
+  text-shadow:0 0 24px rgba(255,200,80,.25);
 }
 .h-rule{
   width:65px;height:1px;margin:1.8rem auto;
-  background:linear-gradient(to right,transparent,rgba(197,160,89,.7),transparent);
+  background:linear-gradient(to right,transparent,rgba(255,220,120,.6),transparent);
 }
-/* ── Site tagline — white + faint gold stroke ── */
+/* ── Site tagline below rule ── */
 .h-tag{
   font-family:'Cormorant Garamond',serif;font-style:italic;
   font-size:clamp(1.15rem,2.2vw,1.4rem);letter-spacing:.15em;
-  color:#fff;
-  -webkit-text-stroke:.4px rgba(197,160,89,.6);
-  text-shadow:0 0 16px rgba(0,0,0,.35);
+  color:rgba(255,255,255,.62);
 }
 .h-cta{display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center;margin-top:2.2rem}
 
-/* ── Outline Button — white text, gold border ── */
+/* ── Crystal Glassmorphism Buttons ── */
 .btn-crystal{
   font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.24em;
   text-transform:uppercase;text-decoration:none;
   padding:.78rem 2rem;border-radius:100px;
-  background:transparent;
-  border:1.5px solid rgba(197,160,89,.75);
+  background:rgba(255,255,255,.38);
+  border:1px solid rgba(255,255,255,.7);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   color:#fff;
-  -webkit-text-stroke:.3px rgba(197,160,89,.55);
-  text-shadow:0 0 10px rgba(0,0,0,.3);
-  box-shadow:0 0 12px rgba(197,160,89,.15);
-  transition:transform .3s cubic-bezier(.34,1.56,.64,1),border-color .3s,box-shadow .3s;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s, background .3s;
   display:inline-flex;align-items:center;gap:.5rem;
 }
 .btn-crystal:hover{
-  transform:scale(1.07);
-  border-color:rgba(197,160,89,1);
-  box-shadow:0 0 22px rgba(197,160,89,.35);
+  transform:scale(1.1);
+  background:rgba(255,255,255,.55);
+  box-shadow:0 8px 28px rgba(0,0,0,.15);
 }
 .btn-crystal-gold{
   font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.24em;
   text-transform:uppercase;text-decoration:none;
   padding:.78rem 2rem;border-radius:100px;
-  background:transparent;
-  border:1.5px solid rgba(197,160,89,.9);
-  color:#fff;
-  -webkit-text-stroke:.3px rgba(197,160,89,.65);
-  text-shadow:0 0 10px rgba(0,0,0,.3);
-  box-shadow:0 0 16px rgba(197,160,89,.2),inset 0 0 16px rgba(197,160,89,.06);
-  transition:transform .3s cubic-bezier(.34,1.56,.64,1),border-color .3s,box-shadow .3s;
+  background:rgba(184,124,24,.35);
+  border:1px solid rgba(255,210,100,.55);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  color:#ffe8a0;
+  box-shadow:0 4px 16px rgba(0,0,0,.1);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s, background .3s;
   display:inline-flex;align-items:center;gap:.5rem;
 }
 .btn-crystal-gold:hover{
-  transform:scale(1.07);
-  border-color:#C5A059;
-  box-shadow:0 0 28px rgba(197,160,89,.45),inset 0 0 20px rgba(197,160,89,.1);
+  transform:scale(1.1);
+  background:rgba(184,124,24,.55);
+  box-shadow:0 8px 28px rgba(184,124,24,.35);
 }
 
 .s-hint{position:absolute;bottom:1.8rem;left:50%;transform:translateX(-50%);z-index:11;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:0;animation:fadeIn 2s ease 3.4s both}

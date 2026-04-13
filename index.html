@@ -12,9 +12,9 @@
 html{scroll-behavior:smooth}
 :root{
   --bg:#FCFAF8;--bg2:#F5F2EE;--dark:#1a1008;
-  --text:#2C2C2E;--text-d:#4A4036;--text-l:rgba(74,64,54,.5);
-  --gold:#b87c18;--gold-l:#d49a28;--gold-dim:rgba(184,124,24,.35);
-  --sage:#5c7a50;--border:rgba(44,44,46,.08);--borderg:rgba(184,124,24,.18);
+  --text:#3C3C3C;--text-d:#4A4238;--text-l:rgba(60,60,60,.5);
+  --gold:#C5A059;--gold-l:#D4B070;--gold-dim:rgba(197,160,89,.35);
+  --sage:#5c7a50;--border:rgba(44,44,46,.08);--borderg:rgba(197,160,89,.22);
   --white-glass:rgba(255,255,255,0.45);
   --white-border:rgba(255,255,255,0.7);
 }
@@ -150,7 +150,7 @@ body{background:var(--dark);color:#f5ede0;font-family:'Cormorant Garamond',serif
   padding-bottom:6vh;text-align:center;
 }
 
-/* ── Hero title group: no card, text floats freely ── */
+/* ── Hero title group: text floats freely ── */
 .hero-glass-card{
   background:none;
   backdrop-filter:none;
@@ -173,16 +173,16 @@ body{background:var(--dark);color:#f5ede0;font-family:'Cormorant Garamond',serif
 /* ── "Aura Flow" pure white ── */
 .h-brand{
   font-family:'Playfair Display',serif;font-style:italic;font-weight:700;
-  font-size:clamp(3.8rem,8.5vw,8rem);line-height:1;letter-spacing:-.01em;
+  font-size:clamp(3.8rem,8.5vw,7.5rem);line-height:1;letter-spacing:-.01em;
   color:#ffffff;
-  text-shadow:0 2px 30px rgba(0,0,0,.55),0 0 60px rgba(255,255,255,.08);
+  text-shadow:0 4px 10px rgba(0,0,0,.2),0 2px 30px rgba(0,0,0,.4),0 0 60px rgba(255,255,255,.06);
 }
 /* ── Chinese subtitle ── */
 .h-zh{
   font-family:'Iansui',sans-serif;font-weight:700;
   font-size:clamp(1.1rem,2.4vw,1.45rem);letter-spacing:.75em;
-  color:rgba(255,235,160,.85);margin-top:.8rem;
-  text-shadow:0 0 24px rgba(255,200,80,.25);
+  color:#B5944A;margin-top:.8rem;
+  text-shadow:0 1px 8px rgba(0,0,0,.25);
 }
 .h-rule{
   width:65px;height:1px;margin:1.8rem auto;
@@ -218,18 +218,18 @@ body{background:var(--dark);color:#f5ede0;font-family:'Cormorant Garamond',serif
   font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.24em;
   text-transform:uppercase;text-decoration:none;
   padding:.78rem 2rem;border-radius:100px;
-  background:rgba(184,124,24,.35);
-  border:1px solid rgba(255,210,100,.55);
+  background:#C5A059;
+  border:1px solid rgba(255,220,150,.5);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  color:#ffe8a0;
-  box-shadow:0 4px 16px rgba(0,0,0,.1);
+  color:#fff;
+  box-shadow:0 4px 20px rgba(197,160,89,.35);
   transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s, background .3s;
   display:inline-flex;align-items:center;gap:.5rem;
 }
 .btn-crystal-gold:hover{
-  transform:scale(1.1);
-  background:rgba(184,124,24,.55);
-  box-shadow:0 8px 28px rgba(184,124,24,.35);
+  transform:scale(1.08);
+  background:#D4B070;
+  box-shadow:0 8px 32px rgba(197,160,89,.5);
 }
 
 .s-hint{position:absolute;bottom:1.8rem;left:50%;transform:translateX(-50%);z-index:11;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:0;animation:fadeIn 2s ease 3.4s both}
@@ -268,8 +268,8 @@ section{position:relative;overflow:hidden}
 @media(max-width:800px){.intro-inner{grid-template-columns:1fr;gap:3rem}}
 .intro-label{font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.38em;color:var(--sage);text-transform:uppercase;margin-bottom:1.2rem;display:flex;align-items:center;gap:.8rem}
 .intro-label::before{content:'';display:block;width:28px;height:1px;background:var(--sage)}
-.intro-h{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(2.2rem,4vw,3.4rem);line-height:1.2;color:var(--text);margin-bottom:1.4rem}
-.intro-body{font-family:'Cormorant Garamond',serif;font-size:1.22rem;line-height:2;color:var(--text-d)}
+.intro-h{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(2rem,3.5vw,2.5rem);line-height:1.2;color:var(--text);margin-bottom:1.4rem}
+.intro-body{font-family:'Cormorant Garamond',serif;font-size:1.125rem;line-height:1.8;color:var(--text-d)}
 .intro-body p{margin-bottom:1.1rem}
 .geo{width:min(360px,90vw);height:min(360px,90vw);border-radius:24px;background:#fff;border:1px solid var(--borderg);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.05)}
 .geo svg{position:absolute;inset:0;width:100%;height:100%;opacity:.08;stroke:var(--gold);fill:none}

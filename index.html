@@ -6,7 +6,7 @@
 <title>Aura Flow · 靈光流動</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+SC:wght@300;400;600&family=Ma+Shan+Zheng&family=Pinyon+Script&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+SC:wght@300;400;600&family=Ma+Shan+Zheng&family=Pinyon+Script&family=Iansui&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -41,13 +41,13 @@ body{background:var(--dark);color:#f5ede0;font-family:'Cormorant Garamond',serif
 #nav.solid .nav-links a{color:rgba(74,64,54,.75);font-weight:600}
 #nav.solid .nav-links a:hover{color:var(--gold)}
 .nav-logo{
-  font-family:'Playfair Display',serif;font-style:italic;font-size:1.22rem;letter-spacing:.05em;
+  font-family:'Playfair Display',serif;font-style:italic;font-size:1.35rem;letter-spacing:.05em;
   color:#fff;text-decoration:none;transition:color .3s;
   text-shadow:0 0 20px rgba(255,210,120,.4);
 }
 .nav-links{display:flex;gap:2.2rem;list-style:none;align-items:center}
 .nav-links a{
-  font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.32em;font-weight:600;
+  font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.28em;font-weight:600;
   color:rgba(255,255,255,.9);text-decoration:none;text-transform:uppercase;
   transition:color .28s,letter-spacing .28s;
   position:relative;padding-bottom:3px;
@@ -61,7 +61,7 @@ body{background:var(--dark);color:#f5ede0;font-family:'Cormorant Garamond',serif
 .nav-links a:hover::after{transform:scaleX(1)}
 .nav-links a.active{color:#fff}
 .nav-links a.active::after{transform:scaleX(1);background:rgba(255,210,100,.5)}
-@media(max-width:768px){#nav{padding:0 1.2rem}.nav-links{gap:1rem}.nav-links a{font-size:.44rem;letter-spacing:.22em}}
+@media(max-width:768px){#nav{padding:0 1.2rem}.nav-links{gap:1rem}.nav-links a{font-size:.72rem;letter-spacing:.18em}}
 
 /* ══ VIDEO HERO (75vh) ══ */
 #hero{
@@ -121,7 +121,7 @@ body{background:var(--dark);color:#f5ede0;font-family:'Cormorant Garamond',serif
 
 /* ── Hero eyebrow: prominent tagline ── */
 .h-eyebrow{
-  font-family:'Cinzel',serif;font-size:.56rem;letter-spacing:.55em;
+  font-family:'Cinzel',serif;font-size:.88rem;letter-spacing:.45em;
   color:rgba(255,230,160,.82);text-transform:uppercase;margin-bottom:1.8rem;
   text-shadow:0 0 20px rgba(255,200,80,.3);
 }
@@ -134,8 +134,8 @@ body{background:var(--dark);color:#f5ede0;font-family:'Cormorant Garamond',serif
 }
 /* ── Chinese subtitle ── */
 .h-zh{
-  font-family:'Noto Serif SC',serif;font-weight:300;
-  font-size:clamp(.9rem,2vw,1.15rem);letter-spacing:.8em;
+  font-family:'Iansui',sans-serif;font-weight:700;
+  font-size:clamp(1.1rem,2.4vw,1.45rem);letter-spacing:.75em;
   color:rgba(255,235,160,.85);margin-top:.8rem;
   text-shadow:0 0 24px rgba(255,200,80,.25);
 }
@@ -146,14 +146,14 @@ body{background:var(--dark);color:#f5ede0;font-family:'Cormorant Garamond',serif
 /* ── Site tagline below rule ── */
 .h-tag{
   font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:clamp(.9rem,1.8vw,1.08rem);letter-spacing:.15em;
+  font-size:clamp(1.15rem,2.2vw,1.4rem);letter-spacing:.15em;
   color:rgba(255,255,255,.62);
 }
 .h-cta{display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center;margin-top:2.2rem}
 
 /* ── Crystal Glassmorphism Buttons ── */
 .btn-crystal{
-  font-family:'Cinzel',serif;font-size:.56rem;letter-spacing:.28em;
+  font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.24em;
   text-transform:uppercase;text-decoration:none;
   padding:.78rem 2rem;border-radius:100px;
   background:rgba(255,255,255,.38);
@@ -170,7 +170,7 @@ body{background:var(--dark);color:#f5ede0;font-family:'Cormorant Garamond',serif
   box-shadow:0 8px 28px rgba(0,0,0,.15);
 }
 .btn-crystal-gold{
-  font-family:'Cinzel',serif;font-size:.56rem;letter-spacing:.28em;
+  font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.24em;
   text-transform:uppercase;text-decoration:none;
   padding:.78rem 2rem;border-radius:100px;
   background:rgba(184,124,24,.35);
@@ -206,7 +206,7 @@ body{background:var(--dark);color:#f5ede0;font-family:'Cormorant Garamond',serif
   opacity:0;pointer-events:none;transition:opacity .5s;
 }
 #side-card.show{opacity:1;pointer-events:auto}
-.slink{font-family:'Cinzel',serif;font-size:.44rem;letter-spacing:.25em;color:var(--text-d);text-decoration:none;text-transform:uppercase;padding:.42rem .7rem;border-radius:9px;border:1px solid rgba(255,255,255,.6);background:rgba(255,255,255,.35);transition:all .28s;display:block;text-align:center;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.slink{font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.2em;color:var(--text-d);text-decoration:none;text-transform:uppercase;padding:.42rem .7rem;border-radius:9px;border:1px solid rgba(255,255,255,.6);background:rgba(255,255,255,.35);transition:all .28s;display:block;text-align:center;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .slink:hover,.slink.cur{color:var(--gold);background:rgba(255,255,255,.65);border-color:rgba(184,124,24,.3);transform:scale(1.05)}
 @media(max-width:768px){#side-card{display:none}}
 
@@ -221,21 +221,21 @@ section{position:relative;overflow:hidden}
 .s-intro{padding:9rem 3rem 8rem;background:var(--bg)}
 .intro-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center}
 @media(max-width:800px){.intro-inner{grid-template-columns:1fr;gap:3rem}}
-.intro-label{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.45em;color:var(--sage);text-transform:uppercase;margin-bottom:1.2rem;display:flex;align-items:center;gap:.8rem}
+.intro-label{font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.38em;color:var(--sage);text-transform:uppercase;margin-bottom:1.2rem;display:flex;align-items:center;gap:.8rem}
 .intro-label::before{content:'';display:block;width:28px;height:1px;background:var(--sage)}
-.intro-h{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.9rem,4vw,3.2rem);line-height:1.2;color:var(--text);margin-bottom:1.4rem}
-.intro-body{font-family:'Cormorant Garamond',serif;font-size:1.08rem;line-height:2;color:var(--text-d)}
+.intro-h{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(2.2rem,4vw,3.4rem);line-height:1.2;color:var(--text);margin-bottom:1.4rem}
+.intro-body{font-family:'Cormorant Garamond',serif;font-size:1.22rem;line-height:2;color:var(--text-d)}
 .intro-body p{margin-bottom:1.1rem}
 .geo{width:min(360px,90vw);height:min(360px,90vw);border-radius:24px;background:#fff;border:1px solid var(--borderg);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.05)}
 .geo svg{position:absolute;inset:0;width:100%;height:100%;opacity:.08;stroke:var(--gold);fill:none}
 .geo-num{font-family:'Playfair Display',serif;font-style:italic;font-size:5.5rem;font-weight:700;color:var(--gold);opacity:.2;line-height:1;position:relative;z-index:1}
-.geo-sub{font-family:'Noto Serif SC',serif;font-size:.72rem;letter-spacing:.28em;color:var(--text-d);margin-top:.5rem;position:relative;z-index:1}
+.geo-sub{font-family:'Noto Serif SC',serif;font-size:.92rem;letter-spacing:.22em;color:var(--text-d);margin-top:.5rem;position:relative;z-index:1}
 
 /* pillars */
 .s-pillars{background:var(--bg2);padding:8rem 3rem}
 .sh{text-align:center;margin-bottom:4rem}
-.sh-label{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.48em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem}
-.sh-title{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.8rem,3.5vw,2.8rem);color:var(--text)}
+.sh-label{font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.38em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem}
+.sh-title{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(2rem,3.8vw,3rem);color:var(--text)}
 .pillars-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;max-width:1000px;margin:0 auto}
 .pillar-card{
   background:#fff;border:1px solid var(--white-border);border-radius:20px;
@@ -247,8 +247,8 @@ section{position:relative;overflow:hidden}
 .pillar-card::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(to right,transparent,rgba(184,124,24,.35),transparent)}
 .pillar-icon{font-size:1.6rem;margin-bottom:1.2rem;display:block}
 .pillar-num{font-family:'Playfair Display',serif;font-style:italic;font-size:3.5rem;font-weight:700;color:var(--gold);opacity:.08;position:absolute;bottom:.5rem;right:1.2rem;line-height:1}
-.pillar-title{font-family:'Noto Serif SC',serif;font-size:1rem;letter-spacing:.1em;color:var(--text);margin-bottom:.8rem}
-.pillar-body{font-family:'Cormorant Garamond',serif;font-size:.98rem;line-height:1.9;color:var(--text-d)}
+.pillar-title{font-family:'Noto Serif SC',serif;font-size:1.18rem;letter-spacing:.1em;color:var(--text);margin-bottom:.8rem}
+.pillar-body{font-family:'Cormorant Garamond',serif;font-size:1.15rem;line-height:1.9;color:var(--text-d)}
 
 /* numbers */
 .s-numbers{padding:8rem 3rem;background:var(--bg)}
@@ -257,7 +257,7 @@ section{position:relative;overflow:hidden}
 .num-tile{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;background:#fff;border:1px solid var(--border);box-shadow:0 4px 12px rgba(0,0,0,.03);transition:all .32s cubic-bezier(.34,1.56,.64,1);cursor:default}
 .num-tile:hover{border-color:var(--gold-dim);transform:scale(1.1);box-shadow:0 10px 28px rgba(0,0,0,.08)}
 .num-tile .n{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.3rem,3vw,2rem);font-weight:700;color:var(--gold)}
-.num-tile .nl{font-family:'Noto Serif SC',serif;font-size:clamp(.38rem,.75vw,.55rem);color:var(--text-l);letter-spacing:.05em;margin-top:.15rem}
+.num-tile .nl{font-family:'Noto Serif SC',serif;font-size:clamp(.68rem,.9vw,.82rem);color:var(--text-l);letter-spacing:.05em;margin-top:.15rem}
 .numbers-cta{text-align:center;margin-top:3.5rem}
 
 /* ══ CTA Section — Amethyst Crystal Mystique ══ */
@@ -351,7 +351,7 @@ section{position:relative;overflow:hidden}
 
 /* Crystal glassmorphism button — amethyst tint */
 .cta-btn{
-  font-family:'Cinzel',serif;font-size:.56rem;letter-spacing:.28em;
+  font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.24em;
   text-transform:uppercase;text-decoration:none;
   padding:.88rem 2.2rem;border-radius:100px;
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
@@ -510,7 +510,7 @@ footer{
 
 /* Mid col */
 .footer-col h4{
-  font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.48em;
+  font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.38em;
   text-transform:uppercase;color:rgba(180,120,255,.5);
   margin-bottom:1.4rem;
 }
@@ -545,7 +545,7 @@ footer{
 .fci-text a{color:rgba(200,175,230,.38);text-decoration:none;transition:color .25s}
 .fci-text a:hover{color:rgba(210,160,255,.85)}
 .fci-label{
-  font-family:'Cinzel',serif;font-size:.42rem;letter-spacing:.3em;
+  font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.25em;
   text-transform:uppercase;color:rgba(180,120,255,.35);
   display:block;margin-bottom:.15rem;
 }
@@ -561,7 +561,7 @@ footer{
 }
 .footer-bottom-links{display:flex;gap:2rem}
 .footer-bottom-links a{
-  font-family:'Cinzel',serif;font-size:.42rem;letter-spacing:.28em;
+  font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.22em;
   text-transform:uppercase;color:rgba(180,120,255,.22);
   text-decoration:none;transition:color .25s;
 }

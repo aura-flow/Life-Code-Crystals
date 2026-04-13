@@ -82,7 +82,7 @@
   @keyframes blink{0%,100%{opacity:.35}50%{opacity:1}}
 
   /* ─── RESULT SECTION ─── */
-  #result-section{display:none;padding:4rem 1.5rem 6rem;}
+  #result-section{display:none;padding:3rem 1.5rem 5rem;}
   #result-section.show{display:block;}
 
   /* dual numbers hero */
@@ -197,6 +197,45 @@
   #line-float svg{width:26px;height:26px;}
   @media(max-width:600px){.chakra-strip{gap:0;}.ch-orb{width:28px;height:28px;}.ch-item.active .ch-orb{width:38px;height:38px;}.ch-name{font-size:.42rem;}.ch-en{display:none;}}
 
+  /* ─── 4-number header ─── */
+  .four-nums-row{display:flex;align-items:flex-end;justify-content:center;gap:1.8rem;flex-wrap:wrap;margin-bottom:2rem;}
+  .fn-block{display:flex;flex-direction:column;align-items:center;gap:.25rem;}
+  .fn-label{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.38em;color:var(--text-d);text-transform:uppercase;margin-bottom:.1rem;}
+  .fn-num{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;line-height:1;color:var(--acc);transition:color .5s;text-shadow:0 0 30px rgba(var(--acc-rgb),.2);}
+  .fn-num.big{font-size:clamp(5rem,11vw,8.5rem);}
+  .fn-num.med{font-size:clamp(2.8rem,6vw,4.5rem);opacity:.8;}
+  .fn-name{font-family:'Noto Serif SC',serif;font-size:.9rem;letter-spacing:.1em;color:var(--text-d);margin-top:.1rem;}
+  .fn-name-en{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.28em;color:var(--acc);text-transform:uppercase;transition:color .5s;}
+  .fn-sub{font-family:'Noto Serif SC',serif;font-size:.75rem;letter-spacing:.06em;color:var(--text-d);}
+  .fn-tag{font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.06em;color:var(--text-d);opacity:.6;}
+  .fn-sep{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--gold-dim);padding-bottom:1.2rem;align-self:flex-end;}
+  .fn-block.main .fn-num{color:var(--acc);}
+
+  /* ─── SVG Lo Shu ─── */
+  .lo-shu-svg-layout{display:grid;grid-template-columns:auto 1fr;gap:2.5rem;align-items:start;max-width:600px;margin:0 auto;}
+  @media(max-width:600px){.lo-shu-svg-layout{grid-template-columns:1fr;}}
+  .ls-svg-container{width:250px;max-width:100%;flex-shrink:0;}
+
+  /* ─── Arrows legend ─── */
+  .arrows-section{max-width:600px;margin:1.8rem auto 0;padding-top:1.5rem;border-top:1px solid var(--border);}
+  .arrows-title{font-family:'Noto Serif SC',serif;font-size:.88rem;letter-spacing:.1em;color:var(--text);margin-bottom:1rem;}
+  .arrows-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.5rem;}
+  .arrow-item{display:flex;align-items:flex-start;gap:.6rem;padding:.55rem .75rem;border-left:2px solid var(--acc);background:rgba(var(--acc-rgb),.04);animation:fadeUp .4s both;}
+  .arrow-item.missing{border-left-color:rgba(44,26,8,.1);background:transparent;opacity:.38;}
+  .arrow-nums{font-family:'Playfair Display',serif;font-style:italic;font-size:.95rem;color:var(--acc);white-space:nowrap;min-width:50px;}
+  .arrow-item.missing .arrow-nums{color:var(--text-d);}
+  .arrow-info{display:flex;flex-direction:column;gap:.1rem;}
+  .arrow-name{font-family:'Noto Serif SC',serif;font-size:.75rem;letter-spacing:.05em;color:var(--text);}
+  .arrow-desc{font-family:'Cormorant Garamond',serif;font-size:.85rem;color:var(--text-d);line-height:1.5;}
+
+  /* ─── result card sections ─── */
+  .result-card{background:white;border:1px solid var(--border);max-width:900px;margin:0 auto 1.8rem;box-shadow:var(--shadow);overflow:hidden;}
+  .rc-header{display:flex;align-items:center;gap:.7rem;padding:1.2rem 2rem;border-bottom:1px solid var(--border);background:rgba(var(--acc-rgb),.03);transition:background .5s;}
+  .rc-icon{font-size:1rem;opacity:.7;}
+  .rc-title{font-family:'Noto Serif SC',serif;font-size:.88rem;letter-spacing:.14em;color:var(--acc);transition:color .5s;}
+  .rc-title-en{font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:.32em;color:var(--text-d);text-transform:uppercase;margin-left:.4rem;}
+  .rc-body{padding:2rem;}
+
   /* ─── font size bumps ─── */
   .r-intro{font-size:1.15rem;}
   .card-body{font-size:1.05rem;}
@@ -283,89 +322,133 @@
 <!-- ════ 結果 ════ -->
 <section id="result-section">
 
-  <!-- 雙靈數 -->
-  <div class="r-hero">
-    <div class="dual-display">
-      <div class="number-block">
-        <div class="nb-label">外靈數 · Life Path</div>
-        <div class="nb-num big" id="r-outer">7</div>
-        <div class="nb-name" id="r-outer-name">智慧者</div>
-        <div class="nb-name-en" id="r-outer-en">The Seeker</div>
+  <!-- ── 測驗結果卡片 ── -->
+  <div class="result-card" id="rc-result">
+    <div class="rc-header">
+      <span class="rc-icon">✦</span>
+      <span class="rc-title">測驗結果</span>
+      <span class="rc-title-en">Numerology Report</span>
+    </div>
+    <div class="rc-body">
+      <!-- 4 numbers row -->
+      <div class="r-hero" style="margin-bottom:0">
+        <div class="four-nums-row">
+          <div class="fn-block">
+            <div class="fn-label">先天數 · Innate</div>
+            <div class="fn-num med" id="r-innate">—</div>
+            <div class="fn-sub" id="r-innate-name"></div>
+          </div>
+          <div class="fn-sep">·</div>
+          <div class="fn-block main">
+            <div class="fn-label">生命靈數 · Life Path</div>
+            <div class="fn-num big" id="r-outer">7</div>
+            <div class="fn-name" id="r-outer-name">智慧者</div>
+            <div class="fn-name-en" id="r-outer-en">The Seeker</div>
+          </div>
+          <div class="fn-sep">·</div>
+          <div class="fn-block">
+            <div class="fn-label">天賦數 · Talent</div>
+            <div class="fn-num med" id="r-talent">—</div>
+            <div class="fn-sub" id="r-talent-name"></div>
+          </div>
+          <div class="fn-sep">·</div>
+          <div class="fn-block">
+            <div class="fn-label">星座數 · Zodiac</div>
+            <div class="fn-num med" id="r-zodiac-num">—</div>
+            <div class="fn-sub" id="r-zodiac-name"></div>
+            <div class="fn-tag" id="r-zodiac-sym"></div>
+          </div>
+        </div>
+        <p class="r-intro" id="r-intro"></p>
       </div>
-      <div class="nb-sep">×</div>
-      <div class="number-block">
-        <div class="nb-label">內靈數 · Birthday</div>
-        <div class="nb-num sml" id="r-inner">6</div>
-        <div class="nb-name" id="r-inner-name">守護者</div>
-        <div class="nb-name-en" id="r-inner-en">The Nurturer</div>
+
+      <!-- SVG Lo Shu -->
+      <div class="sec-rule" style="margin:2rem auto;"></div>
+      <div class="sec-label">九宮格命盤 · Lo Shu Grid</div>
+      <div class="lo-shu-svg-layout">
+        <div class="ls-svg-container" id="lo-shu-svg-container"></div>
+        <div class="lo-shu-legend">
+          <div class="lsl-title">缺失數字與脈輪課題</div>
+          <div class="missing-list" id="missing-list"></div>
+        </div>
+      </div>
+      <!-- Arrows legend -->
+      <div class="arrows-section">
+        <div class="arrows-title">命盤箭頭解析 — 箭頭代表命盤中的能量通道</div>
+        <div class="arrows-grid" id="arrows-list"></div>
       </div>
     </div>
-    <p class="r-intro" id="r-intro"></p>
   </div>
 
-  <!-- 九宮格 -->
-  <div class="sec-rule"></div>
-  <div class="sec-label">九宮格命盤 · Lo Shu Grid</div>
-  <div class="lo-shu-wrap" style="max-width:580px;margin:0 auto;">
-    <div>
-      <div class="lo-shu" id="lo-shu-grid"></div>
+  <!-- ── 優點與缺點 + 使命 卡片 ── -->
+  <div class="result-card">
+    <div class="rc-header">
+      <span class="rc-icon">⟡</span>
+      <span class="rc-title">命盤解析</span>
+      <span class="rc-title-en">Character Analysis</span>
     </div>
-    <div class="lo-shu-legend">
-      <div class="lsl-title">缺失數字與脈輪課題</div>
-      <div class="missing-list" id="missing-list"></div>
-    </div>
-  </div>
-
-  <!-- 4 cards -->
-  <div class="sec-rule"></div>
-  <div class="sec-label">命盤解析</div>
-  <div class="cards-grid">
-    <div class="info-card">
-      <span class="card-icon">⚡</span>
-      <div class="card-title">事業運勢</div>
-      <div class="card-body" id="r-career"></div>
-    </div>
-    <div class="info-card">
-      <span class="card-icon">♡</span>
-      <div class="card-title">愛情關係</div>
-      <div class="card-body" id="r-love"></div>
-    </div>
-    <div class="info-card">
-      <span class="card-icon">✦</span>
-      <div class="card-title">天賦優點</div>
-      <div id="r-strengths" class="tag-list"></div>
-    </div>
-    <div class="info-card">
-      <span class="card-icon">◇</span>
-      <div class="card-title">成長課題</div>
-      <div id="r-weaknesses" class="tag-list"></div>
-    </div>
-  </div>
-
-  <!-- 靈魂使命 -->
-  <div class="sec-rule"></div>
-  <div class="sec-label">靈魂使命 · Soul Mission</div>
-  <div class="mission-panel" id="mission-panel">
-    <div class="mission-body" id="r-mission"></div>
-    <div class="mantra-label">能量肯定語</div>
-    <div class="mantra-text" id="r-mantra"></div>
-  </div>
-
-  <!-- chakra -->
-  <div class="sec-rule"></div>
-  <div class="sec-label">脈輪能量分析</div>
-  <div class="chakra-section">
-    <div class="chakra-strip" id="chakra-strip"></div>
-    <div class="chakra-detail">
-      <div class="chakra-detail-name" id="r-chakra-name"></div>
-      <div class="chakra-detail-desc" id="r-chakra-desc"></div>
+    <div class="rc-body">
+      <div class="cards-grid" style="max-width:100%">
+        <div class="info-card">
+          <span class="card-icon">⚡</span>
+          <div class="card-title">事業運勢</div>
+          <div class="card-body" id="r-career"></div>
+        </div>
+        <div class="info-card">
+          <span class="card-icon">♡</span>
+          <div class="card-title">愛情關係</div>
+          <div class="card-body" id="r-love"></div>
+        </div>
+        <div class="info-card">
+          <span class="card-icon">✦</span>
+          <div class="card-title">天賦優點</div>
+          <div id="r-strengths" class="tag-list"></div>
+        </div>
+        <div class="info-card">
+          <span class="card-icon">◇</span>
+          <div class="card-title">成長課題</div>
+          <div id="r-weaknesses" class="tag-list"></div>
+        </div>
+      </div>
+      <div class="sec-rule" style="margin:2rem auto;"></div>
+      <div class="sec-label" style="margin-bottom:1.5rem">靈魂使命 · Soul Mission</div>
+      <div class="mission-panel" id="mission-panel">
+        <div class="mission-body" id="r-mission"></div>
+        <div class="mantra-label">能量肯定語</div>
+        <div class="mantra-text" id="r-mantra"></div>
+      </div>
     </div>
   </div>
 
-  <!-- crystals -->
-  <div class="sec-rule"></div>
-  <div class="sec-label">命定水晶處方</div>
-  <div class="crystal-grid" id="crystal-grid"></div>
+  <!-- ── 脈輪卡片 ── -->
+  <div class="result-card">
+    <div class="rc-header">
+      <span class="rc-icon">◎</span>
+      <span class="rc-title">脈輪能量分析</span>
+      <span class="rc-title-en">Chakra Reading</span>
+    </div>
+    <div class="rc-body">
+      <div class="chakra-section">
+        <div class="chakra-strip" id="chakra-strip"></div>
+        <div class="chakra-detail">
+          <div class="chakra-detail-name" id="r-chakra-name"></div>
+          <div class="chakra-detail-desc" id="r-chakra-desc"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 水晶卡片 ── -->
+  <div class="result-card">
+    <div class="rc-header">
+      <span class="rc-icon">◈</span>
+      <span class="rc-title">命定水晶配戴建議</span>
+      <span class="rc-title-en">Crystal Prescription</span>
+    </div>
+    <div class="rc-body">
+      <div class="crystal-grid" id="crystal-grid"></div>
+    </div>
+  </div>
 
   <!-- 缺數能量補給 -->
   <div id="missing-energy-wrap" style="display:none">
@@ -587,19 +670,74 @@ const DATA={
 // ── 九宮格 Lo Shu layout ──
 const LO_SHU=[[4,9,2],[3,5,7],[8,1,6]];
 
+// Lo Shu 箭頭定義
+const ARROWS=[
+  {nums:[4,9,2],label:'智慧之箭',desc:'思路清晰，富有智慧與洞察力',dir:'row-top'},
+  {nums:[3,5,7],label:'意志之箭',desc:'意志堅定，擁有強大的精神力量',dir:'row-mid'},
+  {nums:[8,1,6],label:'行動之箭',desc:'行動力強，有始有終，貫徹執行',dir:'row-bot'},
+  {nums:[4,3,8],label:'思想之箭',desc:'思維敏銳，善於理性分析與規劃',dir:'col-left'},
+  {nums:[9,5,1],label:'情感之箭',desc:'情感均衡，人際關係和諧圓融',dir:'col-mid'},
+  {nums:[2,7,6],label:'實踐之箭',desc:'務實可靠，言出必行，信守承諾',dir:'col-right'},
+  {nums:[4,5,6],label:'決心之箭',desc:'意志如鐵，不達目的誓不罷休',dir:'diag-main'},
+  {nums:[2,5,8],label:'直覺之箭',desc:'直覺敏銳，心靈感知力強大',dir:'diag-anti'},
+];
+
+// ── 星座計算 ──
+function getZodiac(m,d){
+  const z=[
+    {name:'牡羊座',en:'Aries',sym:'♈',num:1},
+    {name:'金牛座',en:'Taurus',sym:'♉',num:2},
+    {name:'雙子座',en:'Gemini',sym:'♊',num:3},
+    {name:'巨蟹座',en:'Cancer',sym:'♋',num:4},
+    {name:'獅子座',en:'Leo',sym:'♌',num:5},
+    {name:'處女座',en:'Virgo',sym:'♍',num:6},
+    {name:'天秤座',en:'Libra',sym:'♎',num:7},
+    {name:'天蠍座',en:'Scorpio',sym:'♏',num:8},
+    {name:'射手座',en:'Sagittarius',sym:'♐',num:9},
+    {name:'摩羯座',en:'Capricorn',sym:'♑',num:1},
+    {name:'水瓶座',en:'Aquarius',sym:'♒',num:2},
+    {name:'雙魚座',en:'Pisces',sym:'♓',num:3},
+  ];
+  if((m==3&&d>=21)||(m==4&&d<=19))return z[0];
+  if((m==4&&d>=20)||(m==5&&d<=20))return z[1];
+  if((m==5&&d>=21)||(m==6&&d<=20))return z[2];
+  if((m==6&&d>=21)||(m==7&&d<=22))return z[3];
+  if((m==7&&d>=23)||(m==8&&d<=22))return z[4];
+  if((m==8&&d>=23)||(m==9&&d<=22))return z[5];
+  if((m==9&&d>=23)||(m==10&&d<=22))return z[6];
+  if((m==10&&d>=23)||(m==11&&d<=21))return z[7];
+  if((m==11&&d>=22)||(m==12&&d<=21))return z[8];
+  if((m==12&&d>=22)||(m==1&&d<=19))return z[9];
+  if((m==1&&d>=20)||(m==2&&d<=18))return z[10];
+  return z[11];
+}
+
 // ── 計算 ──
 function reduce(str){
   let n=[...str].reduce((a,c)=>a+parseInt(c),0);
   while(n>9&&n!==11&&n!==22&&n!==33)n=[...String(n)].reduce((a,c)=>a+parseInt(c),0);
   return n;
 }
+function reduceSimple(n){
+  // reduce to 1-9 (no master numbers preserved)
+  while(n>9)n=[...String(n)].reduce((a,c)=>a+parseInt(c),0);
+  return n;
+}
 function calcOuter(y,m,d){return reduce(`${y}${String(m).padStart(2,'0')}${String(d).padStart(2,'0')}`);}
 function calcInner(d){return reduce(String(d));}
+function calcInnate(m,d){return reduce(String(m+d));}
 function countDigits(y,m,d){
   const s=`${y}${String(m).padStart(2,'0')}${String(d).padStart(2,'0')}`;
   const cnt={};
   for(let i=1;i<=9;i++)cnt[i]=0;
+  // Step 1: raw birthdate digits
   [...s].forEach(c=>{const n=parseInt(c);if(n>=1&&n<=9)cnt[n]=(cnt[n]||0)+1;});
+  // Step 2: 天賦數 (talent = day reduced)
+  const talent=reduceSimple(d);
+  if(talent>=1&&talent<=9) cnt[talent]=(cnt[talent]||0)+1;
+  // Step 3: 星座數 (zodiac number)
+  const zn=getZodiac(m,d).num;
+  if(zn>=1&&zn<=9) cnt[zn]=(cnt[zn]||0)+1;
   return cnt;
 }
 
@@ -632,49 +770,107 @@ function startCalc(){
   },1800);
 }
 
+// ── build SVG Lo Shu ──
+function buildLoShuSVG(cnt, accentColor, accentRgb){
+  const S=252, C=84, R=28;
+  const POS={};
+  LO_SHU.forEach((row,r)=>row.forEach((n,c)=>{POS[n]={x:c*C+C/2,y:r*C+C/2};}));
+
+  // grid background lines
+  let out=`<rect width="${S}" height="${S}" fill="white"/>`;
+  for(let i=1;i<3;i++){
+    out+=`<line x1="${i*C}" y1="2" x2="${i*C}" y2="${S-2}" stroke="rgba(44,26,8,.07)" stroke-width="1"/>`;
+    out+=`<line x1="2" y1="${i*C}" x2="${S-2}" y2="${i*C}" stroke="rgba(44,26,8,.07)" stroke-width="1"/>`;
+  }
+
+  // active arrow connection lines
+  ARROWS.forEach(a=>{
+    if(a.nums.every(n=>(cnt[n]||0)>0)){
+      const p1=POS[a.nums[0]], p2=POS[a.nums[2]];
+      out+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${accentColor}" stroke-width="2.5" stroke-opacity=".5" stroke-linecap="round"/>`;
+    }
+  });
+
+  // circles + numbers + dots
+  for(let n=1;n<=9;n++){
+    const p=POS[n], c=cnt[n]||0, present=c>0, strong=c>=3;
+    const fill=present?(strong?`rgba(${accentRgb},.16)`:`rgba(${accentRgb},.08)`):`rgba(44,26,8,.025)`;
+    const stroke=present?(strong?accentColor:`rgba(${accentRgb},.55)`):`rgba(44,26,8,.1)`;
+    const textFill=present?accentColor:`rgba(44,26,8,.18)`;
+    const sw=present?(strong?2.5:1.5):1;
+    out+=`<circle cx="${p.x}" cy="${p.y}" r="${R}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+    out+=`<text x="${p.x}" y="${p.y-5}" text-anchor="middle" dominant-baseline="middle" font-family="Georgia,serif" font-style="italic" font-weight="700" font-size="20" fill="${textFill}">${n}</text>`;
+    if(c>0){
+      const dots=Math.min(c,5), dr=2.8, gap=2;
+      const tw=dots*(dr*2)+(dots-1)*gap;
+      const sx=p.x-tw/2+dr;
+      for(let i=0;i<dots;i++)
+        out+=`<circle cx="${sx+i*(dr*2+gap)}" cy="${p.y+14}" r="${dr}" fill="${accentColor}" opacity=".65"/>`;
+    }
+  }
+  return `<svg viewBox="0 0 ${S} ${S}" xmlns="http://www.w3.org/2000/svg" style="border:1px solid rgba(44,26,8,.08)">${out}</svg>`;
+}
+
 // ── show result ──
 function showResult(y,m,d,outer,inner){
   const od=DATA[outer]||DATA[9];
   const id_=DATA[inner]||DATA[9];
   const cnt=countDigits(y,m,d);
 
+  // derived numbers
+  const talent=reduceSimple(d);
+  const innate=calcInnate(m,d);
+  const zodiac=getZodiac(m,d);
+  const innateD=DATA[innate]||DATA[reduceSimple(innate)]||DATA[1];
+  const talentD=DATA[talent]||DATA[1];
+
   // update CSS accent
   document.documentElement.style.setProperty('--acc',od.color);
   document.documentElement.style.setProperty('--acc-rgb',od.rgb);
+  // update result-card headers to accent color
+  document.querySelectorAll('.rc-header').forEach(el=>el.style.background=`rgba(${od.rgb},.03)`);
+  document.querySelectorAll('.rc-title').forEach(el=>el.style.color=od.color);
 
-  // dual numbers
+  // 4-number header
   document.getElementById('r-outer').textContent=outer;
   document.getElementById('r-outer-name').textContent=od.name;
   document.getElementById('r-outer-en').textContent=od.nameEn;
-  document.getElementById('r-inner').textContent=inner;
-  document.getElementById('r-inner-name').textContent=id_.name;
-  document.getElementById('r-inner-en').textContent=id_.nameEn;
+  document.getElementById('r-innate').textContent=innate;
+  document.getElementById('r-innate-name').textContent=innateD.name;
+  document.getElementById('r-talent').textContent=talent;
+  document.getElementById('r-talent-name').textContent=talentD.name;
+  document.getElementById('r-zodiac-num').textContent=zodiac.num;
+  document.getElementById('r-zodiac-name').textContent=zodiac.name;
+  document.getElementById('r-zodiac-sym').textContent=zodiac.sym;
   document.getElementById('r-intro').textContent=od.intro;
 
-  // nine-square grid
-  const grid=document.getElementById('lo-shu-grid');
-  grid.innerHTML='';
-  LO_SHU.forEach(row=>row.forEach(n=>{
-    const c=cnt[n]||0;
-    const cell=document.createElement('div');
-    cell.className='ls-cell '+(c===0?'missing':c>=3?'strong':'active');
-    cell.innerHTML=`<div class="ls-num">${n}</div><div class="ls-dots">${Array(c).fill('<div class="ls-dot"></div>').join('')}</div>`;
-    grid.appendChild(cell);
-  }));
+  // SVG Lo Shu
+  document.getElementById('lo-shu-svg-container').innerHTML=buildLoShuSVG(cnt,od.color,od.rgb);
 
   // missing numbers analysis
   const missing=Object.entries(cnt).filter(([,v])=>v===0).map(([k])=>parseInt(k));
   const missList=document.getElementById('missing-list');
   if(missing.length){
-    missList.innerHTML=missing.slice(0,4).map(n=>{
-      const mm=MISSING_MAP[n];
-      if(!mm)return '';
+    missList.innerHTML=missing.map(n=>{
+      const mm=MISSING_MAP[n]; if(!mm)return '';
       const ch=CHAKRAS.find(c=>c.id===mm.chakraId);
-      return `<div class="missing-item"><div class="missing-num">${n} · ${mm.name}</div><div class="missing-chakra" style="color:${ch?.col||'var(--acc)'}">⟡ ${mm.name}</div><div class="missing-desc">${mm.desc}</div></div>`;
-    }).join('');
+      return `<div class="missing-item"><div class="missing-num">${n} · ${mm.name}</div><div class="missing-chakra" style="color:${ch?.col||od.color}">⟡ ${mm.name}</div><div class="missing-desc">${mm.desc}</div></div>`;
+    }).join('')||'<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;color:var(--text-d);font-size:.95rem">命盤數字完整，各脈輪均有能量支撐。</div>';
   }else{
     missList.innerHTML='<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;color:var(--text-d);font-size:.95rem">你的命盤數字完整，七大脈輪均有基本能量支撐。</div>';
   }
+
+  // arrows legend
+  document.getElementById('arrows-list').innerHTML=ARROWS.map((a,i)=>{
+    const active=a.nums.every(n=>(cnt[n]||0)>0);
+    return `<div class="arrow-item${active?'':' missing'}" style="animation-delay:${i*.05}s">
+      <div class="arrow-nums">${a.nums.join('-')}</div>
+      <div class="arrow-info">
+        <div class="arrow-name">${active?'✦ ':' '}${a.label}</div>
+        <div class="arrow-desc">${a.desc}</div>
+      </div>
+    </div>`;
+  }).join('');
 
   // 4 cards
   document.getElementById('r-career').textContent=od.career;
@@ -706,19 +902,15 @@ function showResult(y,m,d,outer,inner){
 
   // 缺數能量補給
   const meWrap=document.getElementById('missing-energy-wrap');
-  const meGrid=document.getElementById('me-grid');
   if(missing.length){
     meWrap.style.display='block';
-    meGrid.innerHTML=missing.slice(0,6).map((n,i)=>{
-      const mm=MISSING_MAP[n];
-      if(!mm)return '';
+    document.getElementById('me-grid').innerHTML=missing.slice(0,6).map((n,i)=>{
+      const mm=MISSING_MAP[n]; if(!mm)return '';
       return `<div class="me-card" style="animation-delay:${i*.08}s">
         <div class="me-header">
-          <div class="me-badge" style="background:rgba(var(--acc-rgb),.07);color:var(--acc)">${n}</div>
-          <div>
-            <div class="me-num-name">缺數 ${n} · 補足${mm.name}能量</div>
-            <div class="me-crystal-tag">推薦水晶 · ${mm.crystal}</div>
-          </div>
+          <div class="me-badge">${n}</div>
+          <div><div class="me-num-name">缺數 ${n} · 補足${mm.name}能量</div>
+          <div class="me-crystal-tag">推薦水晶 · ${mm.crystal}</div></div>
         </div>
         <div class="me-desc">${mm.desc}</div>
         <div class="me-practice">⟡ 能量練習：${mm.practice}</div>
@@ -754,6 +946,8 @@ function restart(){
   document.getElementById('quiz-section').style.display='';
   document.documentElement.style.setProperty('--acc','#b07a1a');
   document.documentElement.style.setProperty('--acc-rgb','176,122,26');
+  document.querySelectorAll('.rc-header').forEach(el=>el.style.background='');
+  document.querySelectorAll('.rc-title').forEach(el=>el.style.color='');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 

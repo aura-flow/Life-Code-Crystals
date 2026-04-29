@@ -360,7 +360,15 @@
     body{cursor:auto;}
     #cur,#ring{display:none;}
   }
+  /* embed mode: hide nav, footer, cursor, line-float, remove body padding */
+  html.embed-mode *{cursor:auto !important;}
+  html.embed-mode #cur,html.embed-mode #ring,html.embed-mode #line-float{display:none !important;}
+  html.embed-mode nav{display:none !important;}
+  html.embed-mode footer{display:none !important;}
+  html.embed-mode .pw{padding-top:0 !important;min-height:unset !important;}
+  html.embed-mode body,html.embed-mode .pw,html.embed-mode #quiz-section{background:#faf5ef !important;}
   </style>
+<script>if(location.search.includes('embed'))document.documentElement.classList.add('embed-mode');</script>
 </head>
 <body>
 <div id="cur"></div>
